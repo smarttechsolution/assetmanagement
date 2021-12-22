@@ -15,11 +15,11 @@ __pycache__/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-media
-env/
+/backend/asset-management-tool/media
+/backend/asset-management-tool/env/
 
 venv/
-.env
+/backend/asset-management-tool/.env
 .env/
 
 .idea/
