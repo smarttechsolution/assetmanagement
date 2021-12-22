@@ -2,7 +2,7 @@ How to setup with Docker
 
 1)Docker should be installed
 
-2) Go to project dir cd asset-management
+2) Go to project root directory
 
 2) Run the command in terminal
 
