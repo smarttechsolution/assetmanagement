@@ -1,0 +1,10 @@
+{
+    "cashbook": "Cash Book",
+    "income": "Income",
+    "expenditure": "Expenditure",
+    "date": "Date",
+    "description": "Description",
+    "previous-month-data": "Previous month data",
+    "from-prev-month": "FROM PREVIOUS MONTH",
+    "total": "TOTAL"
+}

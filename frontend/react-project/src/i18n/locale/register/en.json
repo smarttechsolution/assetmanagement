@@ -1,0 +1,118 @@
+{
+  "title": "Register",
+  "haveAnAccount": {
+    "title": "Already have an account ?"
+  },
+  "registerHead": {
+    "userType": {
+      "title": "User Type",
+      "description": "Before registering please tell us who you are."
+    },
+    "register": {
+      "title": "Register",
+      "description": "Please fill in the field below to register as an Importer."
+    }
+  },
+  "input": {
+    "userType": {
+      "importer": {
+        "title": "Importer",
+        "description": "If you are an organization and have collection of vehicles to register."
+      },
+      "user": {
+        "title": "User",
+        "description": "If you are an individual and would like to register a vehicle."
+      }
+    },
+    "username": {
+      "title": "Username",
+      "error-required": "Username is required"
+    },
+    "password": {
+      "title": "Password",
+      "error-required": "Password is required"
+    },
+    "email": {
+      "title": "Email",
+      "error-required": "Email is required",
+      "error-invalid": "Email is invalid"
+    }
+  },
+  "importer": {
+    "register": {
+      "completeProfile": "Complete Your Profile",
+      "section": {
+        "organization": "Organization",
+        "address": "Address",
+        "orgContactPerson": "Organization Contact Person Detail",
+        "uploadDocuments": "Upload Documents"
+      },
+      "table": {
+        "title": "Title",
+        "upload": "Upload"
+      },
+      "input": {
+        "organizationName": {
+          "title": "Organization Name",
+          "error-required": "Organization Name is required"
+        },
+        "aliascode": {
+          "title": "Alias Code",
+          "error-required": "Alias Code is required"
+        },
+        "companyRegNo": {
+          "title": "Registration No.",
+          "error-required": "Registration No. is required"
+        },
+        "registrationDateNp": {
+          "title": "Nepali Registration Date",
+          "error-required": "Nepali Registration Date is required"
+        },
+        "registrationDate": {
+          "title": "Registration Date",
+          "error-required": "Registration Date is required"
+        },
+        "panno": {
+          "title": "Pan No.",
+          "error-required": "Pan No. is required"
+        },
+        "vatno": {
+          "title": "Vat No.",
+          "error-required": "Vat No. is required"
+        },
+        "email": {
+          "title": "Email",
+          "error-required": "Email is required"
+        },
+        "district": {
+          "title": "District",
+          "error-required": "District is required"
+        },
+        "localbody": {
+          "title": "Local Body",
+          "error-required": "Local Body is required"
+        },
+        "contactPersonName": {
+          "title": "Full Name",
+          "error-required": "Full Name is required"
+        },
+        "contactPersonPosition": {
+          "title": "Position",
+          "error-required": "Position is required"
+        },
+        "contactPersonPanNo": {
+          "title": "Pan No.",
+          "error-required": "Pan No. is required"
+        },
+        "contactPersonMobileNo": {
+          "title": "Mobile No.",
+          "error-required": "Mobile No. is required"
+        },
+        "contactPersonPhoneNo": {
+          "title": "Phone No.",
+          "error-required": "Phone No. is required"
+        }
+      }
+    }
+  }
+}

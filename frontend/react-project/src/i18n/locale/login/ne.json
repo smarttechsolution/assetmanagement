@@ -1,0 +1,19 @@
+{
+    "title": "लग-इन",
+    "input": {
+        "username": {
+            "title": "प्रयोगकर्ता नाम",
+            "error-required": "प्रयोगकर्ता नाम आवश्यक छ"
+        },
+        "password": {
+            "title": "पासवर्ड",
+            "error-required": "पासवर्ड आवश्यक छ"
+        }
+    },
+    "forgotPassword": {
+        "title": "पासवर्ड भुल्नुभयो?"
+    },
+    "dontHaveAnAccount": {
+        "title": "खाता छैन? "
+    }
+}

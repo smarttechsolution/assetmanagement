@@ -1,0 +1,24 @@
+.collapse{
+    &-wrapper{
+        font-size: 0.875rem;
+
+        .collapse-item{
+            &:not(:last-child){
+                margin-bottom: 0.75rem;
+            }
+        }
+    }
+
+    &-head{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: $cool-gray-100;
+        padding: 0.5rem 0.75rem;
+    }
+
+    &-item{
+        border: 1px solid $cool-gray-300;
+        border-radius: 0.125rem;
+    }
+}

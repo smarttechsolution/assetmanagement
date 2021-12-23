@@ -1,0 +1,206 @@
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: #fff !important;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.75rem;
+    transform: translateX(0);
+    z-index: 10;
+    transition: 0.25s transform $time-func-1;
+    filter: drop-shadow(0px 5px 25px #52575d21);
+    @include media-breakpoint-down(lg) {
+        transform: translateX(calc(-1 * var(--sidebar-width)));
+    }
+    // @include media-breakpoint-down(md) {
+    //   left: 0;
+    // }
+    >.list-sidebar {
+        height: 100%;
+        overflow-y: auto;
+        margin-bottom: 2rem;
+        padding-right: 4px;
+        &::-webkit-scrollbar {
+            height: 7px;
+            width: 6px;
+        }
+        /* Track */
+        &::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.16);
+            border-radius: 8px;
+        }
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.64);
+            border-radius: 8px;
+        }
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+            background: rgb(255, 255, 255);
+            cursor: pointer;
+        }
+        a {
+            color: #919191!important;
+            padding: 0.7rem 0.8rem;
+            font-size: 15px!important;
+            &:hover {
+                border-left: 5px solid #1071e5;
+                background: #fff !important;
+                color: #1071e5 !important;
+            }
+            &.active {
+                border-left: 5px solid #1071e5;
+                background: #fff !important;
+                color: #1071e5 !important;
+                img {
+                    filter: invert(73%) sepia(84%) saturate(3254%) hue-rotate(210deg) brightness(106%) contrast(97%);
+                }
+            }
+        }
+        .collapse {
+            a {
+                color: #919191!important;
+                padding: 12px 13px;
+                font-size: 15px!important;
+                &:hover {
+                    border-left: 5px solid #1071e5;
+                    background: #fff !important;
+                    color: #1071e5 !important;
+                }
+                &.active {
+                    border-left: 5px solid #1071e5;
+                    background: #fff !important;
+                    color: #1071e5 !important;
+                    img {
+                        filter: invert(73%) sepia(84%) saturate(3254%) hue-rotate(210deg) brightness(106%) contrast(97%);
+                    }
+                }
+            }
+        }
+    }
+    &-logo {
+        display: block;
+        // margin: auto;
+    }
+    &-brand {
+        font-family: "Source Sans Pro";
+        span {
+            display: block;
+        }
+    }
+    &-header {
+        padding: 1rem 0;
+        color: $white;
+        font-weight: 600;
+        @include des;
+    }
+    &-title {
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        @include h6;
+        color: map-get($sidebar, titleColor);
+        &:visited {
+            color: $white;
+        }
+        &:hover {
+            color: $white;
+        }
+    }
+    a {
+        &.hasSub {
+            position: relative;
+            padding-right: 1.25rem;
+            &:after {
+                content: "\e95c";
+                font-family: "icomoon";
+                position: absolute;
+                font-size: 0.5rem;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 8px;
+            }
+            &[aria-expanded="false"] {
+                &:after {
+                    content: "\e958";
+                }
+            }
+            &.active {
+                color: map-get($sidebar, linkActive);
+                background-color: unset;
+            }
+        }
+    }
+    &-icon {
+        @include h6;
+    }
+    &_02 {
+        padding: 0 1rem;
+        margin-top: 2.5rem;
+        a {
+            display: block;
+            color: map-get($sidebar, linkColor);
+            @include des;
+            padding: 0.5rem;
+            // @include lhCrop(1.2); //line-height: 1.2
+            line-height: 1.2;
+            &.active {
+                background-color: map-get($sidebar, linkActive);
+                border-radius: 4px;
+                color: $blue;
+            }
+            &.hasSub {
+                position: relative;
+                padding-right: 0.75rem;
+                &:after {
+                    content: "\e912";
+                    font-family: "icomoon";
+                    position: absolute;
+                    font-size: 0.5rem;
+                    top: 8px;
+                    right: 4px;
+                }
+                &[aria-expanded="false"] {
+                    &:after {
+                        content: "\e90e";
+                    }
+                }
+                &.active {
+                    color: map-get($sidebar, linkActive);
+                    background-color: unset;
+                }
+            }
+        }
+    }
+    &.withfooter {
+        padding-bottom: 4rem;
+        footer {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 1rem;
+            width: 100%;
+            text-align: center;
+            padding: 0.5rem;
+        }
+    }
+    .search {
+        &--input {
+            padding: 0.25rem 0 1rem;
+            input[type="search"] {
+                color: $white;
+            }
+        }
+    }
+    .toggler {
+        &-close {
+            @include small;
+            display: none;
+            @include media-breakpoint-down(md) {
+                display: block;
+            }
+        }
+    }
+}

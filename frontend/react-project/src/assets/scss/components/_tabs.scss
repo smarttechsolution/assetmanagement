@@ -1,0 +1,197 @@
+.tab {
+  &-01 {
+    border-bottom: none;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    li, .nav-item {
+      margin: 0 -1px 0 0;
+      a, .nav-link {
+        padding: 0.375rem 1rem;
+        background-color: $white;
+        border: 1px solid $cool-gray-400;
+        color: $cool-gray-600;
+        line-height: $nav-link-line-height;
+        display: inline-block;
+        white-space: nowrap;
+        cursor: pointer;
+        @include des;
+
+        &.active {
+          color: $nav-tabs-link-active-color;
+          background-color: $nav-tabs-link-active-bg;
+          border: 1px solid $nav-tabs-link-active-bg;
+        }
+        &:first-child {
+          border-radius: 2px 0px 0px 2px;
+        }
+        &:last-child {
+          border-radius: 0px 2px 2px 0px;
+        }
+
+        @include hover {
+          &:not(.active) {
+            background-color: $cool-gray-50;
+            color: $blue;
+          }
+        }
+      }
+    }
+  }
+  &--multistep {
+    .nav-pills {
+      // border-radius: map-get($register, radiusSize );
+      justify-content: center;
+      .nav-item {
+        .nav-link {
+          @include des;
+          font-weight: 600;
+          border-bottom: 2px solid transparent;
+          color: $gray-400 !important;
+          &.active {
+            // background-color: map-get($register,headColor );
+            // border-radius: map-get($register, radiusSize );
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            // border-bottom: 2px solid $primary;
+            // color: $primary;
+          }
+          &.visited {
+            color: $success;
+          }
+        }
+      }
+    }
+    .tab-content {
+      margin-top: 1rem;
+    }
+  }
+
+  &-02 {
+    &__header {
+      background-color: $red;
+      position: relative;
+      .img {
+        &--sun {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        &--moon {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+        }
+      }
+    }
+
+    &__content {
+      padding: 1.5rem 0;
+      position: relative;
+      @include media-breakpoint-down(sm) {
+        padding: 1.5rem;
+      }
+
+      p {
+        color: $gray-700;
+        @include des;
+        font-weight: 400;
+        line-height: 23px;
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
+
+  &-content {
+    .card {
+      &_bordered {
+        margin-top: -1px;
+      }
+    }
+  }
+
+  &-03 {
+    margin-bottom: -0.5rem;
+    li {
+      margin-right: 1rem;
+      align-self: flex-end;
+      position: relative;
+      a {
+        &.active {
+          &::before,
+          &::after {
+            // content: url("./../../img/ER.svg");
+            display: block;
+            position: absolute;
+            bottom: 1px;
+          }
+          .card {
+            box-shadow: 0px 1px 2px $cool-gray-300;
+            background-color: white;
+            transform: translateY(-8px);
+
+            @include hover {
+              box-shadow: 0px -2px 16px rgba(10, 10, 10, 0.16);
+            }
+
+            &::before {
+              content: " ";
+              width: 4px;
+              height: 3rem;
+              display: block;
+              position: absolute;
+              top: 50%;
+              left: 0;
+              transform: translateY(-50%);
+              border-radius: 0 4px 4px 0;
+            }
+            .title {
+              color: $cool-gray-600;
+            }
+            .value {
+              color: $cool-gray-700;
+            }
+          }
+        }
+      }
+
+      &:first-child {
+        a {
+          &.active {
+            &::after {
+              right: -1rem;
+            }
+          }
+        }
+      }
+
+      &:last-child {
+        a {
+          &.active {
+            &::before {
+              left: -1rem;
+              transform: scaleX(-1);
+              z-index: 1;
+            }
+          }
+        }
+      }
+
+      &:not(:first-child):not(:last-child) {
+        a {
+          &.active {
+            &::after {
+              right: -1rem;
+            }
+
+            &::before {
+              left: -1rem;
+              transform: scaleX(-1);
+              z-index: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}

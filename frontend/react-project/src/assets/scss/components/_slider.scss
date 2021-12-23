@@ -1,0 +1,101 @@
+.slider {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    @include respond(md) {
+        position: relative;
+    }
+    &__img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        @include respond(md) {
+            height: 400px;
+        }
+        @include respond(phone) {
+            height: 300px;
+        }
+    }
+    .row {
+        height: 100%;
+    }
+    &__content {
+        padding: 0 5rem!important;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        height: 100%;
+        @include respond(phone) {
+            padding: 0 2rem 2rem 2rem!important;
+        }
+        @include respond(iphone) {
+            padding: 0 1rem 4rem 1rem!important;
+        }
+        .carousel {
+            &-indicators {
+                flex-direction: column;
+                padding: 0;
+                right: -3.5rem;
+                top: 50%;
+                transform: translate(0, -50%);
+                bottom: unset;
+                left: unset;
+                margin: 0;
+                align-items: center;
+                @include respond(phone) {
+                    right: -1.5rem;
+                }
+                @include respond(iphone) {
+                    bottom: -2rem;
+                    left: 0;
+                    align-items: center;
+                    right: 0;
+                    flex-direction: row;
+                    transform: none;
+                    top: unset;
+                }
+                li {
+                    width: 8px;
+                    height: 8px;
+                    border: 0;
+                    border-radius: 16px;
+                    margin: 0;
+                    opacity: 1;
+                    background-color: #CCCCCC;
+                    @include respond(iphone) {
+                        margin-bottom: 0;
+                    }
+                    &:not(:last-child) {
+                        margin-bottom: .75rem;
+                        @include respond(iphone) {
+                            margin-right: 1rem;
+                            margin-bottom: 0;
+                        }
+                    }
+                    &.active {
+                        width: 11px;
+                        height: 11px;
+                        background-color: $green;
+                    }
+                }
+            }
+        }
+    }
+    &__logo {
+        height: 110px;
+        margin-bottom: 5rem;
+        @include respond(md) {
+            margin-bottom: 3rem;
+        }
+    }
+    &__item {
+        h3 {
+            margin-bottom: .75rem;
+        }
+        p {
+            line-height: 26px;
+            margin-bottom: 1.5rem;
+        }
+    }
+}

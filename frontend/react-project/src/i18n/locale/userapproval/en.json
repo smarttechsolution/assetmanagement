@@ -1,0 +1,46 @@
+{
+    "title": "Approval Pending List",
+    "table": {
+        "sn": "S.N.",
+        "organizatonName": "Organization Name",
+        "aliascode": "Alias Code",
+        "email": "Email",
+        "companyRegNo": "Registration Number",
+        "district": "District",
+        "localbody": "Municipality",
+        "registrationDate": "Registration Date (A.D.)",
+        "registrationDateNp": "Registration Date (B.S.)",
+        "panno": "PAN Number",
+        "vatno": "VAT Number"
+    },
+    "importer-detail": {
+        "title": "Importer's Detail",
+        "organization": {
+            "title": "Organization",
+            "name": "Organization Name",
+            "regno": "Registration Number",
+            "regdate": "Registration Date (A.D.)",
+            "regdatenp": "Registration Date (B.S.)",
+            "panno": "PAN Number",
+            "vatno": "VAT Number"
+        },
+        "address": {
+            "title": "Address",
+            "district": "District",
+            "localbody": "Municipality",
+            "wardno": "Ward Number",
+            "streetaddress": "Street Address"
+        },
+        "personal": {
+            "title": "Personal Detail",
+            "fullname": "Full Name"
+        },
+        "uploadeddoc": {
+            "title": "Documents",
+            "orgregdoc": "Organization Registration Document",
+            "taxcleardoc": "Tax Clearance Document",
+            "pandoc": "PAN Document",
+            "compregdoc":"Company Registration Document"
+        }
+    }
+}

@@ -1,0 +1,63 @@
+$header-bg: #FFFFFF;
+.header {
+    background-color: $header-bg !important;
+    padding: 1rem 1rem 1rem 0;
+    filter: drop-shadow(0px 5px 25px #52575d21);
+    @include media-breakpoint-down(md) {
+        padding: 1rem;
+    }
+    .toggler {
+        margin-right: 1rem;
+        cursor: pointer;
+    }
+    .auth {
+        display: flex;
+        align-items: center;
+        @include media-breakpoint-down(md) {
+            padding-right: 0;
+        }
+        h6 {
+            margin-left: 0.5rem;
+            color: $theme-dark-blue;
+            @include des;
+            font-weight: 400;
+            @include media-breakpoint-down(sm) {
+                display: none;
+            }
+        }
+        i,
+        svg {
+            color: "#000";
+            font-size: 0.5rem;
+        }
+    }
+    .title {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        @include media-breakpoint-down(sm) {
+            width: 130px;
+        }
+    }
+    &-img {
+        height: 24px;
+    }
+}
+
+.logo {
+    max-height: map-get($header, logoSize);
+}
+
+.toggled {
+    header {
+        @include media-breakpoint-up(md) {
+            padding-left: 1rem;
+        }
+        transition: 0.25s padding-left $time-func-1;
+    }
+}
+
+.ic-menu {
+    color: #000 !important;
+    margin-left: 20px;
+}

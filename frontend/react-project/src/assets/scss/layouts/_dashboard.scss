@@ -1,0 +1,279 @@
+//theme-colors
+.app {
+    &.theme {
+        @each $name,
+        $value in $theme {
+            &-#{$name} {
+                background-color: $cool-gray-200;
+                .sidebar,
+                header {
+                    background-color: $value;
+                }
+                .sidebar {
+                    .list {
+                        &-sidebar {
+                            a {
+                                color: lighten($value, 50);
+                                &.active {
+                                    background-color: lighten($value, 50);
+                                    color: $value;
+                                }
+                                &:not(.active):hover,
+                                &[aria-expanded="true"] {
+                                    background-color: lighten($value, 15);
+                                }
+                            }
+                        }
+                    }
+                    .search {
+                        &--input {
+                            input[type="search"] {
+                                background-color: lighten($value, 10);
+                                border-color: lighten($value, 10);
+                                &:focus {
+                                    background-color: $value;
+                                    border-color: lighten($value, 50);
+                                }
+                                &::placeholder {
+                                    color: lighten($value, 45);
+                                }
+                            }
+                            .form-group-icon {
+                                i {
+                                    color: lighten($value, 45);
+                                }
+                                svg {
+                                    fill: lighten($value, 45);
+                                }
+                            }
+                        }
+                    }
+                    &-title {
+                        color: lighten($value, 50);
+                        &:hover {
+                            color: $white;
+                        }
+                    }
+                    .toggler-close {
+                        color: lighten($value, 50);
+                    }
+                }
+                // .table {
+                //   thead {
+                //     tr {
+                //       th {
+                //         background-color: #{$value};
+                //       }
+                //     }
+                //   }
+                //   &-striped {
+                //     tbody {
+                //       tr {
+                //         &:nth-of-type(#{$table-striped-order}) {
+                //           background-color: lighten($value, 70);
+                //         }
+                //         @include hover {
+                //           background-color: lighten($value, 60);
+                //         }
+                //       }
+                //     }
+                //   }
+                // }
+                .btn {
+                    &-action {
+                        background-color: lighten($value, 60);
+                        color: #{$value};
+                        &:hover,
+                        &:focus {
+                            background-color: #{$value};
+                            color: map-get($action-btn, hoverColor);
+                        }
+                    }
+                }
+                .pagination {
+                    &-arrow {
+                        background-color: lighten($value, 75);
+                    }
+                    .page {
+                        &-item {
+                            &.active {
+                                .page-link {
+                                    background-color: $value;
+                                    border: 1px solid $value;
+                                }
+                            }
+                        }
+                        &-link {
+                            @include hover {
+                                background-color: lighten($value, 60);
+                            }
+                        }
+                    }
+                }
+                .login {
+                    &-wrapper {
+                        background-color: $value;
+                    }
+                    &-box {
+                        box-shadow: 0 20px 48px rgba($value, 0.24);
+                        &-left {
+                            background-color: lighten($value, 10);
+                        }
+                    }
+                    &-icon {
+                        background-color: lighten($value, 30);
+                    }
+                }
+                // pqgrid
+                .pq-grid-row>.pq-grid-col,
+                .pq-header-outer .pq-grid-header-search-row>.pq-grid-number-cell,
+                .pq-header-outer .pq-grid-title-row>.pq-grid-number-cell,
+                .pq-header-outer .pq-cont-right {
+                    background-color: $value;
+                }
+                .pq-theme>.pq-grid-top,
+                .pq-theme>.pq-grid-bottom {
+                    color: $value;
+                }
+            }
+        }
+    }
+}
+
+.app {
+    width: 100%;
+    background-color: $blue-100;
+    // padding-left: var(--sidebar-width) ;
+    // @include media-breakpoint-down(md){
+    //   padding-left: 0;
+    // }
+    main {
+        width: calc(100% - var(--sidebar-width));
+        top: 0;
+        left: 0;
+        transform: translateX(var(--sidebar-width));
+        // overflow-y: auto;
+        transition: padding $time-func-1 0.25s, transform $time-func-1 0.25s, width $time-func-1 0.25s;
+        @include media-breakpoint-down(lg) {
+            transform: translateX(0);
+            width: 100%;
+        }
+        &.stickyHeader {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            header {
+                position: sticky;
+                top: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                z-index: 100;
+            }
+        }
+    }
+    .inner {
+        flex-grow: 1;
+        padding: 0 4px;
+        position: relative;
+        box-shadow: -8px 100px 64px rgba(54, 45, 45, 0.56);
+        padding-bottom: 2rem;
+        border-radius: 0.25rem 0 0 0;
+        z-index: 10;
+        background: #f2f5ff !important;
+        /** only to scroll within the containers
+        - remove if not needed
+    */
+        // .container {
+        //   height: 100%;
+        //   display: flex;
+        //   flex-direction: column;
+        //   & > .row {
+        //     // height: 100%;
+        //     height: calc(100% - 66px);
+        //     [class^="col-"] {
+        //       height: 100%;
+        //     }
+        //   }
+        // }
+    }
+    &.toggled {
+        // padding-left: 0;
+        // @include media-breakpoint-down(md){
+        //   padding-left: var(--sidebar-width);
+        // }
+        .sidebar {
+            transform: translateX(calc(-1 * var(--sidebar-width)));
+            @include media-breakpoint-down(md) {
+                transform: translateX(0);
+            }
+        }
+        main {
+            width: 100%;
+            transform: translateX(0);
+            @include media-breakpoint-down(md) {
+                // transform: translateX(var(--sidebar-width));
+                width: 100%;
+            }
+        }
+    }
+    &.withshortcut {
+        .sidebar {
+            margin-left: var(--shorcut-width);
+        }
+        main {
+            width: calc(100% - var(--sidebar-width) - var(--shorcut-width));
+            transform: translateX(calc(var(--sidebar-width) + var(--shorcut-width)));
+            @include media-breakpoint-down(md) {
+                transform: translateX(var(--shortcut-width));
+                width: calc(100% - var(--shorcut-width));
+                margin-left: var(--shorcut-width);
+            }
+        }
+        &.toggled {
+            .sidebar {
+                margin-left: 0;
+                transform: translateX(calc(-1 * var(--sidebar-width)));
+            }
+            main {
+                transform: translateX(var(--shorcut-width));
+                width: calc(100% - var(--shorcut-width));
+                @include media-breakpoint-down(md) {
+                    transform: translateX(var(--shortcut-width));
+                    width: calc(100% - var(--shorcut-width));
+                }
+            }
+        }
+    }
+}
+
+.content {
+    position: fixed;
+    width: 100%;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    /* Track */
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+}
+
+.container {
+    &-full {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+}

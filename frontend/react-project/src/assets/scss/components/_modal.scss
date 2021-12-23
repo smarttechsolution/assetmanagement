@@ -1,0 +1,205 @@
+.modal {
+  &-bms {
+    border-radius: 0px 0px 4px 4px;
+    display: flex !important;
+    align-items: center;
+
+    .modal {
+      &-header {
+        @each $label, $value in $information-color {
+          &-#{$label} {
+            color: $value;
+            background-color: rgba($value, 0.16);
+            border-bottom: $blue-10;
+          }
+        }
+
+        .close {
+          margin-top: -0.75rem;
+        }
+      }
+      &-title {
+        @include des;
+      }
+
+      &.label {
+        color: $cool-gray-700;
+      }
+
+      &-footer {
+        border: none;
+        // border-top: 1px solid $cool-gray-300;
+        padding: 0 1rem 1rem;
+      }
+    }
+  }
+
+  &-alert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba($gray-800, 0.8);
+    z-index: 1111;
+
+    .card {
+      z-index: 11111;
+      position: fixed;
+      right: 0;
+      left: 0;
+      top: 25%;
+      max-width: 400px;
+      margin: auto;
+      background-color: $white;
+      text-align: center;
+      &-body {
+        padding: 2rem 1.5rem 1.5rem;
+        .alert {
+          &-title {
+            margin-top: 1.5rem;
+          }
+
+          &-desc {
+            color: $cool-gray-600;
+            margin: 0.5rem 0 1.5rem;
+          }
+        }
+      }
+    }
+  }
+
+  &-toast {
+    z-index: 10000;
+    width: 314px;
+    position: fixed;
+    bottom: 0%;
+    right: 1%;
+
+    animation-name: moveDown;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+
+    .modal-content {
+      border: none;
+      box-shadow: 0px 2px 4px $cool-gray-400;
+
+      .modal-body {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem 0.75rem;
+
+        .toast-icon {
+          padding-right: 1rem;
+          font-size: 1.25rem;
+          color: white;
+        }
+
+        .toast-text {
+          flex-grow: 1;
+          h6 {
+            color: $white;
+            padding-bottom: 2px;
+            width: 100%;
+            @include h6;
+          }
+          p {
+            color: $white;
+            @include des;
+          }
+          [class^="ic-"],
+          [class*=" ic-"] {
+            color: white;
+            @include small;
+            margin-right: -8px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    @each $name, $value in $state-color {
+      &.modal-toast-#{$name} {
+        .modal {
+          &-content {
+            background-color: $value;
+          }
+        }
+      }
+    }
+
+    &.modal-toast-warning {
+      .modal {
+        &-body {
+          .toast-icon {
+            color: $black;
+          }
+
+          .toast-text {
+            h6,
+            p,
+            i {
+              color: $black;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.alertify {
+  &-notifier {
+    .ajs {
+      &-message {
+        padding: 0 !important;
+        border-radius: 4px;
+
+        .msg {
+          background-color: $red;
+          padding: 0.75rem 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-evenly;
+          border-radius: 4px;
+
+          .toast-icon {
+            padding-right: 1rem;
+            font-size: 1.25rem;
+            color: white;
+          }
+
+          .toast-text {
+            h6 {
+              color: $white;
+              padding-bottom: 2px;
+              width: 100%;
+              @include h6;
+            }
+
+            p {
+              color: $white;
+              @include des;
+            }
+
+            i {
+              color: white;
+              @include small;
+              // margin-right: -8px;
+            }
+          }
+        }
+      }
+      // &-error{
+      //   background-color: $red;
+
+      // }
+    }
+  }
+}
+
+// .alertify-notifier {
+//   .ajs-message.ajs-error {
+//     background-color: $green-50;
+//   }
+// }

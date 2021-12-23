@@ -1,0 +1,570 @@
+//bootstrap configuration start
+
+// Ratios for typography
+$double-octave: 4;
+$pi: 3.14159265359;
+$major-twelfth: 3;
+$major-eleventh: 2.666666667;
+$major-tenth: 2.5;
+$octave: 2;
+$major-seventh: 1.875;
+$minor-seventh: 1.777777778;
+$major-sixth: 1.666666667;
+$phi: 1.618034;
+$golden: $phi;
+$minor-sixth: 1.6;
+$fifth: 1.5;
+$augmented-fourth: 1.41421;
+$fourth: 1.333333333;
+$major-third: 1.25;
+$minor-third: 1.2;
+$major-second: 1.125;
+$minor-second: 1.066666667;
+
+:root {
+  --sidebar-width: 250px; //350px;  //290px
+  --shorcut-width: 3rem;
+  --header-height: 2.5rem;
+
+  --heading-line-height: 1.2;
+  --body-line-height: 1.4;
+  --article-line-height: 1.58;
+}
+
+//animation
+$time-func-1: cubic-bezier(0.4, 0, 0.2, 1);
+$time-func-2: cubic-bezier(0.83, 0, 0.17, 1);
+$transition-base: all 0.25s $time-func-1;
+$transition-fade: opacity 0.25s $time-func-1;
+$input-transition: border-color 0.25s $time-func-1,
+  box-shadow 0.25s $time-func-1, background-color 0.25s $time-func-1;
+$transition-collapse: height 0.25s $time-func-1;
+
+//new gridbreakpoing
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1280px,
+  xxl: 1366px,
+);
+
+//colors
+
+$colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$colors: map-merge(
+  (
+    "test": #bacdef,
+  ),
+  $colors
+);
+
+//bootstrap colors overides
+
+$gray-50: #ebebeb;
+$gary-60: #e5e5e5;
+$gray-100: #d6d6d6;
+$gray-200: #adadad;
+$gray-300: #858585;
+$gray-400: #5c5c5c;
+$gray-500: #333333;
+$gray-600: #262626;
+$gray-700: #1a1a1a;
+$gray-800: #0d0d0d;
+$gray-900: #050505;
+
+$cool-gray-50: #f5fcff;
+$cool-gray-100: #f1f7fa;
+$cool-gray-200: #EAF2FF; 
+$cool-gray-300: #d8dde0;
+$cool-gray-400: #bbbfc2;
+$cool-gray-500: #8a8c8f;
+$cool-gray-600: #71777c;
+$cool-gray-700: #252627;
+
+$gray: (
+  gray50: $gray-50,
+  gray100: $gray-100,
+  gray200: $gray-200,
+  gray300: $gray-300,
+  gray400: $gray-400,
+  gray500: $gray-500,
+  gray600: $gray-600,
+  gray700: $gray-700,
+  gray800: $gray-800,
+  gray900: $gray-900,
+);
+
+$cool-gray: (
+  coolGray50: $cool-gray-50,
+  coolGray100: $cool-gray-100,
+  coolGray200: $cool-gray-200,
+  coolGray300: $cool-gray-300,
+  coolGray400: $cool-gray-400,
+  coolGray500: $cool-gray-500,
+  coolGray600: $cool-gray-600,
+  coolGray700: $cool-gray-700,
+);
+
+$text-muted: $gray-400;
+
+$body-color: $cool-gray-700;
+
+$blue: #1071e5;
+$blue-10: #cfe4ff;
+$blue-20: #2bb8e4;
+$blue-50: #1071e5;
+$blue-60: #1d4188;
+
+$cyan: #2b91fe;
+
+$red: #ff3d3d;
+
+$green: #2db539;
+$green-50: #2db539;
+$green-10: #c9f8c9;
+
+$yellow: #f49300;
+$yellow-50: #fcce14;
+$yellow-10: #fcfcca;
+
+$purple: #680094;
+$purple-10: #f7e5ff;
+$purple-20: #c056ed;
+$purple-50: #680094;
+
+$transparent: rgba(0,0,0,0.2);
+
+$information-color: (
+  blue: $blue,
+  red: $red,
+  green: $green,
+  yellow: $yellow,
+  purple: $purple,
+  purple-20: $purple-20,
+  blue-20: $blue-20,
+  gray:$cool-gray-600,
+);
+
+$state-color: (
+  info: $blue,
+  danger: $red,
+  success: $green,
+  warning: $yellow,
+);
+
+$text: #001a9a;
+$info: #1071e5;
+$black: #000000;
+$white: #ffffff;
+$border: #e6e6e6;
+
+$blue-100: #012e78;
+$blue-200: #2460b9;
+$blue-300: #cde1ff;
+$blue-400: #003893;
+$blue-500: #2b91fe;
+$blue-600: #dfecff;
+$blue-700: #acd4ff;
+
+//theme colors
+$theme-dark-blue: #1071e5;
+$theme-dark-green: #265234;
+$theme-dark-orange: #884f20;
+
+$theme: (
+  dark-blue: $theme-dark-blue,
+  dark-green: $theme-dark-green,
+  dark-orange: $theme-dark-orange,
+);
+
+$theme-colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$theme-colors: map-merge(
+  (
+    "red": $red,
+    "green": $green,
+    "navy-5": #0e3066,
+    "navy-10": #2460b9,
+    "navy-30": #10cdd9,
+    "navy-40": #052354,
+    "blue": $blue,
+    "blue-10": #acd4ff,
+    "blue-20": #2b91fe,
+    "gray-500": $gray-500,
+    "gray-800": $gray-800,
+    "black": black,
+  ),
+  $theme-colors
+);
+
+//-box shadow
+$box-shadow: 0 1px 2px rgba($black, 0.08), 0 2px 4px rgba($black, 0.16);
+
+//spacing
+$spacer: 1rem !default;
+$spacers: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$spacers: map-merge(
+  (
+    0: 0,
+    1: (
+      $spacer * 0.25,
+    ),
+    2: (
+      $spacer * 0.5,
+    ),
+    3: $spacer,
+    4: (
+      $spacer * 1.5,
+    ),
+    5: (
+      $spacer * 2,
+    ),
+    6: (
+      $spacer * 3,
+    ),
+  ),
+  $spacers
+);
+
+$card: (
+  px: 0.75rem,
+  py: 0.75rem,
+  borderWidth: 0,
+  borderColor: transparent,
+  borderRadius: 4px,
+  backgroundColor: $white,
+  boxShadow: 0 1px 2px #d8dde0,
+);
+
+$table: (
+  cellPadding: 6px 12px,
+  backgroundColor: transparent,
+  accentBg: $cool-gray-200,
+  //striped bg color
+  borderColor: $cool-gray-300,
+  hoverBg: $cool-gray-300,
+  headBg: $theme-dark-blue,
+  headColor: $white,
+  headBorderColor: rgba($white, 0.2),
+  stripeOrder: odd,
+  borderRadius: 4px,
+);
+
+//modal
+$modal: (
+  xl: 1100px,
+  lg: 710px,
+  md: 560px,
+  headerPadding: 0.5rem 1rem,
+  headerBgColor: $blue-10,
+  contentBg: $white,
+  backdropbg: $gray-800,
+  backdropOpacity: 0.8,
+  innerPadding: 1rem,
+  contentBorderRadius: 4px,
+  contentBoxShadow: 0px 1px 2px $cool-gray-300,
+);
+
+//nav tabs
+$tabs: (
+  py: 0.375rem,
+  px: 1rem,
+  borderType: solid,
+  borderColor: $cool-gray-400,
+  borderRadius: 2px 0px 0px 2px,
+  borderWidth: 1px,
+  linkColor: $cool-gray-600,
+  linkActiveColor: $white,
+  linkActiveBg: $blue-50,
+  linkActiveBorderColor: $blue-50,
+  linkActiveBorderRadius: 2px 0px 0px 2px,
+  linkHoverBorder: 1px solid $cool-gray-400,
+  lineHeight: 1.1,
+);
+
+// dropdown config
+$dropdown: (
+  minWidth: 10rem,
+  py: 0.5rem,
+  spacer: 0.125rem,
+  bgColor: $white,
+  borderWidth: 0,
+  borderColor: rgba($black, 0.15),
+  borderRadius: 0.125rem,
+  dividerBgColor: $gray-200,
+  boxShadow: 0 0.5rem 1rem rgba($cool-gray-700, 0.16),
+  linkColor: $cool-gray-600,
+  linkHoverColor: darken($gray-900, 5%),
+  linkHoverBgColor: $cool-gray-100,
+  linkActiveColor: $gray-900,
+  linkActiveBgColor: $cool-gray-300,
+  linkDisabledColor: $gray-600,
+  itemPy: 0.25rem,
+  itemPx: 1.5rem,
+  headerColor: $gray-600,
+  zIndex: 1000,
+);
+
+//pagination config
+$pagination: (
+  px: 0.5rem,
+  py: 0.25rem,
+  lineHeight: 1.35,
+  borderRadius: 2px,
+);
+
+// button config
+$button: (
+  px: 16px,
+  py: 6px,
+  borderWidth: 1px,
+  lineHeight: 1.1,
+  fontWeight: 400,
+  boxShadow: inset 0 1px 0 rgba($white, 0.15) 0 1px 1px rgba($black, 0.075),
+  disabledOpacity: 0.65,
+  activeBoxShadow: inset 0 3px 5px rgba(#1071e5, 0.125),
+  borderRadius: 2px,
+);
+
+$button-sm: (
+  px: 8px,
+  py: 2px,
+  borderRadius: 2px,
+);
+
+$action-btn: (
+  px: 2px,
+  py: 2px,
+  bgColor: lighten($theme-dark-blue, 60),
+  color: $theme-dark-blue,
+  hoverBgColor: $theme-dark-blue,
+  hoverColor: $white,
+);
+
+$btn-padding-y: map-get($button, py);
+$btn-padding-x: map-get($button, px);
+$btn-line-height: map-get($button, lineHeight);
+
+$btn-padding-y-sm: map-get($button-sm, py);
+$btn-padding-x-sm: map-get($button-sm, px);
+$btn-border-radius-sm: map-get($button-sm, borderRadius);
+
+$btn-border-width: map-get($button, borderWidth);
+$btn-font-weight: map-get($button, fontWeight);
+$btn-box-shadow: map-get($button, boxShadow);
+$btn-disabled-opacity: map-get($button, disabledOpacity);
+$btn-active-box-shadow: map-get($button, activeBoxShadow);
+$btn-border-radius: map-get($button, borderRadius);
+
+$container-max-widths: (
+  xl: 1450,
+);
+
+//responsive font size setting
+$enable-responsive-font-sizes: true;
+$rfs-factor: $minor-third;
+$rfs-unit: px;
+
+//bootstrap grid configuration
+$grid-gutter-width: 16px !default;
+
+//
+$body-bg: white;
+$border-color-gray: #cccccc;
+$border-color: $cool-gray-300;
+//Navs Tab
+$component-active-bg: $blue;
+
+$nav-tabs-link-active-color: map-get($tabs, linkActiveColor);
+$nav-tabs-link-active-bg: map-get($tabs, linkActiveBg);
+$nav-tabs-link-active-border: map-get($tabs, linkActiveBorderRadius);
+
+$nav-tabs-border-radius: map-get($tabs, borderRadius);
+$nav-tabs-border-color: map-get($tabs, borderColor);
+$nav-tabs-border-width: map-get($tabs, borderWidth);
+
+$nav-link-padding-y: map-get($tabs, py);
+$nav-link-padding-x: map-get($tabs, px);
+
+// custom nav var
+$nav-link-line-height: map-get($tabs, lineHeight);
+
+$custom-control-indicator-checked-color: white;
+
+//end of bootstrap configuration
+
+// base font family
+$font-family-base: "Source Sans Pro", sans-serif;
+
+$input-btn-padding-y-sm: 0.125rem;
+$input-btn-padding-x-sm: 0.5rem;
+$input-btn-padding-y-lg: 0.5rem !default;
+$input-btn-padding-x-lg: 1rem !default;
+$input-btn-font-size: 0.75rem;
+$input-btn-font-size-lg: 0.875rem;
+$input-info-color: #9c9ad0;
+
+//form elements
+$input-padding-y: 0.25rem;
+$input-padding-x: 0.5rem;
+
+// input sm
+$input-padding-y-sm: 0.25rem;
+$input-padding-x-sm: 0.5rem;
+$input-font-size-sm: 0.75rem;
+
+//$input-font-family:
+$input-font-size: 0.833rem;
+$input-color: $gray-700;
+$input-bg: $white;
+$input-border-width: 1px;
+$input-border-radius: 2px;
+$input-border-color: $cool-gray-400;
+$input-line-height: 1.3;
+$input-disabled-bg: $cool-gray-200;
+
+//$input-box-shadow
+$input-placeholder-color: $cool-gray-600;
+$form-group-margin-bottom: 0.75rem;
+
+//$input-focus-color
+$input-focus-border-color: #2b91fe;
+//$input-focus-bg:red;
+$input-box-shadow: inset 0 1px 1px rgba($black, 0.075);
+$input-focus-box-shadow: inset 0 0 4px $blue;
+//$input-btn-focus-color:rgba($component-active-bg, .25) !default;
+
+//checkbox
+$form-check-input-margin-y: 0;
+
+//custom form
+$custom-select-border-radius: $input-border-radius;
+$custom-file-button-bg: $cool-gray-300;
+$custom-file-button-color: $cool-gray-700;
+$custom-file-height-inner: 26px;
+
+//label spacing
+
+//form-row gap
+$form-grid-gutter-width: 16px;
+
+//alert
+$alert-padding-y: 0.5rem;
+$alert-padding-x: 0.75rem;
+$alert-margin-bottom: 1rem;
+$alert-border-radius: 4px;
+$alert-link-font-weight: 400;
+$alert-border-width: 1px;
+
+//card
+$card-spacer-y: map-get($card, py);
+$card-spacer-x: map-get($card, px);
+$card-border-width: map-get($card, borderWidth);
+$card-border-color: map-get($card, borderColor);
+$card-border-radius: map-get($card, borderRadius);
+$card-bg: map-get($card, backgroundColor);
+$card-boxshadow: map-get($card, boxShadow);
+
+//table
+$table-cell-padding: map-get($table, cellPadding);
+$table-bg: map-get($table, backgroundColor);
+$table-accent-bg: map-get($table, accentBg);
+$table-hover-bg: map-get($table, hoverBg);
+$table-border-color: map-get($table, borderColor);
+$table-head-bg: map-get($table, headBg);
+$table-head-color: map-get($table, headColor);
+$table-head-border-color: map-get($table, headBorderColor);
+$table-striped-order: map-get($table, stripeOrder);
+$table-border-radius: map-get($table, borderRadius);
+
+//modal
+$modal-inner-padding: map-get($modal, innerPadding);
+$modal-header-padding: map-get($modal, headerPadding);
+$modal-backdrop-bg: map-get($modal, backdropbg);
+$modal-backdrop-opacity: map-get($modal, backdropOpacity);
+$modal-content-border-radius: map-get($modal, contentBorderRadius);
+$modal-content-box-shadow: map-get($modal, contentBoxShadow);
+$modal-content-bg: map-get($modal, contentBg);
+$modal-lg: map-get($modal, lg);
+$modal-md: map-get($modal, md);
+
+// Dropdown
+$dropdown-min-width: map-get($dropdown, minWidth);
+$dropdown-padding-y: map-get($dropdown, py);
+$dropdown-spacer: map-get($dropdown, spacer);
+$dropdown-bg: map-get($dropdown, bgColor);
+$dropdown-border-color: map-get($dropdown, borderColor);
+$dropdown-border-radius: map-get($dropdown, borderRadius);
+$dropdown-border-width: map-get($dropdown, borderWidth);
+$dropdown-divider-bg: map-get($dropdown, dividerBgColor);
+$dropdown-box-shadow: map-get($dropdown, boxShadow);
+$dropdown-link-color: map-get($dropdown, linkColor);
+$dropdown-link-hover-color: map-get($dropdown, linkHoverColor);
+$dropdown-link-hover-bg: map-get($dropdown, linkHoverBgColor);
+$dropdown-link-active-color: map-get($dropdown, linkActiveColor);
+$dropdown-link-active-bg: map-get($dropdown, linkActiveBgColor);
+$dropdown-link-disabled-color: map-get($dropdown, linkDisabledColor);
+$dropdown-item-padding-y: map-get($dropdown, itemPy);
+$dropdown-item-padding-x: map-get($dropdown, itemPx);
+$dropdown-header-color: map-get($dropdown, headColor);
+$zindex-dropdown: map-get($dropdown, zIndex);
+
+// Pagination
+$pagination-padding-y: map-get($pagination, py);
+$pagination-padding-x: map-get($pagination, px);
+$pagination-line-height: map-get($pagination, lineHeight);
+$pagination-border-radius: map-get($pagination, borderRadius);
+
+// Sidebar
+$sidebar: (
+  bgColor: $blue-100,
+  titleColor: $blue-700,
+  titleHover: $blue-300,
+  linkColor: $blue-700,
+  linkActive: $yellow,
+  linkActiveBg: $transparent,
+);
+
+// Header
+$header: (
+  bgColor: $blue-100,
+  userColor: $white,
+  logoSize: 50px,
+);
+
+$font-weight: (
+  light: 300,
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+  bolder: 800,
+  black: 900,
+);
+
+$flex: (
+  one: 1,
+  two: 2,
+  three: 3,
+);
+
+$headings-font-weight: map-get($font-weight, semibold);
+
+//Badge
+$badge-font-size: 0.625rem;
+$badge-font-weight: 400;
+$badge-border-radius: 2px;
+$badge-padding-x: 0.25rem;
+$badge-padding-y: 0.25rem;
+
+
+
+
+
+
+
+

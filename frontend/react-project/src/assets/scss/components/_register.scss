@@ -1,0 +1,48 @@
+.registration{
+    &--header{
+        background-color: map-get($register,headColor );  
+    }
+ 
+    .tab--multistep{
+        img{
+            padding:map-get($register, px);
+        }
+    }
+     &--upload{
+         img{
+             padding: map-get($register, pxy);
+         }
+        
+         h4{
+             margin-top: map-get($register, py );
+         }
+         p{
+            margin-bottom: map-get($register, py );
+            color: $gray-600;
+         }
+         a{
+             color: map-get($register, linkColor);
+             text-decoration: underline;
+         }
+     }
+
+     .img-container{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: map-get($register, px );
+        left: 0;
+        right: 0;
+        bottom: -20%;
+        img{
+            display: block;
+            margin: auto;
+        }
+        
+    }
+}
+

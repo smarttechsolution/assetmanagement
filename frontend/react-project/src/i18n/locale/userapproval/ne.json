@@ -1,0 +1,46 @@
+{
+    "title": "स्वीकृति बाकी रहेको सूची",
+    "table": {
+        "sn": "क्र.सं.",
+        "organizatonName": "संगठनको नाम",
+        "aliascode": "उपनाम",
+        "email": "ईमेल",
+        "companyRegNo": "दर्ता नम्बर",
+        "district": "जिल्ला",
+        "localbody": "नगरपालिका",
+        "registrationDate": "दर्ता मिति (ई.सं.)",
+        "registrationDateNp": "दर्ता मिति (वि.सं.)",
+        "panno": "स्थायी लेखा नम्बर",
+        "vatno": "करदाता नम्बर"
+    },
+    "importer-detail": {
+        "title": "आयातकर्ताको विवरण",
+        "organization": {
+            "title": "संगठन",
+            "name": "संगठनको नाम",
+            "regno": "दर्ता नम्बर",
+            "regdate": "दर्ता मिति (ई.सं.)",
+            "regdatenp": "दर्ता मिति (वि.सं.)",
+            "panno": "स्थायी लेखा नम्बर",
+            "vatno": "करदाता नम्बर"
+        },
+        "address": {
+            "title": "ठेगाना",
+            "district": "जिल्ला",
+            "localbody": "नगरपालिका",
+            "wardno": "वार्ड नम्बर",
+            "streetaddress": "Street Address"
+        },
+        "personal": {
+            "title": "व्यक्तिगत विवरण",
+            "fullname": "पुरा नाम"
+        },
+        "uploadeddoc": {
+            "title": "कागजात",
+            "orgregdoc": "संगठन दर्ता गरेको कागजात",
+            "taxcleardoc": "कर निकासी कागजात",
+            "pandoc": "स्थायी लेखा नम्बरको कागजात",
+            "compregdoc":"कम्पनी दर्ता कागजात"
+        }
+    }
+}

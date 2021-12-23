@@ -1,0 +1,15 @@
+.generalModal {
+    &-header {
+        padding-bottom: 15px;
+        border-bottom: 2px solid #ebf2f7;
+        &-title {
+            font-size: 18px;
+            font-weight: bold;
+            font-family: "Roboto";
+        }
+    }
+    &-body {
+        padding: 1rem;
+    }
+    &-footer {}
+}

@@ -1,0 +1,70 @@
+.cash {
+    &-content {
+        padding: 1rem 0 !important;
+    }
+}
+
+.chartOptions {
+    padding: 8px 16px;
+    h6 {
+        margin-bottom: 10.07px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+    p {
+        font-size: 14px;
+        color: #919191;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+}
+
+.rate_form {
+    .inputGroup {
+        .label {
+            font-size: 13px;
+        }
+    }
+}
+
+.estimates {
+    margin-top: 16px;
+    .userIcon {
+        width: 22px;
+        height: 22px;
+    }
+    img {
+        width: 16px;
+        height: 15px;
+        margin-right: 4px;
+    }
+    span {
+        font-size: 14px;
+        color: #43425d;
+        /* line-height: 20px; */
+        font-family: "Roboto";
+        white-space: normal;
+    }
+    h5 {
+        font-size: 20px;
+        // font-family: 'Roboto', sans-serif;
+        padding: 0.975rem auto 1rem auto;
+        color: #1BC167;
+        @include media-breakpoint-down(lg) {
+            font-size: 18px;
+        }
+    }
+    h6 {
+        font-size: 14px;
+        color: #52575D;
+        font-weight: bold;
+        // font-family: 'Roboto';
+        margin-top: 0.5rem;
+        @include media-breakpoint-down(lg) {
+            font-size: 12px;
+        }
+    }
+}

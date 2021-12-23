@@ -1,0 +1,20 @@
+{
+    "actions": {
+        "title": "Actions",
+        "status": "Status",
+        "edit": "Edit",
+        "download": "Download",
+        "view": "View",
+        "delete": "Delete"
+    },
+    "buttons": {
+        "update": "Update",
+        "next": "Next",
+        "previous": "Previous",
+        "submit": "Submit",
+        "save": "Save",
+        "filter": "Filter",
+        "reset": "Reset",
+        "continue": "Continue"
+    }
+}

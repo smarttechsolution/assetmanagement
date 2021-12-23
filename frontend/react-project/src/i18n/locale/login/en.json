@@ -1,0 +1,19 @@
+{
+    "title": "Login",
+    "input": {
+        "username": {
+            "title": "Username",
+            "error-required": "Username is required"
+        },
+        "password": {
+            "title": "Password",
+            "error-required": "Password is required"
+        }
+    },
+    "forgotPassword": {
+        "title": "Forgot Password?"
+    },
+    "dontHaveAnAccount": {
+        "title": "Don't have an account? "
+    }
+}

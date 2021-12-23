@@ -1,0 +1,80 @@
+{
+    "name": "khanipani",
+    "version": "1.0.0",
+    "private": true,
+    "author": {
+        "name": "",
+        "website": " "
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pujanshakya/react-project"
+    },
+    "dependencies": {
+        "@testing-library/jest-dom": "^5.11.4",
+        "@testing-library/react": "^11.1.0",
+        "@testing-library/user-event": "^12.1.10",
+        "@types/jest": "^26.0.15",
+        "@types/node": "^12.0.0",
+        "@types/react": "^16.9.53",
+        "@types/react-datepicker": "^3.1.3",
+        "@types/react-dom": "^16.9.8",
+        "@types/react-select": "^3.1.2",
+        "axios": "^0.21.0",
+        "bootstrap": "^4.5.3",
+        "classnames": "^2.3.1",
+        "echarts": "^5.1.2",
+        "formik": "^2.2.6",
+        "hoist-non-react-statics": "^3.3.2",
+        "i18next": "^19.8.4",
+        "node-sass": "4.14.1",
+        "react": "^17.0.1",
+        "react-datepicker": "3.3.0",
+        "react-dom": "^17.0.1",
+        "react-i18next": "^11.7.4",
+        "react-redux": "^7.2.2",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "4.0.2",
+        "react-select": "^4.0.2",
+        "react-toastify": "^6.2.0",
+        "reactstrap": "^8.7.1",
+        "redux": "^4.0.5",
+        "redux-thunk": "^2.3.0",
+        "typescript": "^4.1.3",
+        "web-vitals": "^0.2.4",
+        "yup": "^0.32.8"
+    },
+    "scripts": {
+        "start": "env-cmd -f .env react-scripts start",
+        "build": "env-cmd -f .env react-scripts build",
+        "clean:build": "rm -rf ./build",
+        "clean:module": "rm -rf ./node_modules",
+        "test": "react-scripts test"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@types/react-redux": "^7.1.15",
+        "@types/react-router-dom": "^5.1.6",
+        "chalk": "^2.4.2",
+        "env-cmd": "^10.1.0",
+        "progress-bar-webpack-plugin": "^1.12.1",
+        "webpack-bundle-analyzer": "^3.3.2"
+    }
+}

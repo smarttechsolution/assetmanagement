@@ -1,0 +1,78 @@
+.btn {
+  &-sm {
+    @include small;
+  }
+
+  &-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    [class^="ic-"],
+    [class*=" ic-"] {
+      margin-right: 0.5rem;
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    &-only {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0px;
+      @include rfs(0.75rem);
+
+      [class^="ic-"],
+      [class*=" ic-"] {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  &-action {
+    padding: map-get($action-btn, py) map-get($action-btn, px);
+    background-color: map-get($action-btn, bgColor);
+    color: map-get($action-btn, color);
+
+    &:hover,
+    &:focus {
+      background-color: map-get($action-btn, hoverBgColor);
+      color: map-get($action-btn, hoverColor);
+    }
+  }
+
+  &-outline {
+    border-color: $cool-gray-400;
+    color: $cool-gray-600;
+    background-color: $white;
+
+    @each $label, $value in $information-color {
+      &-#{$label} {
+        background-color: $white;
+        border-color: $value;
+        color: $value;
+
+        &:hover,
+        &:focus {
+          background-color: $value;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  &.outline {
+    &-hover {
+      @each $label, $value in $information-color {
+        &-#{$label} {
+          color: $value ;
+          &:hover,
+          &:focus, &:active{
+            border-color: $value ;
+            background-color: white ;
+          }
+        }
+      }
+    }
+  }
+}

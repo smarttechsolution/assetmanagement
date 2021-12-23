@@ -1,0 +1,43 @@
+{%load static%}
+<!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="." class="brand-link">
+      <img src="{%static 'AMS-LOGO-ORIGINAL.png'%}" alt="Asset Management System" class="brand-image" height="80px"><br>
+      <span class="brand-text font-weight-light"></span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+     
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+          <a href="{%url 'main-config:scheme-list'%}"  {%if '/scheme/list/' in request.path%}class="nav-link active"{%else%}class="nav-link"{%endif%}>
+            <i class="nav-icon fas fa-hand-holding-water"></i>
+            <p>
+              Water Schemes
+            
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{%url 'main-config:user-scheme-list'%}" {%if '/scheme/user/list/' in request.path%}class="nav-link active"{%else%}class="nav-link"{%endif%}>
+            <i class="nav-icon far fa-user"></i>
+            <p>
+              Schemes Users
+            
+            </p>
+          </a>
+        </li>
+        
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

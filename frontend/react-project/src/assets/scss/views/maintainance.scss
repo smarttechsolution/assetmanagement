@@ -1,0 +1,139 @@
+.assets {
+    .tabular {
+        margin-top: 50px;
+        .table-02 {
+            width: 100% !important;
+            .placeholder {
+                padding: 20px 0;
+            }
+            .bg-yellow {
+                background-color: rgb(255, 214, 52);
+                color: rgb(74, 74, 74) !important;
+                text-align: center;
+                border: 2px solid rgb(237, 237, 237);
+            }
+            .bg-green {
+                background-color: rgb(0, 255, 136);
+                color: rgb(74, 74, 74) !important;
+                text-align: center;
+                border: 2px solid rgb(237, 237, 237);
+            }
+            .bg-red {
+                background-color: rgb(255, 77, 77);
+                color: rgb(74, 74, 74) !important;
+                text-align: center;
+                border: 2px solid rgb(237, 237, 237);
+            }
+            .bg-orange {
+                background-color: rgb(255, 121, 39);
+                color: rgb(74, 74, 74) !important;
+                text-align: center;
+                border: 2px solid rgb(237, 237, 237);
+            }
+            .bg-lightblue {
+                background-color: rgb(230, 239, 255);
+                color: rgb(74, 74, 74) !important;
+                text-align: center;
+                border: 2px solid rgb(237, 237, 237);
+            }
+            .bg-border {
+                border: 2px solid rgb(237, 237, 237);
+            }
+            .bg-header {
+                background-color: #0371d0;
+                font-size: 16px;
+                font-weight: 500;
+                /* line-height: 22px; */
+                padding: 8px 16px;
+                color: #fff;
+                text-align: left!important;
+            }
+            .expand-header {
+                font-family: "Roboto";
+                font-size: 10px;
+                vertical-align: top;
+                padding: 10px 0px;
+                text-align: center !important;
+                color: rgb(162, 162, 162);
+            }
+            .vertical-header {
+                font-family: "Roboto";
+                font-size: 16px;
+                text-transform: uppercase;
+                color: rgb(162, 162, 162);
+                padding: 16px 0px;
+                text-align: left !important;
+                word-wrap: break-word;
+                writing-mode: vertical-rl;
+                transform: rotate(180deg);
+                z-index: 999;
+                overflow: hidden;
+                max-height: 170px;
+                width: 50px;
+                // text-orientation: upright;
+                // transform: rotate(-90deg);
+                // transform: translateX(20);
+            }
+            .component-title {
+                background-color: rgb(244, 248, 255);
+            }
+            .risk-tab {
+                position: relative;
+                width: 90px;
+                z-index: 999;
+                .pill {
+                    position: absolute;
+                    left: 0px;
+                    right: 0;
+                    color: rgb(162, 162, 162);
+                    font-size: 20px;
+                    top: -60px;
+                    transform: rotate(-45deg);
+                    box-shadow: 0px 3px 6px #86868659;
+                    border-top-right-radius: 50px;
+                    border-bottom-right-radius: 50px;
+                    z-index: -1;
+                }
+            }
+            .cost-tab {
+                position: relative;
+                width: 90px;
+                z-index: 999;
+                .pill {
+                    position: absolute;
+                    left: 0px;
+                    right: 0;
+                    color: rgb(162, 162, 162);
+                    font-size: 20px;
+                    top: -60px;
+                    transform: rotate(-45deg);
+                    box-shadow: 0px 3px 6px #86868659;
+                    border-top-right-radius: 50px;
+                    border-bottom-right-radius: 50px;
+                    z-index: -1;
+                }
+            }
+            .top-headers {
+                text-align: center;
+                font-family: "Roboto";
+                font-size: 16px;
+                line-height: 21px;
+                text-transform: uppercase;
+                color: rgb(162, 162, 162);
+                padding: 16px 2px;
+                z-index: 999;
+                overflow: hidden;
+            }
+            .small {
+                font-size: 11px !important;
+            }
+            tbody {
+                tr {
+                    &:hover {
+                        background: transparent !important;
+                    }
+                }
+            }
+        }
+    }
+}

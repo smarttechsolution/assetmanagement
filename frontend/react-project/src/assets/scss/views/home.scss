@@ -1,0 +1,289 @@
+.home-right {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.25rem;
+    margin: 0.25rem 0.25rem;
+    filter: drop-shadow(0px 5px 25px #52575d21);
+    &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        img {
+            height: 1rem;
+            width: 1rem;
+            filter: invert(106%) sepia(18%) saturate(0%) hue-rotate(65deg) brightness(300%) contrast(129%)
+        }
+    }
+    &-title {
+        font-size: 18px;
+        font-weight: 500;
+        font-family: "Roboto";
+        border-bottom: 2px solid #ebf2f7;
+        padding-bottom: 15px;
+        @include media-breakpoint-down(md) {
+            font-size: 18px;
+        }
+    }
+    &-card {
+        margin-bottom: 3.125rem;
+    }
+    &-info {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin: 16px auto;
+        h6 {
+            font-family: "Roboto";
+            font-size: 14px;
+            line-height: 18px;
+            color: #1071e5;
+            font-weight: 500;
+        }
+        p {
+            font-family: "Roboto";
+            font-size: 13px;
+            color: #919191;
+            line-height: 18px;
+            text-align: right;
+            letter-spacing: .04806em;
+        }
+    }
+    .tariff-rate {
+        background-color: #FFF;
+        border-bottom: 1px solid #EEE;
+        .tariff-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 16px 0 4px 0;
+            padding-bottom: 4px;
+            cursor: pointer;
+            ;
+            h6 {
+                font-size: 15px;
+                color: #919191;
+            }
+            p {
+                font-size: 15px;
+                color: #919191;
+            }
+            .icon {
+                font-size: 10px;
+                margin-left: 4px;
+            }
+        }
+        .tariff-content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8;
+            padding: 5px 5px;
+            h6 {
+                font-size: 16px;
+                color: #1071e5;
+                font-weight: 500;
+            }
+        }
+        .tariff-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 4px 0;
+            padding: 0px 5px;
+            h6 {
+                font-size: 16px;
+                color: #52575D;
+            }
+            p {
+                font-size: 14px;
+                color: #919191;
+            }
+        }
+    }
+}
+
+.data {
+    &-info {
+        display: flex;
+        align-items: flex-start;
+        margin: 40px auto;
+        .title {
+            color: #52575d;
+            line-height: 19px;
+            font-weight: 500;
+            flex: 1 1;
+        }
+        .desc {
+            color: #919191;
+            line-height: 18px;
+            flex: 2 1;
+            letter-spacing: .02em;
+            // text-align: right;
+        }
+    }
+}
+
+.supply-belt {
+    .table {
+        th {
+            padding: 8px 12px;
+            vertical-align: top;
+            border-top: 1px solid #d8dde0;
+        }
+        td {
+            padding: 8px 12px;
+            vertical-align: top;
+            border-top: 1px solid #d8dde0;
+        }
+        td:first-child {
+            color: #52575d;
+            font-family: "Roboto";
+            font-size: 16px;
+            @include letter-spacing(31.25);
+            line-height: 22px;
+        }
+    }
+}
+
+.mobile {
+     ::-webkit-scrollbar {
+        width: 0;
+        /* Remove scrollbar space */
+        background: transparent;
+        /* Optional: just make scrollbar invisible */
+    }
+    /* Optional: show position indicator in red */
+     ::-webkit-scrollbar-thumb {
+        background: #ff0000;
+    }
+    &-content {
+        max-height: 320px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+    &-user {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin: 30px 0;
+        &-info {
+            display: flex;
+            align-items: center;
+            img {
+                width: 40px;
+                height: 40px;
+                border-radius: 100%;
+                border: 1px solid #9290e2;
+                object-fit: none;
+                margin-right: 16px;
+            }
+            .name {
+                font-family: "Roboto";
+                font-size: 16px;
+                line-height: 22px;
+                color: #52575d;
+                @include letter-spacing(31.25);
+            }
+            .designation {
+                font-size: 12px;
+                color: #919191;
+            }
+        }
+        &-contact {
+            .contact {
+                font-family: "Roboto";
+                font-size: 14px;
+                line-height: 14px;
+                color: #919191;
+                letter-spacing: .0486em;
+            }
+        }
+    }
+}
+
+.income-expend {
+    .income-title {
+        padding-bottom: 4px;
+        border-bottom: 5px solid rgb(0, 256, 136);
+    }
+    .expend-title {
+        padding-bottom: 4px;
+        border-bottom: 5px solid rgb(255, 77, 77);
+    }
+    .table-02 {
+        tbody {
+            td {
+                font-size: 14px;
+                color: #919191;
+                border-right: 1px solid #e3dfef;
+                border-top: 1px solid #e3dfef;
+                padding: 5px;
+                text-align: center;
+            }
+            tr:first-child td {
+                border-top: none;
+            }
+            tr td:first-child {
+                width: 90px;
+                word-wrap: break-word;
+                /* All browsers since IE 5.5+ */
+                overflow-wrap: break-word;
+                /* Renamed property in CSS3 draft spec */
+            }
+        }
+    }
+}
+
+.cost {
+    margin-top: 50px;
+    &-desc {
+        h5 {
+            font-size: 14px;
+            line-height: 16px;
+            color: #000;
+            font-weight: 400;
+            padding-bottom: 0.5rem;
+        }
+        h6 {
+            font-size: 14px;
+            line-height: 16px;
+            color: #000;
+            font-weight: 400;
+            padding-bottom: 0.5rem;
+        }
+        span {
+            margin: 10px 10px 10px 20px;
+            line-height: 25px;
+            padding: 4px 10px;
+            border-radius: 5px;
+        }
+        .actual {
+            .unseg {
+                background-color: rgba(196, 196, 196, 1);
+            }
+            .material {
+                background-color: rgba(215, 215, 215, 1);
+            }
+            .labour {
+                background-color: rgba(229, 229, 229, 1);
+            }
+            .replacement {
+                background-color: rgba(242, 242, 242, 1);
+            }
+        }
+        .expected {
+            .unseg {
+                background-color: rgba(38, 128, 235, 1);
+            }
+            .material {
+                background-color: rgba(139, 173, 213, 1);
+            }
+            .labour {
+                background-color: rgba(189, 213, 242, 1);
+            }
+            .replacement {
+                background-color: rgba(204, 221, 234, 1);
+            }
+        }
+    }
+}

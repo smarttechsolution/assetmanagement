@@ -1,0 +1,50 @@
+@mixin lhCrop($line-height) {
+  &::before {
+    content: "";
+    display: block;
+    height: 0;
+    width: 0;
+    margin-top: calc((1 - #{$line-height}) * 0.5em);
+  }
+}
+
+@each $color, $value in $theme-colors {
+  //for alert
+  .alert-#{$color} {
+    background-color: rgba($value, 0.12);
+    color: $value;
+  }
+}
+
+@mixin scrollable($thumb: $blue-10) {
+  overflow: auto;
+  //padding-right: .5rem;
+
+  /* width */
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: rgba($thumb, 0.8);
+    border-radius: 4px;
+    // cursor: pointer;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: $thumb;
+    cursor: pointer;
+  }
+}
+
+@mixin letter-spacing($data) {
+  letter-spacing: calc((#{$data} / 1000) * 1em);
+}

@@ -1,0 +1,55 @@
+// @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,700;0,900;1,200;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+
+/* //customizing bootstrap */
+
+@import "assets/scss/abstracts/variables";
+@import "assets/scss/frameworks/cbootstrap";
+// @import '../node_modules/react-table/src/';
+@import "assets/icons/icon";
+@import "assets/scss/abstracts/mixins";
+@import "assets/scss/abstracts/functions";
+@import "assets/scss/base/base";
+@import "assets/scss/base/animations";
+@import "assets/scss/base/typography";
+@import "assets/scss/base/utilities";
+@import "assets/scss/layouts/login";
+@import "assets/scss/layouts/shortcut";
+@import "assets/scss/layouts/dashboard";
+@import "assets/scss/layouts/header";
+@import "assets/scss/layouts/footer";
+
+/* //@import "assets/scss/components/approval"; */
+
+@import "assets/scss/components/card";
+@import "assets/scss/components/list";
+@import "assets/scss/components/buttons";
+
+/* //@import "assets/scss/components/register"; */
+
+@import "assets/scss/components/table";
+@import "assets/scss/components/tabs";
+@import "assets/scss/components/form";
+@import "assets/scss/components/dropdown";
+@import "assets/scss/components/modal";
+@import "assets/scss/components/pagination";
+
+/* // @import "assets/scss/components/alert";
+//@import "assets/scss/components/slider";
+// @import "assets/scss/components/mail"; */
+
+@import "assets/scss/components/notification";
+@import "assets/scss/components/badge";
+@import "assets/scss/components/image";
+@import "assets/scss/components/flex";
+@import "assets/scss/layouts/sidebar";
+
+/**For views*/
+
+@import "assets/scss/views/home.scss";
+@import "assets/scss/views/finance.scss";
+@import "assets/scss/views/maintainance.scss";
+@import "assets/scss/views/notfound.scss";
+@import "src/components/UI/InfoCard/InfoCard.scss";

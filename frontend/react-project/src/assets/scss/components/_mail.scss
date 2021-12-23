@@ -1,0 +1,200 @@
+.mail {
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    & > div {
+      &:nth-child(1) {
+        @include media-breakpoint-down(xs) {
+          flex-direction: column;
+        }
+      }
+      &:nth-child(2) {
+        @include media-breakpoint-down(xs) {
+          margin-top: .5rem!important;
+        }
+      }
+    }
+  }
+  &-refresh {
+    line-height: 1;
+    font-size: 1.15rem;
+    color: $gray-500;
+    @include hover{
+      color: $blue;
+      cursor: pointer;
+    }
+  }
+  &-actions {
+    display: flex;
+    color: $gray-500;
+    font-size: 1.125rem;
+    i {
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+      @include hover {
+        color: $blue;
+        cursor: pointer;
+      }
+    }
+  }
+  &-table {
+    thead {
+      th {
+        @include des;
+        color: $blue;
+      }
+    }
+    .action {
+      width: 80px;
+      overflow: hidden;
+      .mail-actions {
+        transition: all 0.2s ease-in;
+        transform: translateX(100px);
+      }
+    }
+    tbody {
+      tr {
+        &.read {
+          background-color: $gray-100;
+        }
+        &.completed{
+          background-color: $green;
+        }
+        &.selected{
+          color: white;
+        }
+        @include hover {
+          cursor: pointer;
+          
+         
+        }
+      }
+    }
+  }
+  &-attachment{
+    background-color: rgba($gray-500,.24);
+    border-radius: 2px;
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+
+    h6{
+      font-weight: 700;
+      color: $dark;
+      @include des;
+      span{
+        color: $gray-400;
+        @include des;
+      }
+    }
+  }
+}
+
+.filter {
+  &-container {
+    position: relative;
+  }
+  &-dialog {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 540px;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 0px 2px 8px #e0e0e0;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    display: none;
+  }
+  &-input {
+    position: relative;
+
+    .lft,
+    .rft {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .lft {
+      left: 0.5rem;
+    }
+    .rft {
+      right: 0.5rem;
+    }
+    .form-control {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+}
+
+.paginate {
+  &-count {
+    background-color: $gray-100;
+    color: $gray-300;
+    padding: 0.5rem 0.7rem;
+    @include des;
+  }
+  &-navigate {
+    font-size: 1.5rem;
+    color: $gray-500;
+    .left,
+    .right {
+      @include hover {
+        color: $blue;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@media screen and(max-width:690px) {
+  .mail-header {
+    flex-direction: column;
+    & > div {
+      &:nth-child(2) {
+        margin-top: 1.5rem;
+      }
+    }
+  }
+  .filter {
+    &-container {
+      width: 100%;
+    }
+    &-dialog {
+      width: 100%;
+    }
+  }
+}
+
+
+.inbox{
+  &-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid $light;
+    
+  }
+  &-body{
+    padding: 1rem;
+    border-bottom: 1px solid $light;
+  }
+  &-receipt{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    @include media-breakpoint-down(sm){
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  &-footer{
+    padding: 1rem;
+    .mail-attachment{
+      margin-bottom: 1.5rem;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+.generalCard {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.25rem;
+    filter: drop-shadow(0px 5px 25px #52575d21);
+    &-header {
+        padding-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid #ebf2f7;
+        &-title {
+            font-size: 18px;
+            font-weight: 500;
+            font-family: "Roboto";
+        }
+        img {
+            height: 1rem;
+            width: 1rem;
+            filter: invert(106%) sepia(18%) saturate(0%) hue-rotate(65deg) brightness(300%) contrast(129%)
+        }
+    }
+}
+
+.tableCard {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    filter: drop-shadow(0px 5px 25px #52575d21);
+}

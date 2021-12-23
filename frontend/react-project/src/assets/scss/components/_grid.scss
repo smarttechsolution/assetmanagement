@@ -1,0 +1,11 @@
+.grid{
+  display: grid;
+
+  &-horizontal{
+    grid-template-columns: 7.5rem 1fr;
+  }
+
+  &-label{
+    color: $cool-gray-600;
+  }
+}

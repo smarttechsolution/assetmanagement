@@ -1,0 +1,320 @@
+.table {
+    width: 100%;
+    margin-bottom: 0;
+    // overflow: hidden;
+    border-radius: $table-border-radius;
+    thead {
+        th,
+        td {
+            @include des;
+            color: $table-head-color;
+        }
+        th {
+            font-weight: 600;
+            white-space: nowrap;
+            border-color: $table-head-border-color;
+            &.match-child {
+                width: 1px;
+            }
+        }
+    }
+    tbody {
+        td {
+            @include des;
+            vertical-align: middle;
+            border-top: 1px solid $gray-100;
+            color: $gray-900;
+        }
+        .ic-more {
+            transform: rotate(90deg);
+            display: block;
+            // margin-left: auto;
+            // padding-left: 1.5rem;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+    &-basic {
+        thead {
+            background-color: $blue;
+            color: $white;
+        }
+    }
+    &-dropdown {
+        .dropdown-menu {
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            padding: 0;
+            border-color: transparent;
+            .dropdown-item {
+                font-weight: 600;
+                color: $secondary;
+                &:hover {
+                    background-color: #f8f8fb;
+                    color: $blue;
+                }
+            }
+        }
+    }
+    &-dialog {
+        width: 190px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: $blue;
+        color: white;
+        padding: 0.5rem;
+        box-shadow: 0px 2px 4px $gray-100;
+        border-radius: 2px;
+        display: none;
+    }
+    td {
+        white-space: nowrap;
+        &.toggle {
+            position: relative;
+            @include hover {
+                .table-dialog {
+                    display: block;
+                }
+            }
+        }
+    }
+    &-01 {
+        border: 1px solid $border-color;
+        tbody {
+            td {
+                border: none;
+            }
+        }
+        tfoot {
+            td {
+                border: 1px solid $border-color;
+                white-space: nowrap;
+                vertical-align: middle;
+            }
+            &.borderless {
+                td {
+                    border: none;
+                    border-top: 1px solid $border-color;
+                }
+            }
+        }
+    }
+    &-02 {
+        &.≈ {
+            td {
+                border: none;
+            }
+        }
+        thead {
+            th {
+                background-color: $table-head-bg;
+                text-align: left;
+                padding: 8px;
+                font-size: 16px;
+                font-family: "Roboto", sans-serif;
+            }
+            tr {
+                th:first-child {
+                    border-radius: 5px 0 0 0;
+                }
+            }
+        }
+        tbody {
+            td {
+                padding: 8px;
+                font-size: 14px;
+                font-family: "Roboto", sans-serif;
+                color: #52575d;
+                // cursor: pointer;
+                border: none;
+                line-height: 30px;
+            }
+            tr {
+                &:hover {
+                    background: #eaf2ff !important;
+                }
+            }
+        }
+        tr:nth-child(even)>td,
+        tr:nth-child(even)>th {
+            background-color: #EAF2FF; // Choose your own color here
+        }
+        .action {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            img {
+                height: 1.0rem !important;
+                width: 1.0rem !important;
+                margin-right: 16px;
+            }
+        }
+    }
+    &-borderless {
+        border: unset !important;
+    }
+    &-rounded {
+        thead {
+            tr {
+                 :first-child {
+                    border-radius: 4px 0 0 0;
+                }
+                 :last-child {
+                    border-radius: 0 4px 0 0;
+                }
+                 :only-child {
+                    border-radius: 4px 4px 0 0;
+                }
+            }
+        }
+        // thead {
+        //   tr {
+        //     border-radius: 4px 4px 0 0;
+        //   }
+        // }
+    }
+    &-react {
+        .rt-table {
+            background-color: $table-bg;
+            border-color: $table-border-color;
+            border-collapse: collapse;
+            .rt {
+                &-thead {
+                    .rt-tr {
+                        text-align: left;
+                    }
+                    .rt-th {
+                        padding: $table-cell-padding;
+                        font-size: 0.833rem;
+                        font-weight: 600;
+                        color: $table-head-color;
+                        white-space: nowrap;
+                        border-color: $table-head-border-color;
+                        background-color: $table-head-bg;
+                    }
+                }
+                &-tbody {
+                    .rt-td {
+                        font-size: 0.833rem;
+                        padding: $table-cell-padding;
+                    }
+                }
+            }
+        }
+        &.borderless {
+            border: none;
+            .rt {
+                &-th {
+                    border: none;
+                }
+                &-td {
+                    border: none;
+                }
+            }
+        }
+    }
+    .actions {
+        color: $cool-gray-600;
+        cursor: pointer;
+        &:not(:last-child) {
+            margin-right: 0.5rem;
+        }
+    }
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    @include des;
+}
+
+.uploaded-name {
+    max-width: 10rem;
+}
+
+.data-table {
+    .table {
+        // overflow-y: scroll;
+        // height: 600px;
+        // display: block;
+        .paddingHeader {
+            tr th:first-child {
+                border-top-left-radius: 0.5rem;
+                // border-bottom-left-radius: 1rem;
+            }
+            tr th:last-child {
+                border-top-right-radius: 0.5rem;
+                // border-bottom-right-radius: 1rem;
+            }
+            th {
+                padding: 0.8rem 16px;
+                font-size: 15px;
+            }
+            .action {
+                padding: 1rem 0 !important;
+                img {
+                    height: 1.0rem !important;
+                    width: 1.0rem !important;
+                    filter: invert(106%) sepia(18%) saturate(0%) hue-rotate(65deg) brightness(300%) contrast(129%)
+                }
+            }
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            font-family: "Roboto";
+        }
+        th:first-child {
+            text-align: left;
+        }
+        th {
+            color: #000;
+            text-align: center;
+            font-family: "Roboto";
+            font-size: 14px;
+            @include letter-spacing(31.25);
+            line-height: 25px;
+            font-weight: bold;
+            border-bottom: 1px solid #343A40;
+        }
+        tr td:first-child {
+            font-family: "Roboto";
+            font-size: 0.75rem;
+            color: #7f8086;
+        }
+        td:first-child {
+            text-align: left;
+        }
+        td {
+            padding: 16px 12px !important;
+            border: none !important;
+            font-family: "Roboto";
+            font-size: 0.75rem;
+            color: #b3b8bd;
+            text-align: center;
+            @include letter-spacing(48.06);
+        }
+        .action {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            img {
+                height: 1.0rem !important;
+                width: 1.0rem !important;
+                margin-right: 16px;
+            }
+        }
+        tr:nth-child(even)>td,
+        tr:nth-child(even)>th {
+            background-color: #EAF2FF !important; // Choose your own color here
+        }
+    }
+    &-even-stripe {
+        tr:nth-child(odd)>td,
+        tr:nth-child(odd)>th {
+            background-color: #FFF !important; // Choose your own color here
+        }
+    }
+}

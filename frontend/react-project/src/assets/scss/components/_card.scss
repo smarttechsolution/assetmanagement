@@ -1,0 +1,278 @@
+@mixin card {
+  box-shadow: $card-boxshadow;
+}
+
+@mixin card_bordered($color: $secondary) {
+  @include card;
+  border: 1px solid $color;
+}
+@mixin card_rounded($radius: 4px) {
+  @include card;
+  border-radius: $radius;
+}
+.card {
+  @include card;
+}
+.card_bordered {
+  @include card_bordered($cool-gray-400);
+}
+
+.card {
+  &_rounded {
+    @include card_rounded(8px);
+  }
+  &_equal {
+    height: 100%;
+  }
+  &_structured {
+    @include card_bordered($gray-100);
+    @include card_rounded;
+    .head {
+      padding: 0.5rem 1rem;
+      color: white;
+      border-radius: 0;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+  }
+
+  &-bordered {
+    @each $name, $value in $information-color {
+      &-#{$name} {
+        border: 1px solid $value;
+        box-shadow: unset;
+      }
+    }
+  }
+
+  &-tab {
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-radius: 4px 4px 0 0;
+    transition: all $time-func-1 0.25s;
+    width: 220px;
+    box-shadow: 0px 0px 8px rgba($black, 0.04);
+    color: white;
+    cursor: pointer;
+
+    @include hover {
+      box-shadow: 0px -2px 16px rgba(10, 10, 10, 0.16);
+    }
+
+    .title {
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+
+    .value {
+      font-weight: bold;
+    }
+
+    .icon {
+      border-radius: 50%;
+      background-color: $blue;
+      height: 2rem;
+      width: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @each $name, $value in $information-color {
+      &.cardbg-#{$name} {
+        background-color: $value;
+
+        &::before {
+          background-color: $value;
+        }
+        .icon {
+          background-color: darken($value, 12);
+        }
+      }
+    }
+  }
+  &-stats {
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+    height: 100%;
+    transition: all $time-func-1 0.25s;
+    box-shadow: 0px 0px 8px rgba($black, 0.04);
+    color: white;
+    cursor: pointer;
+
+    @include hover {
+      box-shadow: 0px -2px 16px rgba(10, 10, 10, 0.16);
+    }
+
+    .title {
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+
+    .value {
+      font-weight: bold;
+    }
+
+    .icon {
+      border-radius: 50%;
+      background-color: $blue;
+      height: 2rem;
+      width: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      [class^="ic-"],
+      [class*=" ic-"] {
+        @include h4;
+      }
+    }
+
+    @each $name, $value in $information-color {
+      &.cardbg-#{$name} {
+        background-color: $value;
+
+        &::before {
+          background-color: $value;
+        }
+        .icon {
+          background-color: darken($value, 12);
+        }
+      }
+    }
+  }
+  &--shortcut {
+    padding: 2.5rem 2rem;
+    width: 377px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 999;
+    background: white;
+    box-shadow: -8px 0px 8px rgba(black, 0.08);
+    transform: translateX(100%);
+    transition: transform $time-func-2 0.8s;
+    .title {
+      color: $primary;
+      margin: 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid $cool-gray-300;
+    }
+    &__list {
+      margin-bottom: 0;
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
+      padding: 0;
+      list-style: none;
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &:not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+      }
+      .key {
+        border: 1px solid $cool-gray-400;
+        background-color: $cool-gray-200;
+        padding: 0.25rem 0.5rem;
+        min-width: 28px;
+        text-align: center;
+        @include des;
+        &:not(:last-child) {
+          margin-right: 0.5rem;
+        }
+
+        [class^="ic-"],
+        [class*=" ic-"] {
+          @include small;
+        }
+      }
+    }
+  }
+  &-applicants {
+    color: $cool-gray-600;
+    .title {
+      color: black;
+      margin-bottom: 0.5rem;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+}
+
+// $card:(
+//   padding:1rem,
+//   radius:8px,
+//   shadow:0 2px 4px rgba($blue,.04),
+//   hoverShadow:0 16px 48px rgba($blue,.12),
+// );
+
+// .card{
+//   background-color: $white;
+//   padding:map-get($card, padding );
+//   border-radius: map-get($card, radius );
+
+//   &--img{
+//     width: 200px;
+//     height: 200px;
+//     object-fit: cover;
+//     display: block;
+//     margin: auto;
+//   }
+
+//   &--clogo{
+//     padding: 1rem;
+//     background-color: #e6e6e6;
+//     width: 200px;
+//     height: 200px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     margin: auto;
+//     img{
+//       max-width: 100%;
+//       object-fit: contain;
+//     }
+//   }
+
+//   &__stats{
+//     transition: ease-in .2s;
+//     box-shadow: map-get($card, shadow );
+//     &:hover{
+//       box-shadow: map-get($card, hoverShadow );
+//       transform: translateY(-8px);
+//     }
+//   }
+
+//   &__table{
+//     .table{
+//       margin-top: 1rem;
+//     }
+//   }
+//   &__login{
+//     padding:2rem 1rem;
+//     box-shadow: 0 2px 4px rgba($blue,.08);
+
+//     .form-group{
+//       margin-bottom: 1rem;
+//     }
+//   }
+// }
+
+// .indicator{
+//   width: 12px;
+//   height: 12px;
+//   border-radius: 50%;
+//   background: $green;
+
+// }

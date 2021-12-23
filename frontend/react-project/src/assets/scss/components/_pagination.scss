@@ -1,0 +1,64 @@
+.pagination {
+  .page-link {
+    @include des;
+    @include hover {
+      border-color: $gray-100;
+    }
+  }
+  input {
+    display: none;
+  }
+  &-01 {
+    .page {
+      &-item {
+        &.selected {
+          .page-link {
+            background-color: $green;
+            border-bottom: 4px solid $green;
+            color: white;
+          }
+        }
+        &.active {
+          .page-link {
+            background-color: unset;
+            border: 1px solid $input-border-color;
+            border-bottom: 4px solid $blue;
+            color: $blue;
+            font-weight: 700;
+          }
+          &.selected {
+            .page-link {
+              background-color: $green;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &-02 {
+    margin-bottom: 0;
+    .page {
+      &-link {
+        color: $cool-gray-700;
+        // padding: 0.25rem 0.5rem;
+        margin: 0;
+        border: 1px solid transparent;
+        border-radius: $pagination-border-radius;
+      }
+      &-input {
+        width: 3rem;
+      }
+    }
+  }
+
+  &-wrapper {
+    // @include media-breakpoint-down(xl) {
+    //   overflow-x: scroll;
+    // }
+    @include media-breakpoint-down(sm) {
+      overflow-x: scroll;
+    }
+  }
+}

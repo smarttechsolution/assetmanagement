@@ -1,0 +1,23 @@
+.badge-dot{
+    @each $label, $value in $theme-colors {
+        &-#{$label}{
+            position: relative;
+            display: inline-block;
+            padding-left: 1rem;
+            font-size: 0.875rem;
+            color: $value;
+
+            &::after{
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                transform: translateY(-50%);
+                width: 0.5rem;
+                height: 0.5rem;
+                background-color: $value;
+                border-radius: 50%;
+            }
+        }
+    }
+}

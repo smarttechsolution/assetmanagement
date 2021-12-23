@@ -1,0 +1,184 @@
+// Heading Tags and Classes
+
+$h1-font-size: $font-size-base * 2.5 !default;
+$h2-font-size: $font-size-base * 2 !default;
+$h3-font-size: $font-size-base * 1.75 !default;
+$h4-font-size: $font-size-base * 1.5 !default;
+$h5-font-size: $font-size-base * 1.25 !default;
+$h6-font-size: $font-size-base !default;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-bottom: 0;
+}
+
+@mixin h1 {
+  @include rfs(2.488rem); //39.81px
+}
+@mixin h2 {
+  @include rfs(2.074rem); //33.18px
+}
+@mixin h3 {
+  @include rfs(1.728rem); //27.65px
+}
+@mixin h4 {
+  @include rfs(1.44rem); //23.04px
+}
+@mixin h5 {
+  @include rfs(1.2rem); //19.20px
+}
+@mixin h6 {
+  @include rfs(1rem); //39.81px
+}
+@mixin des {
+  @include rfs(0.833rem); //13.33px
+}
+@mixin small {
+  @include rfs(0.694rem); //11.11px
+}
+h1,
+.h1 {
+  @include rfs(2.488rem); //39.81px
+  margin: 0;
+}
+h2,
+.h2 {
+  @include rfs(2.074rem); //33.18px
+  margin: 0;
+}
+h3,
+.h3 {
+  @include rfs(1.728rem); //27.65px
+  margin: 0;
+}
+
+h4,
+.h4 {
+  @include rfs(1.44rem); //23.04px
+  margin: 0;
+}
+h5,
+.h5 {
+  @include rfs(1.2rem); //19.20px
+  margin: 0;
+}
+h6,
+.h6 {
+  @include rfs(1rem); //16px
+  margin: 0;
+}
+
+p,
+.des {
+  @include rfs(0.875rem); //14px
+  margin: 0;
+}
+small,
+.small {
+  @include rfs(0.75rem); //12px
+}
+
+// Font weight
+@each $label, $value in $font-weight {
+  .font-#{$label} {
+    font-weight: #{$value};
+  }
+}
+
+// cool gray text color
+@each $label, $value in $cool-gray {
+  .text-#{$label} {
+    color: #{$value};
+  }
+}
+
+label {
+  margin-bottom: 0.25rem;
+  @include des;
+  font-weight: 400;
+  color: $cool-gray-700;
+}
+
+.custom-control-label{
+  color: $cool-gray-600;
+  font-weight: 600;
+}
+
+
+
+//text
+
+.text {
+  &-underline {
+    text-decoration: underline;
+    text-decoration-color: inherit;
+  }
+  &-label {
+    @include des;
+    font-weight: 400;
+  }
+  &-01{
+    color: $cool-gray-600;
+    @include rfs(12);
+    font-weight: 400;    
+  }
+}
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 1rem;
+  margin-bottom: 0.5rem;
+
+  &-line {
+    display: flex;
+    align-items: center;
+    color: $blue;
+    font-weight: 600;
+    width: 100%;
+
+    h6 {
+      font-size: 0.875rem;
+    }
+
+    &:after {
+      content: "";
+      display: block;
+      width: 1px;
+      flex: 1;
+
+      height: 1px;
+      background-color: $blue-10;
+      margin-left: 0.5rem;
+    }
+  }
+
+  &__xl {
+    @include media-breakpoint-down(lg) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  h5 {
+    font-size: 1rem;
+  }
+  &-bordered {
+    color: black;
+    border-bottom: 1px solid $cool-gray-400;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    @include des;
+  }
+  &-01{
+    color: $cool-gray-700;
+    @include rfs(14);
+    font-weight: 600;
+  }
+}

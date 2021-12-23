@@ -1,0 +1,118 @@
+{
+  "title": "दर्ता गर्नुहोस",
+  "haveAnAccount": {
+    "title": "पहिले नै खाता छ ?"
+  },
+  "registerHead": {
+    "userType": {
+      "title": "प्रयोगकर्ता प्रकार",
+      "description": "दर्ता गर्नु अघि कृपया हामीलाई भन्नुहोस् कि तपाईं को हुनुहुन्छ।"
+    },
+    "register": {
+      "title": "दर्ता गर्नुहोस",
+      "description": "आयातकर्ताको रूपमा दर्ता गर्न कृपया तलको फिल्ड भर्नुहोस्।"
+    }
+  },
+  "input": {
+    "userType": {
+      "importer": {
+        "title": "आयातकर्ता",
+        "description": "यदि तपाईं एक संगठन हुनुहुन्छ र दर्ता गर्न सवारीहरूको संग्रह छ।"
+      },
+      "user": {
+        "title": "प्रयोगकर्ता",
+        "description": "यदि तपाईं एक व्यक्ति हुनुहुन्छ र एक गाडी दर्ता गर्न चाहनुहुन्छ भने।"
+      }
+    },
+    "username": {
+      "title": "प्रयोगकर्ता नाम",
+      "error-required": "प्रयोगकर्ता नाम आवश्यक छ"
+    },
+    "password": {
+      "title": "पासवर्ड",
+      "error-required": "पासवर्ड आवश्यक छ"
+    },
+    "email": {
+      "title": "ईमेल",
+      "error-required": "ईमेल आवश्यक छ",
+      "error-invalid": "मान्य ईमेल राख्नुहोस्"
+    }
+  },
+  "importer": {
+    "register": {
+      "completeProfile": "तपाईंको प्रोफाइल पूरा गर्नुहोस्",
+      "section": {
+        "organization": "संगठन",
+        "address": "ठेगाना",
+        "orgContactPerson": "संगठन सम्पर्क व्यक्ति विवरण",
+        "uploadDocuments": "कागजातहरू अपलोड गर्नुहोस्"
+      },
+      "table": {
+        "title": "शीर्षक",
+        "upload": "अपलोड गर्नुहोस्"
+      },
+      "input": {
+        "organizationName": {
+          "title": "संस्थाकाे नाम",
+          "error-required": "संस्थाकाे नाम आवश्यक छ"
+        },
+        "aliascode": {
+          "title": "एलियास कोड",
+          "error-required": "एलियास कोड आवश्यक छ"
+        },
+        "companyRegNo": {
+          "title": "दर्ता नम्बर",
+          "error-required": "दर्ता नम्बर आवश्यक छ"
+        },
+        "registrationDateNp": {
+          "title": "नेपाली दर्ता मिति",
+          "error-required": "नेपाली दर्ता मिति आवश्यक छ"
+        },
+        "registrationDate": {
+          "title": "दर्ता मिति",
+          "error-required": "दर्ता मिति आवश्यक छ"
+        },
+        "panno": {
+          "title": "प्यान नम्बर",
+          "error-required": "प्यान नम्बर आवश्यक छ"
+        },
+        "vatno": {
+          "title": "भ्याट नम्बर",
+          "error-required": "भ्याट नम्बर आवश्यक छ"
+        },
+        "email": {
+          "title": "ईमेल",
+          "error-required": "ईमेल आवश्यक छ"
+        },
+        "district": {
+          "title": "जिल्ला",
+          "error-required": "जिल्ला आवश्यक छ"
+        },
+        "localbody": {
+          "title": "स्थानीय निकाय",
+          "error-required": "स्थानीय निकाय आवश्यक छ"
+        },
+        "contactPersonName": {
+          "title": "पुरा नाम",
+          "error-required": "पुरा नाम आवश्यक छ"
+        },
+        "contactPersonPosition": {
+          "title": "पदनाम",
+          "error-required": "पदनाम आवश्यक छ"
+        },
+        "contactPersonPanNo": {
+          "title": "पदनाम",
+          "error-required": "पदनाम आवश्यक छ"
+        },
+        "contactPersonMobileNo": {
+          "title": "मोबाइल नम्बर",
+          "error-required": "मोबाइल नम्बर आवश्यक छ"
+        },
+        "contactPersonPhoneNo": {
+          "title": "फोन नम्बर",
+          "error-required": "फोन नम्बर आवश्यक छ"
+        }
+      }
+    }
+  }
+}

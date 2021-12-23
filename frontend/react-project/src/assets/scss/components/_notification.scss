@@ -1,0 +1,28 @@
+.notification{
+  &-container{
+    position: relative;
+    @include hover{
+      cursor: pointer;
+      .notification-icon{
+        transform: scale(1.05);
+      }
+    }
+  }
+  &-icon{
+    transition: all ease-out .2s;
+    font-size: 1.5rem;
+    
+  }
+  &-count{
+    background-color: $blue-500;
+    color: white;
+    display: block;
+    padding: 2px;
+    border-radius: 4px;
+    font-size: .633rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    line-height: 1;
+  }
+}

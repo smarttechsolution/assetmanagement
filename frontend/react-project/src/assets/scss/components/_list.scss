@@ -1,0 +1,532 @@
+@mixin list-bordered(
+  $hover,
+  $hover-text,
+  $px: 1rem,
+  $py: 0.75rem,
+  $color: $secondary
+) {
+  li {
+    padding: $px $py;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $color;
+    }
+
+    @include hover {
+      background-color: $hover;
+      color: $hover-text;
+    }
+  }
+}
+@mixin list-btnlist($px, $py, $activeBg, $activeColor, $color, $border) {
+  @include list-unstyled;
+  margin: 0;
+
+  li {
+    flex-shrink: 0;
+
+    &:not(:last-child) {
+      margin-right: 2px;
+    }
+
+    a {
+      display: block;
+      font-style: normal;
+      font-weight: 600;
+      padding: $py $px;
+      border: 1px solid $border;
+      box-sizing: border-box;
+      color: $color;
+      @include des;
+
+      &.active {
+        background-color: $activeBg;
+        color: $activeColor;
+        border-color: $activeBg;
+      }
+    }
+  }
+}
+
+.list {
+  @include list-unstyled;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  &-sidebar {
+    li {
+      a {
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    .hasSub {
+      & + .list-sidebar {
+        padding-left: 1.25rem;
+      }
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      color: map-get($sidebar, linkColor);
+      border-radius: 2px;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      // @include lhCrop(1.2); //line-height: 1.2
+      line-height: 1.5;
+
+      &.active {
+        background-color: $blue-300;
+        color: $blue-400;
+      }
+    }
+  }
+
+  &-withcount {
+    padding: 0 1.5rem;
+
+    a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: map-get($sidebar, linkColor);
+      @include des;
+      padding: 0.5rem;
+      // @include lhCrop(1.2); //line-height: 1.2
+      line-height: 1;
+
+      &.active {
+        background-color: $blue-300;
+        border-radius: 4px;
+        color: $blue-400;
+
+        @include hover {
+          color: $blue-400;
+        }
+      }
+
+      &:hover {
+        color: $blue-300;
+      }
+    }
+  }
+
+  &__inline {
+    display: flex;
+
+    @include media-breakpoint-up(md) {
+      align-items: center;
+    }
+
+    & > * {
+      &:not(:last-child) {
+        margin-right: 0.5rem;
+      }
+
+      .ic-members,
+      .ic-chat {
+        @include rfs(1rem);
+      }
+    }
+  }
+
+  &-links {
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: $gray-700;
+      border-bottom: 1px solid $gray-100;
+
+      &.active {
+        background-color: $blue-400;
+        color: white;
+
+        @include hover {
+          color: white;
+        }
+      }
+
+      @include hover {
+        color: $cyan;
+        cursor: pointer;
+      }
+    }
+
+    a {
+      @include des;
+      padding: 0.5rem;
+      line-height: 1;
+    }
+
+    .close {
+      font-size: 0.5rem;
+
+      @include hover {
+        color: $red;
+      }
+    }
+  }
+
+  &-03 {
+    a {
+      display: block;
+      padding: 0.5rem 1.5rem;
+      @include des;
+      color: black;
+      background-color: $gray-200;
+
+      &.active {
+        color: white;
+        background-color: $blue;
+      }
+    }
+    &_scrolllg {
+      @include media-breakpoint-down(lg) {
+        display: flex;
+        margin-bottom: 1rem;
+        @include scrollable($blue);
+        padding-bottom: 0.5rem;
+      }
+
+      li {
+        @include media-breakpoint-down(lg) {
+          flex-shrink: 0;
+          margin-right: 1rem;
+        }
+      }
+    }
+  }
+
+  &-process {
+    display: flex;
+    border-bottom: 1px solid $gray-100;
+    flex-wrap: wrap;
+
+    li {
+      & > a {
+        display: block;
+        @include des;
+        font-weight: 600;
+        border-bottom: 2px solid transparent;
+        position: relative;
+        color: $gray-400;
+        padding: 0.5rem 1rem;
+
+        &.active {
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+          color: $white;
+          background-color: $blue;
+
+          @include hover-focus-active {
+            color: white;
+          }
+        }
+
+        @include hover {
+          cursor: pointer;
+          color: $blue;
+        }
+      }
+    }
+    &.scroll {
+      flex-wrap: nowrap;
+      @include scrollable;
+
+      li {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &-tree {
+    overflow: auto;
+    .list-group-item {
+      display: flex;
+      align-items: center;
+      // border-bottom: 1px solid $gray-100;
+      padding: 6px 12px;
+      @include des;
+      background-color: $cool-gray-100;
+      margin-bottom: 2px;
+      border-radius: 2px;
+
+      &[aria-expanded="true"] {
+        background-color: $blue;
+        color: $white;
+
+        [class^="ic-"],
+        [class*=" ic-"] {
+          color: $white;
+        }
+      }
+
+      .state-icon {
+        margin-right: 0.75rem;
+        cursor: pointer;
+        color: $gray-300;
+      }
+
+      .item-icon {
+        margin-right: 0.5rem;
+      }
+
+      i {
+        @include des;
+      }
+
+      &:not([aria-expanded="true"]):hover {
+        background-color: $cool-gray-200;
+        color: inherit;
+      }
+
+      &.hasSub {
+        position: relative;
+        padding-left: 28px;
+
+        &::after {
+          content: "\e958";
+          font-family: "icomoon";
+          position: absolute;
+          font-size: 0.5rem;
+          top: 50%;
+          transform: translateY(-50%);
+          left: 8px;
+        }
+
+        &[aria-expanded="false"] {
+          &::after {
+            content: "\e95b";
+          }
+        }
+      }
+
+      [class^="ic-"],
+      [class*=" ic-"] {
+        color: $blue;
+        transform: translateY(-1px);
+        margin-right: 8px;
+        // &.gray {
+        //   color: $cool-gray-600;
+        // }
+      }
+    }
+
+    ul {
+      padding-left: 1rem;
+    }
+  }
+
+  &-separator {
+    & > {
+      * {
+        &:last-child {
+          padding-left: 1rem;
+          margin-left: 1rem;
+          position: relative;
+
+          &::before {
+            content: "";
+            width: 1px;
+            height: 1rem;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            background-color: $cool-gray-200;
+          }
+        }
+      }
+    }
+  }
+
+  &-legend {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    .box {
+      position: relative;
+      width: 13px;
+      height: 13px;
+      border-radius: 2px;
+      padding: 1px;
+      border: 1px solid $cool-gray-600;
+      &-indeterminate {
+        &:before {
+          content: " ";
+          border: 1px solid $cool-gray-600;
+          width: 8px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
+  }
+
+  &-dot {
+    li {
+      &:not(:last-child) {
+        position: relative;
+        margin-right: 0.5rem;
+        padding-right: 0.5rem;
+
+        &::after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          right: -0.125rem;
+          transform: translateY(-50%);
+          width: 4px;
+          height: 4px;
+          background-color: $gray-300;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+
+  &--job-deets {
+    font-size: 0.875rem;
+    color: $cool-gray-600;
+  }
+
+  &-reset {
+    padding-left: 1rem;
+    margin-bottom: 0;
+
+    li {
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+  &-setup{
+    li{
+      a{
+        display: block;
+        padding: 0.5rem 0 0.5rem 1rem;
+        @include rfs(14);
+        font-weight: 600;
+        color: $cool-gray-600;
+        &.active{
+          color: $blue;
+          border-right: 2px solid $blue;
+        }
+      }
+    }
+
+  }
+
+  &--payment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    li {
+      display: block;
+      width: 150px;
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    a {
+      display: inline-block;
+      border: 1px solid $gray-100;
+      border-radius: 4px;
+      padding: 0.5rem 2rem;
+      width: 100%;
+      text-align: center;
+      &:hover {
+        color: unset;
+        border-color: $info;
+      }
+
+      &.active {
+        border-color: $info;
+      }
+    }
+
+    [class^="ic-"],
+    [class*=" ic-"] {
+      font-size: 2rem;
+      // color: $cool-gray-700;
+    }
+  }
+
+  &--role{
+    li{
+      &:not(:last-child){
+        margin-bottom: 0.25rem;
+      }
+
+      a{
+        display: block;
+        background-color: $cool-gray-100;
+        border-radius: 0.125rem;
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+
+        &:hover{
+          background-color: darken($cool-gray-200, 4%);
+          color: inherit;
+        }
+
+        &.active{
+          background-color: $info;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  &-radio{
+    li{
+      border: 1px solid $cool-gray-300;
+      padding: 0 0.75rem;
+
+      .form-check{
+        margin-bottom: 0;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        align-items: flex-start;
+
+        &-input{
+          margin-top: 0.25rem;
+        }
+      }
+
+      &:not(:last-child){
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  &-divider{
+    li{
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid $cool-gray-300;
+    }
+  }
+}
+
+.footer {
+  &-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+
+    .btn {
+      &:not(:last-child) {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
