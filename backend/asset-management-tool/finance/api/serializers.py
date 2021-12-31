@@ -22,10 +22,8 @@ class IncomeCategorySerializer(serializers.ModelSerializer):
 
 	def validate(self, attrs):
 		scheme=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
-		
-		if IncomeCategory.objects.filter(name__icontains = 'Water Sales', water_scheme=scheme).exists():
-			raise serializers.ValidationError('Default category, Water sales connot be changed or created.')
-
+		if attrs.get('name') == 'Water Sales':
+			raise serializers.ValidationError('Default category water sales cannot be changed.')
 		if not self.instance:
 			if IncomeCategory.objects.filter(name = attrs.get('name'), water_scheme=scheme).exists():
 				raise serializers.ValidationError('Category with this name already exists.')
@@ -52,8 +50,8 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
 
 	def validate(self, attrs):
 		scheme=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
-		if ExpenseCategory.objects.filter(name__icontains = 'Maintenance', water_scheme=scheme).exists():
-			raise serializers.ValidationError('Default category, Maintenance connot be changed or created.')
+		if attrs.get('name') == 'Maintenance':
+			raise serializers.ValidationError('Default category water sales cannot be changed.')
 
 		if not self.instance:
 			if ExpenseCategory.objects.filter(name = attrs.get('name'), water_scheme=scheme).exists():
