@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/view_margin"
+    android:layout_marginHorizontal="@dimen/fragment_horizontal_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLeft"
+        app:icon="@drawable/ic_arrow"
+        style="@style/ImageOnlyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnRight" />
+
+
+    <TextView
+        android:id="@+id/labelCashbookTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1234"
+        android:gravity="center"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="16sp"
+        android:textColor="#036ECA"
+        app:layout_constraintLeft_toRightOf="@id/btnLeft"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRight"
+        app:icon="@drawable/ic_arrow"
+        style="@style/ImageOnlyButton"
+        android:rotation="180"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/labelCashbookTotal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupToggleWeek"
+        android:visibility="gone"
+        app:constraint_referenced_ids="btnLeft,btnRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSwapWeekMonth"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:cornerRadius="4dp"
+        app:strokeColor="#0373D3"
+        app:strokeWidth="2dp"
+         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon="@drawable/ic_swap_week_month"
+        app:iconGravity="textStart"
+        android:text="Week"
+        android:textSize="8sp"
+        android:fontFamily="@font/roboto_medium"
+        android:minHeight="0dp"
+        android:paddingVertical="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

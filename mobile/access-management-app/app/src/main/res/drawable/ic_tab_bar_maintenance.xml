@@ -1,0 +1,32 @@
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="25dp"
+    android:height="25dp"
+    android:viewportWidth="25"
+    android:viewportHeight="25">
+  <path
+      android:pathData="M18.855,13.749a0.937,0.937 0,0 0,0.729 0.313,1.042 1.042,0 0,0 0.729,-0.313L23.642,10.416a0.99,0.99 0,0 0,0 -1.458L22.084,7.343a1.927,1.927 0,0 0,0.312 -1.094,2.083 2.083,0 0,0 -2.083,-2.083 1.927,1.927 0,0 0,-1.094 0.312L17.605,2.916a0.99,0.99 0,0 0,-1.458 0L12.813,6.249a0.99,0.99 0,0 0,0 1.458l2.292,2.292 -2.6,2.6L9.688,9.791a4.531,4.531 0,0 0,0.729 -2.5A4.687,4.687 0,0 0,5.73 2.604a1.042,1.042 0,1 0,0 2.083,2.6 2.6,0 1,1 -2.6,2.6A1.042,1.042 0,1 0,1.042 7.291a4.687,4.687 0,0 0,4.688 4.687,4.531 4.531,0 0,0 2.5,-0.729L11.042,14.062 4.48,20.624A1.032,1.032 0,1 0,5.942 22.083l6.562,-6.562 6.562,6.563a1.032,1.032 0,1 0,1.458 -1.458l-6.563,-6.563 2.6,-2.6ZM15,6.979l1.875,-1.875 4.583,4.583 -1.875,1.875Z"
+      android:fillColor="#b0b0b0"/>
+</vector>

@@ -1,0 +1,35 @@
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="22dp"
+    android:height="22dp"
+    android:viewportWidth="22"
+    android:viewportHeight="22">
+  <path
+      android:pathData="M14.047,4.39L9.218,4.39L9.218,2.634h2.195a0.878,0.878 0,0 0,0 -1.756L5.268,0.878a0.878,0.878 0,1 0,0 1.756h2.195L7.463,4.39L3.951,4.39A1.273,1.273 0,0 0,2.635 5.707L2.635,9.218a1.273,1.273 0,0 0,1.317 1.317h8.34L12.292,13.608a1.273,1.273 0,0 0,1.317 1.317h3.512A1.273,1.273 0,0 0,18.435 13.608L18.435,8.778A4.39,4.39 0,0 0,14.047 4.39ZM16.681,13.169L14.047,13.169L14.047,10.096A1.273,1.273 0,0 0,12.735 8.778L4.39,8.778L4.39,6.146h9.657A2.634,2.634 0,0 1,16.681 8.778Z"
+      android:fillColor="#b0b0b0"/>
+  <path
+      android:pathData="M15.363,15.803l-1.317,1.492a1.712,1.712 0,0 0,0.176 2.458,1.756 1.756,0 0,0 2.283,0 1.712,1.712 0,0 0,0.176 -2.458Z"
+      android:fillColor="#b0b0b0"/>
+</vector>

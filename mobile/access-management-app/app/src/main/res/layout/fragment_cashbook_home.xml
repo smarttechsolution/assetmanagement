@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".cashbook.ui.home.CashbookHomeFragment">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLeft"
+        app:icon="@drawable/ic_arrow"
+        style="@style/ImageOnlyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintRight_toLeftOf="@id/btnShowDate"
+        app:layout_constraintTop_toTopOf="@id/btnShowDate"
+        app:layout_constraintBottom_toBottomOf="@id/btnShowDate"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnShowDate"
+        android:text="March 2021"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextButtonAppearance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_calendar"
+      />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRight"
+        app:icon="@drawable/ic_arrow"
+        style="@style/ImageOnlyButton"
+        android:rotation="180"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/btnShowDate"
+        app:layout_constraintTop_toTopOf="@id/btnShowDate"
+        app:layout_constraintBottom_toBottomOf="@id/btnShowDate"/>
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutCashbook"
+        style="@style/TabLayoutStyle"
+        app:layout_constraintTop_toBottomOf="@id/btnShowDate"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginVertical="@dimen/fragment_vertical_margin"
+        android:layout_marginHorizontal="@dimen/fragment_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerCashbook"
+        app:layout_constraintTop_toBottomOf="@id/tabLayoutCashbook"
+        app:layout_constraintBottom_toTopOf="@id/btnClose"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:textAppearance="@style/TextAppearance.Caption"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".cashbook.ui.add.AddCashbookDialogFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/beginGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/fragment_vertical_margin" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/engGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/fragment_vertical_margin" />
+
+    <TextView
+        android:id="@+id/labelAddCashbook"
+        style="@style/DialogTitleAppearance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/add_cashbook_income_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinnerCategory"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:background="@drawable/bg_spinner"
+        android:padding="@dimen/view_padding_small"
+        android:overlapAnchor="false"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        app:layout_constraintTop_toBottomOf="@id/labelAddCashbook" />
+
+    <TextView
+        android:id="@+id/btnSelectDate"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        android:drawableRight="@drawable/ic_calendar"
+        android:hint="@string/add_cashbook_select_date"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        app:layout_constraintTop_toBottomOf="@id/spinnerCategory" />
+
+    <EditText
+        android:id="@+id/etIncomeTitle"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/add_cashbook_income_title"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+
+        app:layout_constraintTop_toBottomOf="@id/btnSelectDate" />
+
+    <EditText
+        android:id="@+id/etIncomeAmount"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/add_cashbook_income_amount"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+
+        app:layout_constraintTop_toBottomOf="@id/etIncomeTitle" />
+
+    <EditText
+        android:id="@+id/etWaterSupply"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/add_cashbook_water_supplied"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        app:layout_constraintTop_toBottomOf="@id/etIncomeAmount" />
+
+    <EditText
+        android:id="@+id/etRemarks"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/add_cashbook_remarks"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        app:layout_constraintTop_toBottomOf="@id/etWaterSupply" />
+
+    <TextView
+        android:id="@+id/labelWaterStatement"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        android:text="@string/add_cashbook_information"
+        android:textAppearance="@style/TextAppearance.Caption"
+        app:layout_constraintTop_toBottomOf="@id/etRemarks" />
+
+    <Button
+        android:id="@+id/btnActionSave"
+        style="@style/DialogPositiveButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:text="@string/action_save"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btnActionCancel"
+        app:layout_constraintTop_toBottomOf="@id/labelWaterStatement" />
+
+    <Button
+        android:id="@+id/btnActionCancel"
+        style="@style/DialogNegativeButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="@string/action_cancel"
+        app:layout_constraintLeft_toRightOf="@id/btnActionSave"
+        app:layout_constraintRight_toRightOf="parent"
+
+        app:layout_constraintTop_toTopOf="@id/btnActionSave" />
+</androidx.constraintlayout.widget.ConstraintLayout>

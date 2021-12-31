@@ -1,0 +1,35 @@
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="21dp"
+    android:height="21dp"
+    android:viewportWidth="21"
+    android:viewportHeight="21">
+  <path
+      android:pathData="M18.813,3.85a1.006,1.006 0,0 1,-0.262 0.7,0.744 0.744,0 0,1 -0.613,0.262L12.688,4.812a0.875,0.875 0,0 1,-0.875 -0.875L11.813,3.063L9.188,3.063v0.875a0.875,0.875 0,0 1,-0.875 0.875L3.106,4.813A0.919,0.919 0,0 1,2.188 4.026a1.006,1.006 0,0 1,0.263 -0.7,0.744 0.744,0 0,1 0.612,-0.263L7.438,3.063L7.438,2.188A0.875,0.875 0,0 1,8.313 1.313L12.688,1.313a0.875,0.875 0,0 1,0.875 0.875L13.563,3.063h4.331a0.919,0.919 0,0 1,0.919 0.787Z"
+      android:fillColor="#b4b4b4"/>
+  <path
+      android:pathData="M15.224,7.35l-1.05,10.587h-7.35l-1.05,-10.587A0.875,0.875 0,0 0,4.899 6.563h0a0.875,0.875 0,0 0,-0.875 0.963l1.138,11.375a0.875,0.875 0,0 0,0.875 0.788h8.925a0.875,0.875 0,0 0,0.875 -0.788l1.137,-11.375A0.875,0.875 0,0 0,16.099 6.563h0A0.875,0.875 0,0 0,15.224 7.35Z"
+      android:fillColor="#b4b4b4"/>
+</vector>

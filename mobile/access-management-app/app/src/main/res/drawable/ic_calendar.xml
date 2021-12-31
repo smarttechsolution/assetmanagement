@@ -1,0 +1,32 @@
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="16dp"
+    android:height="17.778dp"
+    android:viewportWidth="16"
+    android:viewportHeight="17.778">
+  <path
+      android:pathData="M5.333,8L3.556,8v1.778L5.333,9.778ZM8.889,8L7.111,8v1.778h1.778ZM12.445,8L10.667,8v1.778h1.778ZM14.223,1.778h-0.889L13.334,0L11.556,0L11.556,1.778L4.444,1.778L4.444,0L2.667,0L2.667,1.778L1.778,1.778A1.77,1.77 0,0 0,0.009 3.556L0,16a1.777,1.777 0,0 0,1.778 1.778L14.222,17.778A1.783,1.783 0,0 0,16 16L16,3.556A1.783,1.783 0,0 0,14.222 1.778ZM14.223,16L1.778,16L1.778,6.222L14.222,6.222Z"
+      android:fillColor="#0478dc"/>
+</vector>

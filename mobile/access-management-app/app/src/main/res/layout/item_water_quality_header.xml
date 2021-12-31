@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/labelAddResult"
+        android:textColor="@color/gray_200"
+        android:fontFamily="@font/roboto_medium"
+        android:textAppearance="@style/TextAppearance.Body"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="@string/quality_test_add_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/btnShowFromDate"
+        style="@style/EditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        android:drawableRight="@drawable/ic_calendar"
+        android:hint="@string/service_from_date"
+        app:layout_goneMarginTop="@dimen/view_margin_large"
+        app:layout_constraintTop_toBottomOf="@id/labelAddResult" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/cbToggleDates"
+        app:layout_constraintTop_toBottomOf="@id/btnShowFromDate"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:text="@string/action_add_date_range"
+        style="@style/TextAppearance.Caption"
+        app:layout_constraintLeft_toRightOf="@id/cbToggleDates"
+        app:layout_constraintTop_toTopOf="@id/cbToggleDates"
+        app:layout_constraintBottom_toBottomOf="@id/cbToggleDates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/btnShowToDate"
+        style="@style/EditTextStyle"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        android:drawableRight="@drawable/ic_calendar"
+        android:hint="@string/service_to_date"
+        app:layout_goneMarginTop="@dimen/view_margin_large"
+        app:layout_constraintTop_toBottomOf="@id/cbToggleDates" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

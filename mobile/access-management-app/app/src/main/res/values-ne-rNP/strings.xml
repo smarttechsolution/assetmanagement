@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<resources>
+
+    <string name="app_name">सम्पत्ति व्यवस्थापन</string>
+
+
+    <string name="title_cashbook">क्यासबुक</string>
+    <string name="title_maintenance">मर्मत</string>
+    <string name="title_service">सेवा</string>
+    <string name="title_notification">सूचना</string>
+    <string name="error_no_notifications">कुनै सूचना छैन</string>
+
+    <string name="tab_income">आय</string>
+    <string name="tab_expenditure">व्यय</string>
+
+    <string name="tab_preventive">रोकथाम </string>
+    <string name="tab_inspections">निरीक्षण</string>
+    <string name="tab_reactive">प्रतिक्रियाशील</string>
+
+    <string name="tab_supply">वितरण</string>
+    <string name="tab_quality_test">गुणस्तर जाँच</string>
+
+    <string name="login_title"></string>
+    <string name="login_sub_title">सम्पत्ति व्यवस्थापन</string>
+    <string name="login_sub_title_tag">पानी प्रणालीहरु</string>
+    <string name="loginlabel_edit_phone_number">&lt;        फोन नम्बर सम्पादन गर्नुहोस्</string>
+    <string name="login_label_enter_phone_number">आफ्नो फोन नम्बर प्रविष्ट गर्नुहोस्</string>
+    <string name="login_label_phone_number_information">१० अंक समावेश गर्दछ</string>
+    <string name="login_label_enter_passcode">तपाइँको पासकोड प्रविष्ट गर्नुहोस्</string>
+    <string name="login_label_passcode_information">कम्तीमा 4 अंक समावेश गर्दछ</string>
+
+    <string name="label_from_previous_month">अघिल्लो महिना बाट </string>
+    <string name="label_total_for">को लागी कुल </string>
+    <string name="extra_month">महिना</string>
+    <string name="extra_year">वर्ष</string>
+    <string name="extra_week">हप्ता</string>
+    <string name="extra_rs">रु</string>
+    <string name="extra_of">को</string>
+
+
+    <string name="close_cashbook_dialog_title">बन्द -</string>
+    <string name="close_cashbook_dialog_confirmation_title">बन्द गर्ने पुष्टि गर्नुहोस् </string>
+    <string name="close_cashbook_dialog_confirmation_message">बन्द गरिएको खातालाई फेरि खोल्न मिल्नेछैन।</string>
+
+
+    <string name="add_cashbook_dialog_title">आय जोड्नुहोस्</string>
+    <string name="add_cashbook_select_category">श्रेणी चयन गर्नुहोस्</string>
+    <string name="add_cashbook_select_date">मिति चयन गर्नुहोस्</string>
+    <string name="add_cashbook_income_title">आय शीर्षक</string>
+    <string name="add_cashbook_income_amount">आय रकम</string>
+    <string name="add_cashbook_expense_title">खर्च शीर्षक</string>
+    <string name="add_cashbook_expense_amount">खर्च रकम</string>
+    <string name="add_cashbook_water_supplied">पानी आपूर्ति</string>
+    <string name="add_cashbook_remarks">टिप्पणी</string>
+
+    <string name="maintenance_empty">{maintenanceType} को लागी कुनै रेकर्ड उपलब्ध छैन</string>
+    <string name="cashbook_empty">{monthName} को लागि कुनै {cashbookType} उपलब्ध छैन</string>
+    <string name="cashbook_category_empty">कृपया क्यासबुक श्रेणी चयन गर्नुहोस्</string>
+    <string name="cashbook_date_empty">कृपया मिति चयन गर्नुहोस्</string>
+    <string name="cashbook_income_title_empty">कृपया आय शीर्षक थप्नुहोस्</string>
+    <string name="cashbook_expense_title_empty">कृपया खर्च शीर्षक थप्नुहोस्</string>
+    <string name="cashbook_income_amount_empty">कृपया आय शीर्षक थप्नुहोस्</string>
+    <string name="cashbook_expense_amount_empty">कृपया खर्च शीर्षक थप्नुहोस्</string>
+    <string name="cashbook_water_supply_empty">कृपया पानी आपूर्ति जोड्नुहोस्</string>
+    <string name="add_cashbook_information">पानी आपूर्ति रेकर्ड गर्दा पानी आपूर्ति प्रविष्ट गर्नुहोस्</string>
+
+    <string name="delete_cashbook">क्यासबुक मेटाउने?</string>
+    <string name="delete_cashbook_message">के तपाइँ पक्का यो आइटम मेटाउन चाहानुहुन्छ?</string>
+
+
+    <string name="maintenance_interval">अन्तराल:</string>
+    <string name="maintenance_risk_score">जोखिम स्कोर:</string>
+    <string name="maintenance_log_entries">लग प्रविष्टिहरु</string>
+    <string name="maintenance_action_date">कार्य मिति</string>
+    <string name="maintenance_responsible_person">जिम्मेवार: </string>
+    <string name="maintenance_estimated_cost">पूर्व लागत: </string>
+
+    <string name="maintenance_possible_failure_and_mitigation">सम्भावित असफलता र न्युनिकरण</string>
+    <string name="not_scheduled_maintenance_empty">तपाइँसँग {maintenanceType} को लागी कुनै अनियमित रखरखाव छैन</string>
+    <string name="maintenance_not_scheduled_title">अनुसूचित मर्मत</string>
+
+    <string name="maintenance_log_total_cost">कुल खर्च </string>
+    <string name="maintenance_log_labour_cost">श्रम</string>
+    <string name="maintenance_log_material_cost">सामग्री</string>
+    <string name="maintenance_log_replacement_cost">प्रतिस्थापन</string>
+    <string name="maintenance_log_interval"> अन्तराल (दिनहरुमा)</string>
+    <string name="maintenance_log_add_cost_separately"> छुट्टै लागत जोड्नुहोस्</string>
+    <string name="maintenance_log_supply_belt">आपूर्ति बेल्ट</string>
+    <string name="maintenance_log_entry_title">मर्मत लग</string>
+    <string name="maintenance_log_entry_remarks">टिप्पणी</string>
+
+    <string name="maintenance_sort_by_action_date">कार्य मिति</string>
+    <string name="maintenance_sort_by_estimated_cost">अनुमानित लागत</string>
+    <string name="maintenance_sort_by_risk_score">जोखिम स्कोर</string>
+
+
+    <string name="unscheduled_maintenance_log_required">मर्मत चयन गर्नुहोस्</string>
+    <string name="unscheduled_maintenance_date_empty">कृपया मिति चयन गर्नुहोस्</string>
+    <string name="unscheduled_maintenance_add_cost">कृपया लागत थप्नुहोस्</string>
+    <string name="unscheduled_duration_empty">कृपया अवधि थप्नुहोस्</string>
+    <string name="unscheduled_maintenance_action">मर्मत कार्य</string>
+    <string name="unscheduled_possible_failure">सम्भावित असफलता</string>
+
+    <string name="service_add_record">पानी वितरण रेकर्ड जोड्नुहोस्</string>
+    <string name="service_total_supply">कुल पानी वितरण</string>
+    <string name="service_from_date">सुरू मिति </string>
+    <string name="service_to_date">अन्त्य मिति</string>
+
+    <string name="error_no_internet">इन्टरनेट उपलब्ध छैन</string>
+    <string name="error_server">सर्भर त्रुटि</string>
+    <string name="error_no_internet_message">कृपया इन्टरनेटमा जोड्नुहोस् र पुन: प्रयास गर्नुहोस्</string>
+
+    <string name="error_invalid_date">उचित मिति छान्नुहोस्</string>
+    <string name="service_units">एकाइहरु</string>
+    <string name="service_mg_per_litre">M.G/L</string>
+    <string name="service_households">अनुमानित घरधुरी </string>
+    <string name="service_beneficiaries">अनुमानित लाभार्थी</string>
+
+    <string name="quality_test_add_result">ADD WATER TEST RESULTS</string>
+    <string name="quality_test_from_date">Start Date</string>
+    <string name="quality_test_to_date">End Date</string>
+    <string name="quality_test_ph">P.H</string>
+    <string name="quality_test_chlorine_residue">Chlorine Residue</string>
+    <string name="quality_test_chloride">Chloride</string>
+    <string name="quality_test_electrolytes">Electrolytes</string>
+    <string name="quality_test_dts">D.T.S</string>
+
+    <string name="score_min">न्यूनतम</string>
+    <string name="score_low">कम</string>
+    <string name="score_mid">मध्य</string>
+    <string name="score_high">उच्च</string>
+
+    <string name="action_save_log">लग सुरक्षित गर्नुहोस्</string>
+    <string name="action_save_record">रेकर्ड सुरक्षित गर्नुहोस्</string>
+    <string name="action_update_log">लग अपगेट गर्नुहोस्</string>
+    <string name="action_select_picture">फोटो छान्नुहोस्</string>
+    <string name="action_capture_picture">फोटो खिच्नुहोस्</string>
+
+    <string name="action_save">सुरक्षित गर्नुहोस्</string>
+    <string name="action_add">थप्नुहोस्</string>
+    <string name="action_add_income">आय थप्नुहोस्</string>
+    <string name="action_add_expense">खर्च थप्नुहोस्</string>
+    <string name="action_cancel">रद्द गर्नुहोस्</string>
+    <string name="action_close">रद्द गर्नुहोस्</string>
+    <string name="action_close_month">मासिक बन्द</string>
+    <string name="action_closed">रद्द गर्नुहोस्</string>
+    <string name="action_confirm">बन्द गर्नुहोस्</string>
+
+    <string name="action_add_date_range">Add record for a date range</string>
+    <string name="action_sort_by">क्रमबद्ध गर्नुहोस्</string>
+
+    <string name="loader_loading">लोड हुँदैछ...</string>
+    <string name="loader_saving">अपलोड हुँदैछ...</string>
+    <string name="loader_updating">अपडेट हुँदैछ...</string>
+    <string name="response_save_data_success">तपाइँको डाटा सफलतापूर्वक सुरक्षित गरीएको छ</string>
+    <string name="error_file_should_be_small">चयन गरिएको तस्वीर फाइल १ एमबी भन्दा कम हुनु पर्छ</string>
+    <string name="error_supply_belt_empty">आपूर्ति बेल्ट चयन गर्नुहोस्</string>
+    <string name="error_water_parameters">सही मापदण्डहरु जोड्नुहोस्</string>
+    <string name="error_permission_required">अनुरोध गरिएको अनुमति आवश्यक छ</string>
+    <string name="error_permission_required_message">कृपया हामीलाई उचित अनुमति दिनुहोस्, अनुमति बिना तपाइँ तपाइँको फोटो र मीडिया चयन गर्न सक्नुहुन्न</string>
+
+    <string name="error_supply_from_date_empty">सुरु मिति चयन गर्नुहोस्</string>
+    <string name="error_supply_to_date_empty">समाप्ति मिति चयन गर्नुहोस्</string>
+    <string name="error_supply_total_units">कुल आपूर्ति एकाइ प्रविष्ट गर्नुहोस्</string>
+    <string name="error_supply_estimated_household_empty">अनुमानित घर प्रविष्ट गर्नुहोस्</string>
+    <string name="error_supply_estimated_beneficiaries_empty">अनुमानित लाभार्थीहरु प्रविष्ट गर्नुहोस्</string>
+</resources>

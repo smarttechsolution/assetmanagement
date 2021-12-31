@@ -1,0 +1,63 @@
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.AssetManagement" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorPrimaryVariant">@color/blue_500</item>
+
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+
+        <item name="colorSecondary">@color/gray_200</item>
+
+          <item name="android:fontFamily">@font/roboto</item>
+           <!-- Status bar color. -->
+      <!--  <item name="android:shadowColor">@color/blue_50</item>
+        <item name="android:spotShadowAlpha">0.6</item>
+        <item name="android:ambientShadowAlpha">0.6</item>
+        <item name="android:outlineAmbientShadowColor" tools:ignore="NewApi">@color/blue_50</item>
+        <item name="android:outlineSpotShadowColor" tools:targetApi="p">@color/blue_50</item>
+-->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="textAppearanceHeadline4">@style/TextAppearance.Title</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.Subtitle</item>
+
+
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="full_screen_dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/white</item>
+
+    </style>
+</resources>

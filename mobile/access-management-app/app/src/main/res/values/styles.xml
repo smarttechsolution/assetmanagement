@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<resources>
+
+
+    <style name="ButtonAppearance.MyApp.Circle" parent="Widget.MaterialComponents.Button">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/blue_500</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearanceCircle</item>
+        <item name="rippleColor">@color/blue_50</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.MyApp.Circle</item>
+    </style>
+
+    <style name="TextAppearanceCircle">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="DialogTitleAppearance" parent="Widget.MaterialComponents.TextView">
+        <item name="android:padding">12dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">#036ECA</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="DialogPositiveButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:backgroundTint">#036ECA</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">12dp</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="DialogNegativeButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:backgroundTint">#F5F5F6</item>
+        <item name="android:textColor">#9E9FA0</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+
+    <style name="MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="materialAlertDialogTitlePanelStyle">@style/TitlePanelStyle</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/DialogTitleStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/DialogNeutralButtonStyle</item>
+
+    </style>
+
+    <style name="DialogNeutralButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">#ffffff</item>
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="backgroundTint">#036ECA</item>
+    </style>
+
+
+    <style name="TitlePanelStyle" parent="MaterialAlertDialog.MaterialComponents">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">#036ECA</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+
+    <style name="DialogTitleStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Panel">
+        <item name="android:textColor">#ffffff</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="MaintenanceDetailTextStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textColor">#7F8086</item>
+    </style>
+
+
+    <style name="ImageOnlyButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="iconTint">@color/blue_500</item>
+        <item name="android:backgroundTint">@android:color/white</item>
+    </style>
+
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/bg_edittext</item>
+        <item name="android:padding">@dimen/view_padding</item>
+        <item name="hintTextColor">#B4B7B9</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:layout_marginTop">@dimen/view_margin_medium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Body2</item>
+    </style>
+
+    <style name="EditTextStyleUnit" parent="EditTextStyle">
+        <item name="android:background">@drawable/bg_edittext_unit</item>
+    </style>
+
+    <style name="TextStyleUnit" parent="Widget.MaterialComponents.TextView">
+        <item name="android:background">@drawable/bg_text_unit</item>
+        <item name="android:text">@string/service_units</item>
+        <item name="android:paddingLeft">@dimen/view_padding_large</item>
+        <item name="android:paddingRight">@dimen/view_padding_large</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/gray_600</item>
+        <item name="android:textAppearance">@style/TextAppearance.Caption</item>
+    </style>
+
+    <style name="TextStyleUnit.MG" parent="TextStyleUnit">
+        <item name="android:text">@string/service_mg_per_litre</item>
+    </style>
+
+
+    <style name="TextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@drawable/bg_textview</item>
+        <item name="android:padding">@dimen/view_padding</item>
+        <item name="hintTextColor">#B4B7B9</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:layout_marginTop">@dimen/view_margin_medium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Body2</item>
+
+    </style>
+
+
+    <style name="TabLayoutStyle" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabIndicatorFullWidth">true</item>
+        <item name="android:background">#F5F5F6</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabIndicator">@drawable/bg_tab</item>
+        <item name="tabIndicatorHeight">38dp</item>
+        <item name="tabIndicatorGravity">center</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="tabTextAppearance">@style/TabTextAppearance</item>
+    </style>
+
+
+    <style name="TabTextAppearance">
+        <item name="android:textColor">#0373D3</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="CalendarButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+
+        <item name="android:textAppearance">@style/CalendarButtonStyle.TextAppearance</item>
+    </style>
+
+    <style name="CalendarButtonStyle.TextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textColor">#0373D3</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="TextButtonAppearance" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAppearance">@style/TextAppearance.Subtitle</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="TextAppearance.Title" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+
+    </style>
+
+    <style name="TextAppearance.Subtitle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="font">@font/roboto</item>
+    </style>
+
+
+    <style name="TextAppearance.Body" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+
+    <style name="TextAppearance.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="TextAppearance.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".cashbook.ui.close.CloseCashbookDialogFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideBegin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/fragment_vertical_margin" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/fragment_vertical_margin" />
+
+
+    <TextView
+        android:id="@+id/labelClosCashbookTitle"
+        style="@style/DialogTitleAppearance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_close"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/labelCloseCashbookConfirmationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:text="@string/close_cashbook_dialog_confirmation_title"
+        android:textAppearance="@style/TextAppearance.Body"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintTop_toBottomOf="@id/labelClosCashbookTitle" />
+
+    <TextView
+        android:id="@+id/labelCloseCashbookConfirmationMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:text="@string/close_cashbook_dialog_confirmation_message"
+        android:textAppearance="@style/TextAppearance.Body"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintTop_toBottomOf="@id/labelCloseCashbookConfirmationTitle" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectPicture"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:text="@string/action_select_picture"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.Body2"
+        android:textColor="@color/gray_200"
+        app:icon="@drawable/ic_camera"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintTop_toBottomOf="@id/labelCloseCashbookConfirmationMessage" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCapturePicture"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_capture_picture"
+        android:textAllCaps="false"
+        android:textColor="@color/gray_200"
+        android:textAppearance="@style/TextAppearance.Body2"
+        app:icon="@drawable/ic_camera"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectPicture" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSelectedImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/btnCapturePicture"
+        tools:listitem="@layout/item_selected_image" />
+
+
+    <Button
+        android:id="@+id/btnConfirm"
+        style="@style/DialogPositiveButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/action_confirm"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btnCancel"
+        app:layout_constraintTop_toBottomOf="@id/rvSelectedImage" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        style="@style/TextButtonAppearance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/action_cancel"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@id/btnConfirm"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnConfirm" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

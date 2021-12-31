@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="@dimen/view_corner_radius_rounded"
+    app:cardElevation="0dp"
+    tools:context=".service.ui.supplyService.SupplyServiceFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/fragment_horizontal_margin"
+            android:paddingVertical="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:id="@+id/labelAddResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/service_add_record"
+                android:textAppearance="@style/TextAppearance.Body"
+                android:textColor="@color/gray_200"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/btnShowFromDate"
+                style="@style/EditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin_medium"
+                android:drawableRight="@drawable/ic_calendar"
+                android:hint="@string/service_from_date"
+                app:layout_constraintTop_toBottomOf="@id/labelAddResult"
+                app:layout_goneMarginTop="@dimen/view_margin_large" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbToggleDates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnShowFromDate" />
+
+            <TextView
+                style="@style/TextAppearance.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/action_add_date_range"
+                app:layout_constraintBottom_toBottomOf="@id/cbToggleDates"
+                app:layout_constraintLeft_toRightOf="@id/cbToggleDates"
+                app:layout_constraintTop_toTopOf="@id/cbToggleDates" />
+
+
+            <TextView
+                android:id="@+id/btnShowToDate"
+                style="@style/EditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin_medium"
+                android:drawableRight="@drawable/ic_calendar"
+                android:hint="@string/service_to_date"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/cbToggleDates"
+                app:layout_goneMarginTop="@dimen/view_margin_large" />
+
+            <EditText
+                android:id="@+id/etTotalSupply"
+                style="@style/EditTextStyle"
+                android:inputType="numberDecimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin_medium"
+                android:hint="@string/service_total_supply"
+                app:layout_constraintTop_toBottomOf="@id/btnShowToDate" />
+
+
+            <Spinner
+                android:id="@+id/spinnerSupplyBelt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin_large"
+                android:background="@drawable/bg_spinner"
+                android:padding="@dimen/view_padding_small"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/etTotalSupply" />
+
+            <EditText
+                android:id="@+id/etEstimatedHouseholds"
+                style="@style/EditTextStyle"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin_medium"
+                android:hint="@string/service_households"
+                app:layout_constraintTop_toBottomOf="@id/spinnerSupplyBelt" />
+
+            <EditText
+                android:id="@+id/etEstimatedBeneficiaries"
+                style="@style/EditTextStyle"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin_medium"
+                android:hint="@string/service_beneficiaries"
+                app:layout_constraintTop_toBottomOf="@id/etEstimatedHouseholds" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveRecord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin_large"
+                android:text="@string/action_save_record"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/etEstimatedBeneficiaries" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</com.google.android.material.card.MaterialCardView>

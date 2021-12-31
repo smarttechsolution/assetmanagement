@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".maintenance.ui.notScheduled.AddUnScheduledLogDialogFragment">
+
+
+    <TextView
+        android:id="@+id/labelNotScheduled"
+        style="@style/DialogTitleAppearance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/maintenance_not_scheduled_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideBegin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/fragment_vertical_margin"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/fragment_vertical_margin"/>
+
+    <Spinner
+        android:id="@+id/spinnerMaintenanceLogs"
+        style="@style/TextViewStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_spinner"
+        android:padding="@dimen/view_padding_small"
+        android:overlapAnchor="false"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/labelNotScheduled" />
+    <TextView
+        android:id="@+id/btnShowDate"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        android:drawableRight="@drawable/ic_calendar"
+        android:hint="@string/add_cashbook_select_date"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/spinnerMaintenanceLogs" />
+
+    <EditText
+        android:id="@+id/etMaintenanceProblem"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/unscheduled_possible_failure"
+        android:textColor="@color/gray_600"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/btnShowDate" />
+
+    <EditText
+        android:id="@+id/etMaintenanceSolution"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/unscheduled_maintenance_action"
+        android:textColor="@color/gray_600"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/etMaintenanceProblem" />
+
+    <EditText
+        android:id="@+id/etMaintenanceInterval"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/maintenance_log_interval"
+        android:inputType="number"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/etMaintenanceSolution" />
+
+    <EditText
+        android:id="@+id/etTotalPrice"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/maintenance_log_total_cost"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/etMaintenanceInterval" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupExtraCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="etLabour,etMaterial,etReplacementCost" />
+
+    <EditText
+        android:id="@+id/etLabour"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/maintenance_log_labour_cost"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toLeftOf="@id/etMaterial"
+        app:layout_constraintTop_toBottomOf="@id/etTotalPrice" />
+
+    <EditText
+        android:id="@+id/etMaterial"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/view_margin"
+        android:layout_marginRight="@dimen/view_margin"
+        android:hint="@string/maintenance_log_material_cost"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toRightOf="@id/etLabour"
+        app:layout_constraintRight_toLeftOf="@id/etReplacementCost"
+        app:layout_constraintTop_toBottomOf="@id/etTotalPrice" />
+
+    <EditText
+        android:id="@+id/etReplacementCost"
+        style="@style/EditTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/maintenance_log_replacement_cost"
+        android:inputType="numberDecimal"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/etTotalPrice" />
+
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/cbAddExtraCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintTop_toBottomOf="@id/etLabour" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maintenance_log_add_cost_separately"
+        android:textAppearance="@style/TextAppearance.Caption"
+        android:textColor="@color/gray_400"
+        app:layout_constraintBottom_toBottomOf="@id/cbAddExtraCost"
+        app:layout_constraintLeft_toRightOf="@id/cbAddExtraCost"
+        app:layout_constraintTop_toTopOf="@id/cbAddExtraCost" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectPicture"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_select_picture"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.Body2"
+        android:textColor="@color/gray_200"
+        app:icon="@drawable/ic_camera"
+        app:layout_constraintTop_toBottomOf="@id/cbAddExtraCost"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCapturePicture"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_capture_picture"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.Body2"
+        android:textColor="@color/gray_200"
+        app:icon="@drawable/ic_camera"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectPicture" />
+
+
+    <ImageView
+        android:id="@+id/ivSelectedImage"
+        android:layout_width="@dimen/view_image_small"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/view_margin_medium"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        app:layout_constraintTop_toTopOf="@id/btnSelectPicture"
+        app:layout_constraintBottom_toBottomOf="@id/btnCapturePicture"
+        app:layout_constraintLeft_toRightOf="@id/btnSelectPicture"
+        />
+
+    <EditText
+        android:id="@+id/etMaintenanceRemarks"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        android:hint="@string/maintenance_log_entry_remarks"
+        app:layout_constraintLeft_toLeftOf="@id/guideBegin"
+        app:layout_constraintRight_toRightOf="@id/guideEnd"
+        app:layout_constraintTop_toBottomOf="@id/btnCapturePicture" />
+
+    <Button
+        android:id="@+id/btnClose"
+        style="@style/DialogNegativeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:text="@string/action_close"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@id/btnSaveLog"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etMaintenanceRemarks" />
+
+    <Button
+        android:id="@+id/btnSaveLog"
+        style="@style/DialogPositiveButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/action_save_log"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btnClose"
+        app:layout_constraintTop_toTopOf="@id/btnClose" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/clParent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F1F8FE"
+
+    android:padding="@dimen/view_padding">
+
+    <ImageView
+        android:id="@+id/ivNotificationCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_cashbook_round"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvNotificationTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/view_margin"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="#707273"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toRightOf="@id/ivNotificationCategory"
+        app:layout_constraintRight_toLeftOf="@id/tvNotificationDate"
+        app:layout_constraintTop_toTopOf="@id/ivNotificationCategory" />
+
+    <TextView
+        android:id="@+id/tvNotificationBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:textColor="#B1B4B6"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="@id/tvNotificationTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvNotificationTitle" />
+
+    <TextView
+        android:id="@+id/tvNotificationExtraInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:textColor="#B1B4B6"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="@id/tvNotificationBody"
+        app:layout_constraintTop_toBottomOf="@id/tvNotificationBody" />
+
+
+    <TextView
+        android:id="@+id/tvNotificationDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/service_to_date"
+        android:textColor="#B1B4B6"
+        android:textSize="12sp"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvNotificationTitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

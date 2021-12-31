@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".maintenance.ui.MaintenanceDetailDialogFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/beginGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/fragment_vertical_margin" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/engGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/fragment_vertical_margin" />
+
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/DialogTitleAppearance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dome tank"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/labelMainComponent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:fontFamily="@font/roboto_medium"
+        android:text="Main component"
+        android:textColor="#036ECA"
+        android:textSize="14sp"
+
+        app:layout_constraintRight_toLeftOf="@id/labelRiskScore"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <TextView
+        android:id="@+id/labelRiskScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/view_padding_small"
+        android:fontFamily="@font/roboto"
+        android:text="@string/maintenance_risk_score"
+        android:textColor="#7F8086"
+        android:textSize="12sp"
+        app:layout_constraintRight_toLeftOf="@id/tvRiskScore"
+        app:layout_constraintTop_toTopOf="@id/tvRiskScore" />
+
+    <TextView
+        android:id="@+id/tvRiskScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_risk_score"
+        android:fontFamily="@font/roboto_medium"
+        android:paddingHorizontal="@dimen/view_padding_small"
+        android:text="Risj score"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        app:layout_constraintTop_toTopOf="@id/labelMainComponent" />
+
+    <TextView
+        android:id="@+id/labelPossibleFailure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/maintenance_possible_failure_and_mitigation"
+        android:textColor="#7F8086"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintTop_toBottomOf="@id/labelMainComponent" />
+
+    <ImageView
+        android:id="@+id/ivPic"
+        android:layout_width="@dimen/view_image_medium"
+        android:layout_height="@dimen/view_image_medium"
+        android:layout_marginTop="@dimen/view_margin_medium"
+        android:src="@drawable/img"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintTop_toBottomOf="@id/labelPossibleFailure" />
+
+    <TextView
+        android:id="@+id/tvReasonFailureAndSolution"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/view_margin"
+        android:fontFamily="@font/roboto"
+        android:textColor="#7F8086"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toRightOf="@id/ivPic"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        app:layout_constraintTop_toTopOf="@id/ivPic" />
+
+
+    <LinearLayout
+        android:id="@+id/llActionDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="34dp"
+        android:background="#F5F5F6"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:paddingVertical="@dimen/fragment_vertical_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivPic">
+
+        <TextView
+            style="@style/MaintenanceDetailTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/maintenance_action_date" />
+
+        <TextView
+            android:id="@+id/tvActionDate"
+            style="@style/MaintenanceDetailTextStyle"
+            android:layout_width="match_parent"
+            android:gravity="right"
+            android:layout_height="wrap_content"
+            android:text="date" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llEstimatedCost"
+       android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="34dp"
+        android:paddingVertical="@dimen/fragment_vertical_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llActionDate">
+
+    <TextView
+        style="@style/MaintenanceDetailTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maintenance_estimated_cost" />
+
+
+    <TextView
+        android:id="@+id/tvEstimatedCost"
+        style="@style/MaintenanceDetailTextStyle"
+        android:layout_width="match_parent"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+
+         />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llResponsiblePerson"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="34dp"
+        android:background="#F5F5F6"
+        android:paddingVertical="@dimen/fragment_vertical_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llEstimatedCost">
+
+    <TextView
+        style="@style/MaintenanceDetailTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maintenance_responsible_person" />
+
+
+
+    <TextView
+        android:id="@+id/tvResponsiblePerson"
+        style="@style/MaintenanceDetailTextStyle"
+        android:layout_width="match_parent"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+        android:text="person"
+
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llInterval"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="34dp"
+        android:paddingVertical="@dimen/fragment_vertical_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llResponsiblePerson">
+
+    <TextView
+        style="@style/MaintenanceDetailTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maintenance_interval" />
+
+
+    <TextView
+        android:id="@+id/tvInterval"
+        style="@style/MaintenanceDetailTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="Interval"
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llLogEntries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#F5F5F6"
+        android:paddingHorizontal="34dp"
+        android:paddingVertical="@dimen/fragment_vertical_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llInterval">
+
+    <TextView
+        style="@style/MaintenanceDetailTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maintenance_log_entries" />
+
+
+    <TextView
+        android:id="@+id/tvLogEntries"
+        style="@style/TextAppearance.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entries"
+        android:gravity="right"
+        android:textColor="@color/gray_300"
+       />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnClose"
+        style="@style/DialogNegativeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_margin_large"
+        android:text="@string/action_close"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@id/btnAddLog"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llLogEntries" />
+
+    <Button
+        android:id="@+id/btnAddLog"
+        style="@style/DialogPositiveButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/action_add"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btnClose"
+        app:layout_constraintTop_toTopOf="@id/btnClose" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

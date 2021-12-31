@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/navigation_cashbook">
+
+    <navigation
+        android:id="@+id/navigation_maintenance"
+        app:startDestination="@id/fragmentMaintenanceHome">
+
+        <action
+            android:id="@+id/action_show_maintenance_detail"
+            app:destination="@id/dialogMaintenanceDetail" />
+
+        <action
+            android:id="@+id/action_show_not_scheduled_maintenance"
+            app:destination="@id/dialogNotScheduledMaintenance" />
+
+
+        <action
+            android:id="@+id/action_show_add_not_scheduled_maintenance"
+            app:destination="@id/dialogAddNotScheduledMaintenance"/>
+
+        <fragment
+            android:id="@+id/fragmentMaintenanceHome"
+            android:name="com.prologic.assetManagement.maintenance.ui.home.MaintenanceHomeFragment"
+            android:label="@string/title_maintenance"
+            tools:layout="@layout/fragment_maintenance_home" />
+
+        <dialog
+            android:id="@+id/dialogMaintenanceDetail"
+            android:name="com.prologic.assetManagement.maintenance.ui.MaintenanceDetailDialogFragment"
+            android:label=""
+            tools:layout="@layout/fragment_maintenance_detail_dialog">
+            <argument
+                android:name="componentId"
+                app:argType="string" />
+
+            <argument
+                android:name="componentName"
+                app:argType="string" />
+
+            <argument
+                android:name="rangeId"
+                app:argType="string" />
+
+            <argument
+                android:name="isEditable"
+                app:argType="boolean" />
+
+            <action
+                android:id="@+id/action_show_maintenance_logs_dialog"
+                app:destination="@+id/dialogMaintenanceLog" />
+        </dialog>
+
+        <dialog
+            android:id="@+id/dialogMaintenanceLog"
+            android:name="com.prologic.assetManagement.maintenance.ui.log.MaintenanceLogDialogFragment"
+            android:label=""
+            tools:layout="@layout/fragment_maintenance_log_dialog">
+            <argument
+                android:name="isEditable"
+                app:argType="boolean" />
+        </dialog>
+
+        <dialog
+            android:id="@+id/dialogNotScheduledMaintenance"
+            android:name="com.prologic.assetManagement.maintenance.ui.notScheduled.NotScheduledDialogFragment"
+            android:label=""
+            tools:layout="@layout/fragment_not_scheduled_dialog">
+
+            <argument
+                android:name="rangeId"
+                app:argType="string" />
+            <argument
+                android:name="maintenanceType"
+                app:argType="com.prologic.assetManagement.maintenance.data.MaintenanceType" />
+        </dialog>
+
+        <dialog
+            android:id="@+id/dialogAddNotScheduledMaintenance"
+            android:name="com.prologic.assetManagement.maintenance.ui.notScheduled.AddUnScheduledLogDialogFragment"
+            android:label=""
+            tools:layout="@layout/fragment_add_unscheduled_dialog">
+
+            <argument
+                android:name="rangeId"
+                app:argType="string" />
+
+
+        </dialog>
+
+    </navigation>
+
+    <navigation
+        android:id="@+id/navigation_cashbook"
+        app:startDestination="@id/fragmentCashbookHome">
+
+
+        <fragment
+            android:id="@+id/fragmentCashbookHome"
+            android:name="com.prologic.assetManagement.cashbook.ui.home.CashbookHomeFragment"
+            android:label="@string/title_cashbook"
+            tools:layout="@layout/fragment_cashbook">
+            <action
+                android:id="@+id/action_show_add_cashbook_dialog_fragment"
+                app:destination="@id/dialogFragmentAddCashbook" />
+            <action
+                android:id="@+id/action_show_close_cashbook_dialog"
+                app:destination="@id/dialogFragmentCloseCashbook" />
+
+        </fragment>
+
+        <dialog
+            android:id="@+id/dialogFragmentAddCashbook"
+            android:name="com.prologic.assetManagement.cashbook.ui.add.AddCashbookDialogFragment"
+            android:label=""
+            tools:layout="@layout/fragment_add_cashbook_dialog">
+            <argument
+                android:name="cashbookType"
+                app:argType="com.prologic.assetManagement.cashbook.data.CashbookType" />
+
+            <argument
+                android:name="cashbookId"
+                app:argType="string"
+                app:nullable="true" />
+            <argument
+                android:name="categoryId"
+                app:argType="string"
+                app:nullable="true" />
+
+            <argument
+                android:name="isWeek"
+                app:argType="boolean" />
+
+        </dialog>
+
+        <dialog
+            android:id="@+id/dialogFragmentCloseCashbook"
+            android:name="com.prologic.assetManagement.cashbook.ui.close.CloseCashbookDialogFragment"
+            android:label=""
+            tools:layout="@layout/fragment_close_cashbook_dialog">
+
+            <argument
+                android:name="date"
+                app:argType="string" />
+        </dialog>
+
+
+    </navigation>
+
+
+    <navigation
+        android:id="@+id/navigation_service"
+        app:startDestination="@id/fragmentServiceHome">
+
+        <fragment
+            android:id="@+id/fragmentServiceHome"
+            android:name="com.prologic.assetManagement.service.ui.ServiceHomeFragment"
+            android:label="@string/title_service"
+            tools:layout="@layout/fragment_service_home" />
+
+    </navigation>
+
+
+    <action
+        android:id="@+id/action_navigate_notification_from_main"
+        app:destination="@id/fragmentNotification" />
+    <fragment
+        android:id="@+id/fragmentNotification"
+        android:name="com.prologic.assetManagement.notification.ui.NotificationFragment"
+        android:label="@string/title_notification"
+        tools:layout="@layout/fragment_notification" />
+
+
+</navigation>

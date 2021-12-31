@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "676972142918",
+    "project_id": "assetmanagement-ce2bc",
+    "storage_bucket": "assetmanagement-ce2bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:676972142918:android:3bde87c00fc2cf34788547",
+        "android_client_info": {
+          "package_name": "com.prologic.assetManagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "676972142918-o7o868up288gf03go5cn83qhjmdquhq0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfNv-PBpubqsbQw8A_JzCZC-F0R79xz2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "676972142918-o7o868up288gf03go5cn83qhjmdquhq0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

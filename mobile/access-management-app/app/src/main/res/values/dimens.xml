@@ -1,0 +1,54 @@
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="fragment_horizontal_margin">16dp</dimen>
+    <dimen name="fragment_vertical_margin">16dp</dimen>
+
+    <dimen name="toolbar_text_size">20sp</dimen>
+
+    <dimen name="view_corner_radius_circle">200dp</dimen>
+    <dimen name="view_corner_radius_rounded">16dp</dimen>
+    <dimen name="view_circle_width">52dp</dimen>
+
+    <dimen name="view_circle_padding">12dp</dimen>
+    <dimen name="view_card_padding">12dp</dimen>
+
+    <dimen name="view_padding">16dp</dimen>
+    <dimen name="view_padding_large">32dp</dimen>
+    <dimen name="view_padding_small">8dp</dimen>
+
+    <dimen name="view_margin">8dp</dimen>
+    <dimen name="view_margin_medium">12dp</dimen>
+    <dimen name="view_margin_large">24dp</dimen>
+
+    <dimen name="view_image_small">60dp</dimen>
+    <dimen name="view_image_medium">120dp</dimen>
+
+    <dimen name="view_elevation">4dp</dimen>
+
+</resources>

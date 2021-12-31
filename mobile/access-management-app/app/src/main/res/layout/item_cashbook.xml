@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clParent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/fragment_horizontal_margin"
+        android:paddingVertical="@dimen/fragment_vertical_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvCashbookDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:maxWidth="100dp"
+            android:maxLines="1"
+            android:text="date"
+            android:textColor="#7F8086"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvCashbookDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/view_margin"
+            android:layout_marginRight="@dimen/view_margin"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="desc"
+            android:textColor="#7F8086"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toRightOf="@id/tvCashbookDate"
+            app:layout_constraintRight_toLeftOf="@id/tvCashbookAmount"
+            app:layout_constraintTop_toTopOf="@id/tvCashbookDate" />
+
+        <TextView
+            android:id="@+id/tvCashbookAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:maxWidth="150dp"
+            android:maxLines="1"
+            android:text="price"
+            android:textColor="#7F8086"
+            android:textSize="12sp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvCashbookDate" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- <TextView
+         app:layout_constraintTop_toBottomOf="@id/tvCashbookDate"
+         android:background="@color/gray_50"
+         android:layout_marginTop="@dimen/view_margin"
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"/>-->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupCashbookAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="btnEdit,btnDelete" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEdit"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/fragment_horizontal_margin"
+
+        android:backgroundTint="#F5F5F6"
+        app:cornerRadius="4dp"
+        app:icon="@drawable/ic_edit"
+        app:iconGravity="textStart"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btnDelete"
+        app:layout_constraintTop_toBottomOf="@id/clParent"
+        app:strokeColor="@color/blue_500"
+        app:strokeWidth="1dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDelete"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/fragment_horizontal_margin"
+        android:backgroundTint="#F5F5F6"
+        app:cornerRadius="4dp"
+        app:icon="@drawable/ic_delete"
+        app:iconGravity="textStart"
+        app:layout_constraintLeft_toRightOf="@id/btnEdit"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnEdit"
+        app:strokeColor="@color/blue_500"
+        app:strokeWidth="1dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

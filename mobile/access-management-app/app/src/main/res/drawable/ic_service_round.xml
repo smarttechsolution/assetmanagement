@@ -1,0 +1,43 @@
+<!--
+  ~ <Asset Management Water System for managing water system assets like
+  ~ finance, maintenance and supply by Community Level.>
+  ~     Copyright (C) <2021>  <Smart Tech Solution PVT. LTD.>
+  ~     This program is free software: you can redistribute it and/or
+  ~ modify it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~     This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~     You should have received a copy of the GNU Affero General Public
+  ~ License along with this program.  If not, see
+  ~ <https://www.gnu.org/licenses/>.
+  ~ Smart Tech Solution Pvt. Ltd.
+  ~ Bhakti Thapa Sadak, New Baneshwor,
+  ~ Kathmandu, Nepal
+  ~ Tel: +977-01-5245027
+  ~ Email: info@smarttech.com.np
+  ~ Website: http://www.smarttech.com.np/
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="35dp"
+    android:height="35dp"
+    android:viewportWidth="35"
+    android:viewportHeight="35">
+  <path
+      android:pathData="M17.5,34.5C12.9591,34.5 8.6901,32.7317 5.4792,29.5208C2.2683,26.3099 0.5,22.0409 0.5,17.5C0.5,12.9591 2.2683,8.6901 5.4792,5.4792C8.6901,2.2683 12.9591,0.5 17.5,0.5C22.0409,0.5 26.3099,2.2683 29.5208,5.4792C32.7317,8.6901 34.5,12.9591 34.5,17.5C34.5,22.0409 32.7317,26.3099 29.5208,29.5208C26.3099,32.7317 22.0409,34.5 17.5,34.5Z"
+      android:fillColor="#fff"
+      android:strokeColor="#00000000"/>
+  <path
+      android:pathData="M17.5,1C13.0927,1 8.9492,2.7163 5.8327,5.8327C2.7163,8.9492 1,13.0927 1,17.5C1,21.9073 2.7163,26.0508 5.8327,29.1673C8.9492,32.2837 13.0927,34 17.5,34C21.9073,34 26.0508,32.2837 29.1673,29.1673C32.2837,26.0508 34,21.9073 34,17.5C34,13.0927 32.2837,8.9492 29.1673,5.8327C26.0508,2.7163 21.9073,1 17.5,1M17.5,0C27.165,0 35,7.835 35,17.5C35,27.165 27.165,35 17.5,35C7.835,35 0,27.165 0,17.5C0,7.835 7.835,0 17.5,0Z"
+      android:fillColor="#0371d0"
+      android:strokeColor="#00000000"/>
+  <path
+      android:pathData="M21.047,11.39L16.218,11.39L16.218,9.634h2.195a0.878,0.878 0,0 0,0 -1.756L12.268,7.878a0.878,0.878 0,1 0,0 1.756h2.195L14.463,11.39L10.951,11.39A1.273,1.273 0,0 0,9.635 12.707L9.635,16.218a1.273,1.273 0,0 0,1.317 1.317h8.34L19.292,20.608a1.273,1.273 0,0 0,1.317 1.317h3.512A1.273,1.273 0,0 0,25.435 20.608L25.435,15.778A4.39,4.39 0,0 0,21.047 11.39ZM23.681,20.169L21.047,20.169L21.047,17.096A1.273,1.273 0,0 0,19.735 15.778L11.39,15.778L11.39,13.146h9.657A2.634,2.634 0,0 1,23.681 15.778Z"
+      android:fillColor="#0371d0"/>
+  <path
+      android:pathData="M22.363,22.803l-1.317,1.492a1.712,1.712 0,0 0,0.176 2.458,1.756 1.756,0 0,0 2.283,0 1.712,1.712 0,0 0,0.176 -2.458Z"
+      android:fillColor="#0371d0"/>
+</vector>
