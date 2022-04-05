@@ -18,7 +18,7 @@ export enum POSSIBILITY_OF_FAILURE_ENUM {
     HIGH = "High",
     MEDIUM = "Medium",
     LOW = "Low",
-    NORMAL = "Normal",
+    MINIMAL = "Minimal",
 }
 
 

@@ -9,7 +9,6 @@ import initialState from "../../helper/default-state";
 export interface ComponentLogsType {
   id: number;
   component: number;
-  component_name: string;
   maintenance_date: string;
   possible_failure: string;
   maintenance_action: string;
@@ -21,6 +20,7 @@ export interface ComponentLogsType {
   componant_picture: number;
   supply_belt: number;
   remarks: string;
+  log_type: "Issue" | "Maintenance";
 }
  
 

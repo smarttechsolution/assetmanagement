@@ -46,9 +46,11 @@ const VisualizationBarGraph = (props: Props) => {
     const newData: ChartDataType = {
       xAxis: props.waterSupplyData?.supply?.map((item) => `${item[props.compareKey]}`),
       total_supply: props.waterSupplyData?.supply?.map((item) => item.total_supply),
-      total_supply_avg: props.waterSupplyData?.supply?.map((item) => item.total_supply_avg),
+      total_supply_avg: props.waterSupplyData?.supply?.map((item) => item.daily_avg),
       non_revenue_water: props.waterSupplyData?.supply?.map((item) => item.non_revenue_water),
     };
+
+    console.log(props.waterSupplyData?.supply, "<<<<<<<<<<")
     setChartData(newData);
   }, [props.waterSupplyData]);
 
@@ -73,12 +75,7 @@ const VisualizationBarGraph = (props: Props) => {
       },
     }));
 
-    // const tableData = selected.map((item) => ({
-    //   name: props.options.find((opt) => opt.id === item)?.name || "",
-    //   color: props.options.find((opt) => opt.id === item)?.color || "",
-    //   data: chartData && chartData[item],
-    // }));
-
+    console.log(selectedData, "----------")
     setSeriesData(selectedData);
     // setTableData(tableData);
   }, [chartData, selected]);

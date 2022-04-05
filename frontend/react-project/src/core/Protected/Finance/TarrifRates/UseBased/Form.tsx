@@ -6,6 +6,7 @@ import FormikValidationError, {
 } from "components/React/FormikValidationError/FormikValidationError";
 import toast from "components/React/ToastNotifier/ToastNotifier";
 import Button from "components/UI/Forms/Buttons";
+import TooltipLabel from "components/UI/TooltipLabel";
 import { FieldArray, Form, Formik } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -163,7 +164,12 @@ const UseBasedForm = (props: Props) => {
             <div className="col-md-4 ">
               <div className="form-group top  mt-2">
                 <label htmlFor="" className="mr-1 pl-0 ">
-                  {t("home:applyDate")}
+                  {t("home:applyDate")}{" "}
+                  <TooltipLabel
+                    id={"apd"}
+                    text={`The date from which this record  should be applied to the system.`}
+                  />
+                  :
                 </label>
 
                 {props.scheme?.system_date_format === "nep" ? (
@@ -272,7 +278,11 @@ const UseBasedForm = (props: Props) => {
                           <div className="col-md-4">
                             <div className="form-group ">
                               <label htmlFor="" className="mr-1 pl-0 ">
-                                {t("finance:epc")}:
+                                {t("finance:epcs")}:
+                                <TooltipLabel
+                                  id={"epcs"}
+                                  text={`Estimated Paying Connections`}
+                                />
                               </label>
 
                               <input

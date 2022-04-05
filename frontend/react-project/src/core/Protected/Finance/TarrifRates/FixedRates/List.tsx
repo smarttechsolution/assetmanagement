@@ -48,10 +48,14 @@ const UseBasedList = (props: Props) => {
             <tr>
               <th style={{ borderRadius: "5px 0 0 0" }}> {t("home:sn")}</th>
               <th>{t("home:applyDate")}</th>
-              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:roh")}</th>
-              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:roi")}</th>
-              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:epch")}</th>
-              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:epci")}</th>
+              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:roht")} </th>
+              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:roit")} </th>
+              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:ropt")}</th>
+              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:roct")}</th>
+              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:epcht")}</th>
+              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:epcit")}</th>
+              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:epcpt")}</th>
+              <th style={{ whiteSpace: "break-spaces" }}>{t("finance:epcct")}</th>
               <th style={{ borderRadius: "0 5px 0 0" }}>{t("home:action")}</th>
             </tr>
           </thead>
@@ -62,18 +66,29 @@ const UseBasedList = (props: Props) => {
                   <td>{getNumberByLanguage(index + 1)}</td>
                   <td> {getNumberByLanguage(item.apply_date)}</td>
                   <td>
-                    {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_household) || "-"}{" "}
-                    | {t("home:units")}
+                    {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_household) || "-"}{" "} (Per Month)
+                    
                   </td>
                   <td>
                     {props.scheme?.currency}.{" "}
-                    {getNumberByLanguage(item.rate_for_institution) || "-"} | {t("home:unit")}
+                    {getNumberByLanguage(item.rate_for_institution) || "-"}  (Per Month)
+                  </td>
+                  <td>
+                    {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_public) || "-"}   (Per Month)
+                  </td>
+                  <td>
+                    {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_commercial) || "-"}{" "} (Per Month)
+                     
                   </td>
                   <td>
                     {getNumberByLanguage(item.estimated_paying_connection_household) || "-"} %
                   </td>
                   <td>
                     {getNumberByLanguage(item.estimated_paying_connection_institution) || "-"} %
+                  </td>
+                  <td>{getNumberByLanguage(item.estimated_paying_connection_public) || "-"} %</td>
+                  <td>
+                    {getNumberByLanguage(item.estimated_paying_connection_commercial) || "-"} %
                   </td>
                   <td className="action">
                     <div role="button" onClick={() => props.setEditData(item)}>

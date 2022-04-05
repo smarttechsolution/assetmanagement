@@ -12,7 +12,7 @@ const ManageMobileUser = (props: Props) => {
   return (
     <div className="row">
       <div className="col-12">
-        <Form editData={editData} toggle={props.toggle} />
+        <Form editData={editData} setEditData={setEditData} toggle={props.toggle} />
       </div>
       <div className="col-12">
         <List setEditData={setEditData} toggle={props.toggle}/>

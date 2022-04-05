@@ -34,6 +34,8 @@ export type IncomeExpenseResponse = {
     "total_population": string | number,
     "house_hold": string | number,
     "public_taps": string | number,
+    "public_connection": string | number,
+    "commercial_connection": string | number,
     "instutions": string | number,
     "daily_avg_supply": string | number
 }

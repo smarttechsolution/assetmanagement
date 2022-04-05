@@ -11,22 +11,25 @@ import { updateInflationparametersAction } from "store/modules/inflationParamete
 import { RootState } from "store/root-reducer";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
+import TooltipLabel from "components/UI/TooltipLabel";
 
 const validationSchema = Yup.object({
   rate: Yup.string().required("This field is required"),
-  dis_allow_edit: Yup.mixed().nullable().required("This field is required"),
 });
 
-interface Props extends PropsFromRedux {
-  editData: any;
-}
+interface Props extends PropsFromRedux {}
 
-const OtherParamaters = (props: Props) => {
+const ManageOtherParamaters = (props: Props) => {
   const { t } = useTranslation();
   const [initialData, setInitialData] = React.useState({
-    rate: "",
-    dis_allow_edit: null as null | OptionType,
+    rate: 0,
   });
+
+  React.useEffect(() => {
+    if (props.language) {
+      props.getInflationParametersAction(props.language);
+    }
+  }, [props.language]);
 
   const {
     values,
@@ -44,14 +47,17 @@ const OtherParamaters = (props: Props) => {
     onSubmit: async (values, { resetForm }) => {
       let response;
       const requestData = {
-        ...values,
-        dis_allow_edit: values?.dis_allow_edit?.value,
+        ...values, 
       };
 
-      if (props.editData) {
+      if (
+        props.inflationParametersList instanceof Array &&
+        props.inflationParametersList?.length > 0
+      ) {
+        const editData = props.inflationParametersList[0];
         response = await props.updateInflationparametersAction(
           props.language,
-          props.editData.id,
+          editData.id,
           requestData
         );
       } else {
@@ -64,8 +70,7 @@ const OtherParamaters = (props: Props) => {
           toast.success(t("home:postSuccess"));
         } else {
           setInitialData({
-            rate: "",
-            dis_allow_edit: null,
+            rate: 0,
           });
           toast.success(t("home:updateSuccess"));
         }
@@ -75,15 +80,18 @@ const OtherParamaters = (props: Props) => {
   });
 
   React.useEffect(() => {
-    if (props.editData) {
+    if (
+      props.inflationParametersList instanceof Array &&
+      props.inflationParametersList?.length > 0
+    ) {
+      const editData = props.inflationParametersList[0];
       setInitialData({
-        ...props.editData,
-        dis_allow_edit: props.editData?.dis_allow_edit
-          ? { label: "Yes", value: true }
-          : { label: "No", value: false },
+        ...editData,
       });
     }
-  }, [props.editData]);
+  }, [props.inflationParametersList]);
+
+  console.log(props.inflationParametersList, "inflationParametersList");
 
   return (
     <form
@@ -109,29 +117,7 @@ const OtherParamaters = (props: Props) => {
             <FormikValidationError name="rate" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-12">
-          <div className="form-group">
-            <label htmlFor="" className="mr-1">
-              {t("finance:daeams")} :
-            </label>
-
-            <StyledSelect
-              name="dis_allow_edit"
-              options={[
-                { label: "Yes", value: true },
-                { label: "No", value: false },
-              ]}
-              value={values.dis_allow_edit}
-              onChange={({ name, value }) => {
-                setFieldValue(name, value);
-              }}
-              onBlur={() => {
-                setFieldTouched("dis_allow_edit", true);
-              }}
-            />
-            <FormikValidationError name="dis_allow_edit" errors={errors} touched={touched} />
-          </div>
-        </div>
+        
         <div className="col-md-12 mt-2 text-right">
           <Button
             className="btn custom-btn"
@@ -150,6 +136,7 @@ const mapStateToProps = (state: RootState) => ({
   language: state.i18nextData.languageType,
   postLoading: state.inflationParametersData.postInflationParameters.isFetching,
   updateLoading: state.inflationParametersData.postInflationParameters.isFetching,
+  inflationParametersList: state.inflationParametersData.getInflationParameters.data,
 });
 
 const mapDispatchToProps = {
@@ -162,4 +149,4 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(OtherParamaters);
+export default connector(ManageOtherParamaters);

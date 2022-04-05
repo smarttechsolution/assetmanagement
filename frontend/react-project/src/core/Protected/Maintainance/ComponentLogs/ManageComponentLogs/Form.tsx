@@ -3,6 +3,7 @@ import EnglishDatePicker from "components/React/EnglishDatepicker/EnglishDatepic
 import FormikValidationError from "components/React/FormikValidationError/FormikValidationError";
 import StyledSelect from "components/React/StyledSelect/StyledSelect";
 import toast from "components/React/ToastNotifier/ToastNotifier";
+import CustomCheckBox from "components/UI/CustomCheckbox";
 import Button from "components/UI/Forms/Buttons";
 import { useFormik } from "formik";
 import React from "react";
@@ -17,9 +18,23 @@ import { getSupplyBeltsAction } from "store/modules/supplyBelts/getWaterSupplyBe
 import { RootState } from "store/root-reducer";
 import formatDate from "utils/utilsFunction/date-converter";
 import * as Yup from "yup";
+import { SRLWrapper } from "simple-react-lightbox";
+
+
+const LOG_TYPE_OPTIONS = [
+  {
+    label: "Maintenance",
+    value: "Maintenance",
+  },
+  {
+    label: "Issue",
+    value: "Issue",
+  },
+];
 
 const validationSchema = Yup.object({
   component: Yup.mixed().nullable().required("This field is required"),
+  log_type: Yup.mixed().nullable().required("This field is required"),
   maintenance_date: Yup.string().required("This field is required"),
   possible_failure: Yup.string().required("This field is required"),
   maintenance_action: Yup.string().required("This field is required"),
@@ -34,15 +49,14 @@ const validationSchema = Yup.object({
 interface Props extends PropsFromRedux {
   editData: any;
   setEditData: any;
+  toggle: any;
 }
 
 const ComponentLists = (props: Props) => {
   const { t } = useTranslation();
-
-  const [imagePreview, setImagePreview] = React.useState<any>("");
-
   const [initialData, setInitialData] = React.useState({
     component: null as null | OptionType,
+    log_type: null as null | OptionType,
     maintenance_date: "",
     possible_failure: "",
     maintenance_action: "",
@@ -52,7 +66,7 @@ const ComponentLists = (props: Props) => {
     material_cost: 0,
     replacement_cost: 0,
     remarks: "",
-    componant_picture: null as any,
+    is_cost_seggregated: false,
   });
 
   const {
@@ -73,13 +87,12 @@ const ComponentLists = (props: Props) => {
       const requestData = {
         ...values,
         component: values.component?.value,
+        cost_total: values?.is_cost_seggregated
+          ? Number(values?.material_cost) +
+            Number(values?.replacement_cost) +
+            Number(values?.labour_cost)
+          : values?.cost_total,
       };
-
-      if (values.componant_picture instanceof File) {
-        requestData.componant_picture = values.componant_picture;
-      } else {
-        delete requestData.componant_picture;
-      }
 
       if (props.editData) {
         response = await props.updateComponentLogsAction(
@@ -98,6 +111,7 @@ const ComponentLists = (props: Props) => {
         } else {
           setInitialData({
             component: null as null | OptionType,
+            log_type: null as null | OptionType,
             maintenance_date: "",
             possible_failure: "",
             maintenance_action: "",
@@ -107,12 +121,12 @@ const ComponentLists = (props: Props) => {
             material_cost: 0,
             replacement_cost: 0,
             remarks: "",
-            componant_picture: null as any,
+            is_cost_seggregated: false,
           });
           toast.success(t("home:updateSuccess"));
         }
         props.setEditData(null);
-        setImagePreview("")
+        props.toggle();
         props.getComponentLogsAction(props.language);
       } else {
         const errors = Object.values(response.data)?.map((item: any) => {
@@ -125,37 +139,24 @@ const ComponentLists = (props: Props) => {
   React.useEffect(() => {
     if (props.scheme) {
       props.getDashboardComponentInfoAction(props.language, props.scheme?.slug);
-      props.getSupplyBeltsAction(props.language, props.scheme?.slug);
     }
   }, [props.scheme]);
 
   React.useEffect(() => {
     if (props.editData) {
-      debugger;
       const editData = {
         ...props.editData,
         cost_total: props.editData?.cost_total || 0,
         labour_cost: props.editData?.labour_cost || 0,
         material_cost: props.editData?.material_cost || 0,
         replacement_cost: props.editData?.replacement_cost || 0,
-        component: { value: props.editData.component, label: props.editData.component_name  },
+        component: { value: props.editData.component, label: props.editData.component_name },
       };
       delete editData.componant_picture;
       delete editData.supply_belt;
       setInitialData(editData);
     }
   }, [props.editData]);
-
-  const handleImagePreview = (file) => {
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function () {
-      setImagePreview(reader.result);
-    };
-    reader.onerror = function (error) {
-      console.log("Error: ", error);
-    };
-  };
 
   return (
     <form
@@ -168,7 +169,7 @@ const ComponentLists = (props: Props) => {
         <div className="col-md-4">
           <div className="form-group">
             <label htmlFor="" className="mr-1 ">
-              {t("maintainance:component")} :
+              {t("maintainance:component")}
             </label>
 
             <StyledSelect
@@ -183,6 +184,26 @@ const ComponentLists = (props: Props) => {
               }}
             />
             <FormikValidationError name="component" errors={errors} touched={touched} />
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="form-group">
+            <label htmlFor="" className="mr-1 ">
+              {t("maintainance:logType")}
+            </label>
+
+            <StyledSelect
+              name="log_type"
+              options={LOG_TYPE_OPTIONS}
+              value={LOG_TYPE_OPTIONS?.find((opt: any) => opt.label === values?.log_type) || null}
+              onChange={({ name, value }) => {
+                setFieldValue(name, value && value["value"]);
+              }}
+              onBlur={() => {
+                setFieldTouched("log_type", true);
+              }}
+            />
+            <FormikValidationError name="log_type" errors={errors} touched={touched} />
           </div>
         </div>
         <div className="col-md-4">
@@ -264,75 +285,94 @@ const ComponentLists = (props: Props) => {
             <FormikValidationError name="duration" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-lg-12">
           <div className="form-group ">
-            <label htmlFor="" className="mr-1 ">
-              {t("home:total")} {t("home:cost")}:
-            </label>
-
-            <input
-              type="number"
-              className="form-control"
-              name="cost_total"
-              value={values.cost_total}
-              onChange={handleChange}
-              onBlur={handleBlur}
+            <CustomCheckBox
+              id={"is_cost_seggregated"}
+              label={t("finance:icCostSegregated")}
+              checked={values.is_cost_seggregated}
+              onChange={(e) => setFieldValue("is_cost_seggregated", e.target.checked)}
             />
-            <FormikValidationError name="cost_total" errors={errors} touched={touched} />
+
+            <FormikValidationError name="is_cost_seggregated" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1 ">
-              {t("home:labor")} {t("home:cost")} :
-            </label>
+        {!values.is_cost_seggregated && (
+          <div className="col-md-4">
+            <div className="form-group ">
+              <label htmlFor="" className="mr-1 ">
+                {t("home:total")} {t("home:cost")}:
+              </label>
 
-            <input
-              type="number"
-              className="form-control"
-              name="labour_cost"
-              value={values.labour_cost}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            <FormikValidationError name="labour_cost" errors={errors} touched={touched} />
+              <input
+                type="number"
+                className="form-control"
+                name="cost_total"
+                value={values.cost_total}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FormikValidationError name="cost_total" errors={errors} touched={touched} />
+            </div>
           </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1 ">
-              {t("home:material")} {t("home:cost")} :
-            </label>
+        )}
+        {values.is_cost_seggregated && (
+          <div className="col-md-4">
+            <div className="form-group ">
+              <label htmlFor="" className="mr-1 ">
+                {t("home:labor")} {t("home:cost")} :
+              </label>
 
-            <input
-              type="number"
-              className="form-control"
-              name="material_cost"
-              value={values.material_cost}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            <FormikValidationError name="material_cost" errors={errors} touched={touched} />
+              <input
+                type="number"
+                className="form-control"
+                name="labour_cost"
+                value={values.labour_cost}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FormikValidationError name="labour_cost" errors={errors} touched={touched} />
+            </div>
           </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1 ">
-              {t("home:replacement")} {t("home:cost")} :
-            </label>
+        )}
+        {values.is_cost_seggregated && (
+          <div className="col-md-4">
+            <div className="form-group ">
+              <label htmlFor="" className="mr-1 ">
+                {t("home:material")} {t("home:cost")} :
+              </label>
 
-            <input
-              type="number"
-              className="form-control"
-              name="replacement_cost"
-              value={values.replacement_cost}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            <FormikValidationError name="replacement_cost" errors={errors} touched={touched} />
+              <input
+                type="number"
+                className="form-control"
+                name="material_cost"
+                value={values.material_cost}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FormikValidationError name="material_cost" errors={errors} touched={touched} />
+            </div>
           </div>
-        </div>
+        )}
+        {values.is_cost_seggregated && (
+          <div className="col-md-4">
+            <div className="form-group ">
+              <label htmlFor="" className="mr-1 ">
+                {t("home:replacement")} {t("home:cost")} :
+              </label>
 
+              <input
+                type="number"
+                className="form-control"
+                name="replacement_cost"
+                value={values.replacement_cost}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FormikValidationError name="replacement_cost" errors={errors} touched={touched} />
+            </div>
+          </div>
+        )}
         <div className="col-md-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 ">
@@ -349,53 +389,36 @@ const ComponentLists = (props: Props) => {
             <FormikValidationError name="remarks" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1">
-              {t("finance:componentPicture")}:
+        {props.editData?.componant_picture && (
+          <div className="col-md-12">
+            <label htmlFor="" className="mr-1 ">
+              Component Picture:
             </label>
-
-            <input
-              type="file"
-              accept="image/png, image/jpeg"
-              className="form-control"
-              name="componant_picture"
-              onChange={(e) => {
-                if (e.target.files) {
-                  setFieldValue(e.target.name, e.target.files[0]);
-                  handleImagePreview(e.target.files[0]);
-                }
-              }}
-              onBlur={handleBlur}
-            />
-            <FormikValidationError name="next_action" errors={errors} touched={touched} />
-          </div>
-        </div>
-
-        {imagePreview || props.editData?.componant_picture ? (
-          <div className="col-md-4">
-            <div className="form-group ">
-              <div className="align-vertical justify-content-end">
+            <div className="cursor-pointer">
+              <SRLWrapper> 
                 <img
-                  src={imagePreview || props.editData?.componant_picture}
+                  src={props.editData?.componant_picture}
                   alt=""
-                  width={150}
-                  height={100}
+                  className="component-log-image"
                 />
-              </div>
+              </SRLWrapper>
             </div>
           </div>
-        ) : (
-          <></>
         )}
 
         <div className="col-md-12 mt-2 text-right">
           <Button
-            className="btn custom-btn"
+            className="btn custom-btn mr-2"
             text={t("home:save")}
             type="submit"
             disabled={props.postLoading || props.updateLoading}
             loading={props.postLoading || props.updateLoading}
+          />
+          <Button
+            className="btn custom-btn-outlined mr-3"
+            text={t("home:cancel")}
+            onClick={() => props.toggle()}
+            type="button"
           />
         </div>
       </div>
@@ -409,12 +432,8 @@ const mapStateToProps = (state: RootState) => ({
   updateLoading: state.componentLogs.updateComponentLogs.isFetching,
   scheme: state.waterSchemeData.waterSchemeDetailsData.data,
   componentInfoOptions: state.maintainanceData.dashboardComponentInfoData.data?.map((item) => ({
-    label: item.component?.name || "",
-    value: item.id,
-  })),
-  supplyBeltOptions: state.supplyBeltsData.getSupplyBeltData.data?.map((item) => ({
-    label: item.name,
-    value: item.id,
+    label: item?.component?.name,
+    value: item?.component?.id,
   })),
 });
 

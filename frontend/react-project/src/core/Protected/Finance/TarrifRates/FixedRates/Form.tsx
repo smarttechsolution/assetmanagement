@@ -14,6 +14,7 @@ import formatDate from "utils/utilsFunction/date-converter";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import { getUsIncomeEstimateThisYearAction } from "store/modules/waterTarrifs/getIncomeEstimateThisYear";
+import TooltipLabel from "components/UI/TooltipLabel";
 
 interface Props extends PropsFromRedux {
   editData;
@@ -23,9 +24,13 @@ interface Props extends PropsFromRedux {
 const validationSchema = Yup.object({
   rate_for_institution: Yup.string().required("This field is required"),
   rate_for_household: Yup.string().required("This field is required"),
+  rate_for_public: Yup.string().required("This field is required"),
+  rate_for_commercial: Yup.string().required("This field is required"),
   apply_date: Yup.string().required("This field is required"),
   estimated_paying_connection_household: Yup.string().required("This field is required"),
   estimated_paying_connection_institution: Yup.string().required("This field is required"),
+  estimated_paying_connection_public: Yup.string().required("This field is required"),
+  estimated_paying_connection_commercial: Yup.string().required("This field is required"),
 });
 
 const UseBasedForm = (props: Props) => {
@@ -34,9 +39,13 @@ const UseBasedForm = (props: Props) => {
     terif_type: "Fixed",
     rate_for_institution: "",
     rate_for_household: "",
+    rate_for_public: "",
+    rate_for_commercial: "",
     apply_date: "",
     estimated_paying_connection_household: "",
     estimated_paying_connection_institution: "",
+    estimated_paying_connection_public: "",
+    estimated_paying_connection_commercial: "",
   });
 
   React.useEffect(() => {
@@ -45,9 +54,13 @@ const UseBasedForm = (props: Props) => {
         terif_type: "Fixed",
         rate_for_institution: "",
         rate_for_household: "",
-        apply_date: props.scheme?.tool_start_date || "",
+        rate_for_public: "",
+        rate_for_commercial: "",
+        apply_date: "",
         estimated_paying_connection_household: "",
         estimated_paying_connection_institution: "",
+        estimated_paying_connection_public: "",
+        estimated_paying_connection_commercial: "",
       });
     }
   }, [props.scheme]);
@@ -81,9 +94,13 @@ const UseBasedForm = (props: Props) => {
               terif_type: "Fixed",
               rate_for_institution: "",
               rate_for_household: "",
+              rate_for_public: "",
+              rate_for_commercial: "",
               apply_date: "",
               estimated_paying_connection_household: "",
               estimated_paying_connection_institution: "",
+              estimated_paying_connection_public: "",
+              estimated_paying_connection_commercial: "",
             });
             // props.getOtherExpensesAction(props.language);
             toast.success(t("home:updateSuccess"));
@@ -117,10 +134,14 @@ const UseBasedForm = (props: Props) => {
       }}
     >
       <div className="row align-items-end">
-        <div className="col-md-4">
+        <div className="col-md-2">
           <div className="form-group mt-2">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:applyDate")}
+              <TooltipLabel
+                id={"apd"}
+                text={`The date from which this record  should be applied to the system.`}
+              />
             </label>
 
             {props.scheme?.system_date_format === "nep" ? (
@@ -148,7 +169,7 @@ const UseBasedForm = (props: Props) => {
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-2">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:roh")}
@@ -164,7 +185,7 @@ const UseBasedForm = (props: Props) => {
             <FormikValidationError name="rate_for_household" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-2">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:roi")}
@@ -180,10 +201,43 @@ const UseBasedForm = (props: Props) => {
             <FormikValidationError name="rate_for_institution" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-2">
+          <div className="form-group ">
+            <label htmlFor="" className="mr-1 label pl-0">
+              {t("finance:rop")}
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="rate_for_public"
+              value={values.rate_for_public}
+              onChange={handleChange}
+            />
+            <FormikValidationError name="rate_for_public" errors={errors} touched={touched} />
+          </div>
+        </div>
+        <div className="col-md-2">
+          <div className="form-group ">
+            <label htmlFor="" className="mr-1 label pl-0">
+              {t("finance:roc")}
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="rate_for_commercial"
+              value={values.rate_for_commercial}
+              onChange={handleChange}
+            />
+            <FormikValidationError name="rate_for_commercial" errors={errors} touched={touched} />
+          </div>
+        </div>
+        <div className="col-md-2">
           <div className="form-group">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:epch")}
+              <TooltipLabel id={"roh"} text={`Estimated Paying Connection Household`} />
             </label>
 
             <input
@@ -200,10 +254,11 @@ const UseBasedForm = (props: Props) => {
             />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-2">
           <div className="form-group">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:epci")}
+              <TooltipLabel id={"epci"} text={`Estimated Paying Connection Institution`} />
             </label>
 
             <input
@@ -215,6 +270,50 @@ const UseBasedForm = (props: Props) => {
             />
             <FormikValidationError
               name="estimated_paying_connection_institution"
+              errors={errors}
+              touched={touched}
+            />
+          </div>
+        </div>
+        <div className="col-md-2">
+          <div className="form-group">
+            <label htmlFor="" className="mr-1 label pl-0">
+              {t("finance:epcp")}
+              <TooltipLabel id={"epcp"} text={`Estimated Paying Connection Public`} />
+
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="estimated_paying_connection_public"
+              value={values.estimated_paying_connection_public}
+              onChange={handleChange}
+            />
+            <FormikValidationError
+              name="estimated_paying_connection_public"
+              errors={errors}
+              touched={touched}
+            />
+          </div>
+        </div>
+        <div className="col-md-2">
+          <div className="form-group">
+            <label htmlFor="" className="mr-1 label pl-0">
+              {t("finance:epcc")}
+              <TooltipLabel id={"epcc"} text={`Estimated Paying Connection Commercial`} />
+
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="estimated_paying_connection_commercial"
+              value={values.estimated_paying_connection_commercial}
+              onChange={handleChange}
+            />
+            <FormikValidationError
+              name="estimated_paying_connection_commercial"
               errors={errors}
               touched={touched}
             />

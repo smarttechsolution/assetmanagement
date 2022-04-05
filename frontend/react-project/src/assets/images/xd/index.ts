@@ -16,6 +16,9 @@ import CameraIcon from './Camera.svg'
 import DeleteIcon from './Delete.svg'
 import EditIconDark from './EditIcon.svg'
 import Notifications from './notifications.svg'
+import PrintIcon from './Print.svg'
+import QuestionIcon from './Question.svg'
+import ViewIcon from './View.svg'
 
 export {
     HomeIcon,
@@ -35,5 +38,8 @@ export {
     CameraIcon,
     DeleteIcon,
     EditIconDark,
-    Notifications
+    Notifications,
+    PrintIcon,
+    QuestionIcon,
+    ViewIcon
 }

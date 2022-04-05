@@ -13,8 +13,8 @@ export type WaterTarrifsType = {
     evening_to_time: string
     from_day:string
     id:string
-    morning_from_time: string
-    morning_to_time: string
+    time_from: string
+    time_to: string
     supply_belts:string
     to_day: string
 

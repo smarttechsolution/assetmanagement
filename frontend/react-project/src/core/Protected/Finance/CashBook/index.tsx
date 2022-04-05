@@ -2,8 +2,9 @@ import classnames from "classnames";
 import NepaliDatePicker from "components/React/Datepicker/Datepicker";
 import { ADToBS } from "components/React/Datepicker/Datepickerutils";
 import EnglishDatePicker from "components/React/EnglishDatepicker/EnglishDatepicker";
+import CustomRadio from "components/UI/CustomRadio";
 import { GeneralCard } from "components/UI/GeneralCard";
-import { getMonthByLanguage, getMonthByLanguageAndScheme } from "i18n/i18n";
+import { getMonthByLanguageAndScheme } from "i18n/i18n";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect, ConnectedProps } from "react-redux";
@@ -11,13 +12,19 @@ import { Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap
 import { RootState } from "store/root-reducer";
 import formatDate from "utils/utilsFunction/date-converter";
 import CashbookExpenditureTable from "./Expenditure/CashbookExpenditureTable";
-import CashbookTable from "./Income/CashbookTable";
+import CashbookIncomeTable from "./Income/CashbookTable";
+
+import CashbookIncomeTableByDate from "./CashBookByDate/CashbookTable";
+import CashbookExpenseTableByDate from "./CashBookByDate/CashbookExpenditureTable";
 
 interface Props extends PropsFromRedux {}
 
 const CashBook = (props: Props) => {
   const [activeTab, setActiveTab] = useState("1");
+  const [cashbookType, setCashbookType] = useState("byMonth");
   const [activeDate, setActiveDate] = useState<any>("");
+  const [startDate, setStartDate] = useState<any>("");
+  const [endDate, setEndDate] = useState<any>("");
 
   React.useEffect(() => {
     if (props.schemeDetails) {
@@ -27,7 +34,7 @@ const CashBook = (props: Props) => {
         setActiveDate(formatDate(new Date()));
       }
     }
-  }, [props.schemeDetails]); 
+  }, [props.schemeDetails]);
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -38,14 +45,42 @@ const CashBook = (props: Props) => {
     <div className="container py-3 cash-book">
       <GeneralCard
         title={`${t("cashbook:cashbook")}  
+        ${
+          cashbookType === "byMonth"
+            ? `
+          (${
+            activeDate
+              ? getMonthByLanguageAndScheme(
+                  activeDate.split("-")[1],
+                  props.schemeDetails?.system_date_format
+                )
+              : ""
+          })
+          `
+            : `
+            (${
+              startDate
+                ? getMonthByLanguageAndScheme(
+                    startDate.split("-")[1],
+                    props.schemeDetails?.system_date_format
+                  )
+                : ""
+            } -  ${
+                endDate
+                  ? getMonthByLanguageAndScheme(
+                      endDate.split("-")[1],
+                      props.schemeDetails?.system_date_format
+                    )
+                  : ""
+              } )
+            `
+        }
 
-        (${
-          activeDate ? getMonthByLanguageAndScheme(activeDate.split("-")[1], props.schemeDetails?.system_date_format) : ""
-        })`}
+        `}
       >
         <div className="cash-content">
           <div className="flex-between">
-            <Nav tabs>
+            <Nav tabs style={{ flex: 1 }}>
               <NavItem>
                 <NavLink
                   className={classnames({ active: activeTab === "1" })}
@@ -68,40 +103,166 @@ const CashBook = (props: Props) => {
               </NavItem>
             </Nav>
 
-            <div>
-              <div className="form-group my-0 mr-3">
-                {props.schemeDetails?.system_date_format === "nep" ? (
-                  <NepaliDatePicker
-                    className="form-control"
-                    name="name_en"
-                    value={activeDate}
-                    onChange={(e) => {
-                      setActiveDate(e);
-                    }}
-                  />
-                ) : (
-                  <EnglishDatePicker
-                    name="eng"
-                    value={activeDate}
-                    handleChange={(e) => {
-                      setActiveDate(formatDate(e));
-                    }}
-                  />
-                )}
+            <div className="row justify-content-end" style={{ flex: 1 }}>
+              <div className="col-4">
+                <div className="d-flex">
+                  <div className="mr-2">
+                    <CustomRadio
+                      label={t("finance:byDate")}
+                      id="byDate"
+                      name="byDate"
+                      value={"byDate"}
+                      checked={cashbookType === "byDate"}
+                      onChange={(e) => setCashbookType(e.target.value)}
+                    />
+                  </div>
+                  <div className="ml-2">
+                    <CustomRadio
+                      label={t("finance:byMonth")}
+                      id="byMonth"
+                      name="byMonth"
+                      value={"byMonth"}
+                      checked={cashbookType === "byMonth"}
+                      onChange={(e) => setCashbookType(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
+              {cashbookType === "byDate" && (
+                <>
+                  <div className="col-4">
+                    <div className="form-group my-0 mr-3">
+                      <div className="row">
+                        <div className="col-4">
+                          <label htmlFor="">Date From</label>
+                        </div>
+                        <div className="col-8">
+                          {props.schemeDetails?.system_date_format === "nep" ? (
+                            <NepaliDatePicker
+                              className="form-control"
+                              name="name_en"
+                              value={startDate}
+                              onChange={(e) => {
+                                setStartDate(e);
+                              }}
+                            />
+                          ) : (
+                            <EnglishDatePicker
+                              name="eng"
+                              value={startDate}
+                              handleChange={(e) => {
+                                setStartDate(formatDate(e));
+                              }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <div className="form-group my-0 mr-3">
+                      <div className="row">
+                        <div className="col-4">
+                          <label htmlFor="">Date To</label>
+                        </div>
+                        <div className="col-8">
+                          {props.schemeDetails?.system_date_format === "nep" ? (
+                            <NepaliDatePicker
+                              className="form-control"
+                              name="name_en"
+                              value={endDate}
+                              onChange={(e) => {
+                                setEndDate(e);
+                              }}
+                            />
+                          ) : (
+                            <EnglishDatePicker
+                              name="eng"
+                              value={endDate}
+                              handleChange={(e) => {
+                                setEndDate(formatDate(e));
+                              }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {cashbookType === "byMonth" && (
+                <>
+                  <div className="col-6">
+                    <div className="form-group my-0 mr-3">
+                      <div className="row">
+                        <div className="col-4">
+                          <label htmlFor="">Select Month</label>
+                        </div>
+                        <div className="col-8">
+                          {props.schemeDetails?.system_date_format === "nep" ? (
+                            <NepaliDatePicker
+                              className="form-control"
+                              name="name_en"
+                              value={startDate}
+                              onChange={(e) => {
+                                setActiveDate(e);
+                              }}
+                            />
+                          ) : (
+                            <EnglishDatePicker
+                              name="eng"
+                              value={startDate}
+                              handleChange={(e) => {
+                                setActiveDate(formatDate(e));
+                              }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
           <TabContent activeTab={activeTab} className="mt-2">
             <TabPane tabId="1">
               <Row>
-                <Col sm="12">{activeTab === "1" && <CashbookTable activeDate={activeDate} activeTab={activeTab} />}</Col>
+                <Col sm="12">
+                  {activeTab === "1" && (
+                    <>
+                      {cashbookType === "byMonth" ? (
+                        <CashbookIncomeTable activeDate={activeDate} activeTab={activeTab} />
+                      ) : (
+                        <CashbookIncomeTableByDate
+                          activeDate={startDate}
+                          endDate={endDate}
+                          activeTab={activeTab}
+                        />
+                      )}
+                    </>
+                  )}
+                </Col>
               </Row>
             </TabPane>
             <TabPane tabId="2">
               <Row>
                 <Col sm="12">
-                  <CashbookExpenditureTable activeDate={activeDate} activeTab={activeTab} />
+                  {activeTab === "2" && (
+                    <>
+                      {cashbookType === "byMonth" ? (
+                        <CashbookExpenditureTable activeDate={activeDate} activeTab={activeTab} />
+                      ) : (
+                        <CashbookExpenseTableByDate
+                          activeDate={startDate}
+                          endDate={endDate}
+                          activeTab={activeTab}
+                        />
+                      )}
+                    </>
+                  )}
                 </Col>
               </Row>
             </TabPane>

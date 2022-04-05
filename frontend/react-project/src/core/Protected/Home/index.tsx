@@ -5,16 +5,14 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "store/root-reducer";
 import Beneficiaries from "./Beneficiaries";
 import GeneralInfo from "./GeneralInfo";
+import InflationParameters from "./InflationParameters";
 import MobileUser from "./MobileUser";
-import SupplyBelts from "./SupplyBelts";
 import SupplySchedule from "./SupplySchedule";
- 
 
 interface IProps extends PropsFromRedux {}
 
-const HomeMain = (props: IProps) => { 
-
-  const {t} = useTranslation('home')
+const HomeMain = (props: IProps) => {
+  const { t } = useTranslation("home");
 
   return (
     <div className="container py-3">
@@ -27,9 +25,6 @@ const HomeMain = (props: IProps) => {
           <div className="my-3">
             <Beneficiaries />
           </div>
-          <div className="my-3">
-            <SupplyBelts />
-          </div>  
         </div>
         <div className="col-lg-4 col-md-6 ">
           <div className="mb-3 mobile">
@@ -40,10 +35,13 @@ const HomeMain = (props: IProps) => {
 
             {/* <TarrifRate /> */}
             <div className="home-right-card">
-              <h6 className="home-right-title">{t('home:tariffRates')}</h6>
+              <h6 className="home-right-title">{t("home:tariffRates")}</h6>
               <Tariff />
             </div>
- 
+            <div className="home-right-card">
+              {/* <h6 className="home-right-title">{t("finance:inflationRate")}</h6> */}
+              <InflationParameters />
+            </div>
           </div>
         </div>
       </div>

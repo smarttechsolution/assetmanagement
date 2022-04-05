@@ -8,10 +8,13 @@ import { getIncomeExpenseAction } from "store/modules/report/incomeExpense";
 import { RootState } from "store/root-reducer";
 import IncomeExpendGraph from "./IncomeExpendGraph";
 import IncomeExpendGraphThisYear from "./IncomeExpendGraphThisYear";
+
 interface Props extends PropsFromRedux {}
 
 const IncomeExpend = (props: Props) => {
   const { t } = useTranslation(["home"]);
+
+  const component = React.useRef<any>(null);
 
   const [activeTab, setActiveTab] = useState("1");
 
@@ -31,7 +34,7 @@ const IncomeExpend = (props: Props) => {
 
   return (
     <div className="container py-3 cash-book">
-      <GeneralCard title={t("home:incomeExpenditure")}>
+      <GeneralCard title={t("home:incomeExpenditure")} print={true} >
         <div className="cash-content">
           <div className="flex-between">
             <Nav tabs>
@@ -56,10 +59,12 @@ const IncomeExpend = (props: Props) => {
                 </NavLink>
               </NavItem>
             </Nav>
-            <span className="info-text">{t("home:allAmountInRupee")} {props.currency}</span>
+            <span className="info-text">
+              {t("home:allAmountInRupee")} {props.currency}
+            </span>
           </div>
 
-          <TabContent activeTab={activeTab} className="mt-2">
+          <TabContent activeTab={activeTab} className="mt-2" ref={component}>
             <TabPane tabId="1">
               <Row>
                 <Col sm="12">{activeTab === "1" && <IncomeExpendGraph />}</Col>

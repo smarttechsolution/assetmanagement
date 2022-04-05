@@ -81,14 +81,29 @@ const Tariff = (props: IProps) => {
               <>
                 <div className="tariff-content-header">
                   <h6>{t("home:rateInstitution")}</h6>
-                  <h6>{t("home:rateHousehold")}</h6>
-                </div>
-                <div className="tariff-content">
                   <p>
-                    {props.schemeDetails?.currency} {item?.rate_for_institution} | {t("home:units")}
+                    {props.schemeDetails?.currency} {item?.rate_for_institution}
                   </p>
+                </div>
+                <div className="tariff-content-header">
+                  <h6>{t("home:rateHousehold")}</h6>
+
                   <p>
-                    {props.schemeDetails?.currency} {item?.rate_for_household} | {t("home:units")}
+                    {props.schemeDetails?.currency} {item?.rate_for_household}
+                  </p>
+                </div>
+                <div className="tariff-content-header">
+                  <h6>{t("home:ratePublic")}</h6>
+
+                  <p>
+                    {props.schemeDetails?.currency} {item?.rate_for_public}
+                  </p>
+                </div>
+                <div className="tariff-content-header">
+                  <h6>{t("home:rateCommercial")}</h6>
+
+                  <p>
+                    {props.schemeDetails?.currency} {item?.rate_for_commercial}
                   </p>
                 </div>
               </>
@@ -96,10 +111,9 @@ const Tariff = (props: IProps) => {
           </div>
         ))}
 
-      {props.waterTarrifs?.length < 1 &&
-        (props.useBasedWaterTarrifs?.length < 1 && (
-          <small className="d-block text-center">{t("home:noData")}</small>
-        ))}
+      {props.waterTarrifs?.length < 1 && props.useBasedWaterTarrifs?.length < 1 && (
+        <small className="d-block text-center">{t("home:noData")}</small>
+      )}
     </>
   );
 };

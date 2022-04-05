@@ -13,6 +13,8 @@ import { RootState } from "store/root-reducer";
 
 interface Props extends PropsFromRedux {
   setEditData: any;
+  toggle: any;
+  issueType?: any;
 }
 
 const ManageComponentLists = (props: Props) => {
@@ -21,11 +23,27 @@ const ManageComponentLists = (props: Props) => {
   const { editId, modal, handleDeleteClick, resetDeleteData, toggleModal } =
     useDeleteConfirmation();
 
+  const [logTypeData, setLogTypeData] = React.useState<any>([]);
+
   React.useEffect(() => {
     if (props.language) {
       props.getComponentLogsAction(props.language);
     }
   }, [props.language]);
+
+  React.useEffect(() => {
+    if (props.componentInfoLogs) {
+      if (props.issueType) {
+        const issueLogs = props.componentInfoLogs.filter((item) => item.log_type === "Issue");
+        setLogTypeData(issueLogs);
+      } else {
+        const maintainanceLog = props.componentInfoLogs.filter(
+          (item) => item.log_type !== 'Issue'
+        );
+        setLogTypeData(maintainanceLog);
+      }
+    }
+  }, [props.componentInfoLogs, props.issueType]);
 
   const handleDelete = async () => {
     const response: any = await props.deleteComponentLogsAction(editId);
@@ -36,7 +54,7 @@ const ManageComponentLists = (props: Props) => {
     } else {
       toast.error(t("home:deleteError"));
     }
-    toggleModal()
+    toggleModal();
   };
 
   const handleEditClick = (id) => {
@@ -62,7 +80,7 @@ const ManageComponentLists = (props: Props) => {
             </tr>
           </thead>
           <tbody>
-            {props.componentInfoLogs?.map((item, index) => (
+            {logTypeData?.map((item, index) => (
               <tr key={item.id}>
                 <td>{getNumberByLanguage(index + 1)}</td>
                 <td> {item.component_name}</td>
@@ -71,7 +89,13 @@ const ManageComponentLists = (props: Props) => {
                 <td> {item.cost_total}</td>
 
                 <td className="action">
-                  <div role="button" onClick={() => props.setEditData(item)}>
+                  <div
+                    role="button"
+                    onClick={() => {
+                      props.setEditData(item);
+                      props.toggle();
+                    }}
+                  >
                     <img src={EditIconDark} alt="" />
                   </div>
                   <div role="button" onClick={() => handleDeleteClick(item.id)}>

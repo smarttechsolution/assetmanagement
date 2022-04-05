@@ -47,30 +47,29 @@ const CashbookExpenditureTable = (props: Props) => {
   const { editId, modal, handleDeleteClick, resetDeleteData, toggleModal } =
     useDeleteConfirmation();
 
-  const fetCashbookDetails = () => {
-    getExpenditureAction(
-      language,
-      schemeSlug,
-      props.activeDate?.split("-")[0] ||
-        getDefaultDate(schemeDetails?.system_date_format)?.split("-")[0],
-      props.activeDate?.split("-")[1] ||
-        getDefaultDate(schemeDetails?.system_date_format)?.split("-")[1]
-    );
-    getExpenditureCategoryAction(schemeSlug);
-    getPreviousExpenditureTotalAction(
-      language,
-      schemeSlug,
-      props.activeDate?.split("-")[0] ||
-        getDefaultDate(schemeDetails?.system_date_format)?.split("-")[0],
-      props.activeDate?.split("-")[1] ||
-        getDefaultDate(schemeDetails?.system_date_format)?.split("-")[1]
-    );
-  };
+  // 2020 = 2020
+  // props.activeDate?.split("-")[1] =9
 
   useEffect(() => {
     if (language && schemeSlug && schemeDetails && props.activeTab) {
       if (props.activeTab === "2") {
-        fetCashbookDetails();
+        getExpenditureAction(
+          language,
+          schemeSlug,
+          props.activeDate?.split("-")[0] ||
+            getDefaultDate(schemeDetails?.system_date_format)?.split("-")[0],
+          props.activeDate?.split("-")[1] ||
+            getDefaultDate(schemeDetails?.system_date_format)?.split("-")[1]
+        );
+        getExpenditureCategoryAction(schemeSlug);
+        getPreviousExpenditureTotalAction(
+          language,
+          schemeSlug,
+          props.activeDate?.split("-")[0] ||
+            getDefaultDate(schemeDetails?.system_date_format)?.split("-")[0],
+          props.activeDate?.split("-")[1] ||
+            getDefaultDate(schemeDetails?.system_date_format)?.split("-")[1]
+        );
       }
     }
   }, [language, props.activeDate, schemeSlug, schemeDetails, props.activeTab]);
@@ -82,7 +81,7 @@ const CashbookExpenditureTable = (props: Props) => {
       const response = await props.deleteExpenditureAction(editId);
       if (response.status === 204) {
         toast.success(t("home:deleteSuccess"));
-        fetCashbookDetails();
+        props.getExpenditureAction(props.language, props.schemeSlug);
         resetDeleteData();
       } else {
         toast.error(t("home:deleteError"));

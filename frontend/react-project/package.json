@@ -1,6 +1,6 @@
 {
     "name": "khanipani",
-    "version": "1.0.0",
+    "version": "1.0",
     "private": true,
     "author": {
         "name": "",
@@ -36,10 +36,12 @@
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.2",
         "react-select": "^4.0.2",
+        "react-to-print": "^2.14.4",
         "react-toastify": "^6.2.0",
         "reactstrap": "^8.7.1",
         "redux": "^4.0.5",
         "redux-thunk": "^2.3.0",
+        "simple-react-lightbox": "^3.6.9-0",
         "typescript": "^4.1.3",
         "web-vitals": "^0.2.4",
         "yup": "^0.32.8"

@@ -14,12 +14,16 @@ const NotFound = lazy(() => import("core/Public/404"))
 const InternalHome = lazy(() => import("core/Protected/Home"));
 const InternalTarrifRates = lazy(() => import("core/Protected/Finance/TarrifRates"));
 const InternalOtherExpense = lazy(() => import("core/Protected/Finance/OtherExpense"));
+const InflationParamters = lazy(() => import("core/Protected/Finance/InflationParamters"));
 const InternalCashBook = lazy(() => import("core/Protected/Finance/CashBook"));
 const InternalQualityTestParameters = lazy(() => import("core/Protected/Service/QualityTestParameters"));
 const InternalAssetComponents = lazy(() => import("core/Protected/Maintainance/AssetComponent"));
 const InternalComponentLogs = lazy(() => import("core/Protected/Maintainance/ComponentLogs"));
-const InternalManageCategories = lazy(() => import("core/Protected/Maintainance/ManageCategories")); 
+const InternalManageCategories = lazy(() => import("core/Protected/Maintainance/ManageCategories"));
 const InternalUpdateNotifications = lazy(() => import("core/Protected/Notifications/UpdateNotifications"));
+const ManageWaterTestResult = lazy(() => import("core/Protected/Service/WaterTestResult"));
+const WaterSupplyRecord = lazy(() => import("core/Protected/Service/WaterSupplyRecord"));
+const WaterQualityTest = lazy(() => import("core/Protected/Service/ParametersTest"));
 
 
 const appRoutes: CustomRoute[] = [
@@ -79,6 +83,11 @@ const appRoutes: CustomRoute[] = [
                 type: "authorized",
             },
             {
+                path: "/auth/inflation-parameters",
+                component: InflationParamters,
+                type: "authorized",
+            },
+            {
                 path: "/auth/cash-book",
                 component: InternalCashBook,
                 type: "authorized",
@@ -102,12 +111,27 @@ const appRoutes: CustomRoute[] = [
                 path: "/auth/quality-test-parameters",
                 component: InternalQualityTestParameters,
                 type: "authorized",
-            }, 
+            },
             {
                 path: "/auth/update-notification",
                 component: InternalUpdateNotifications,
                 type: "authorized",
             },
+            {
+                path: "/auth/water-quality-test",
+                component: WaterQualityTest,
+                type: "authorized",
+            },
+            {
+                path: "/auth/water-supply-record",
+                component: WaterSupplyRecord,
+                type: "authorized",
+            },
+            // {
+            //     path: "/auth/water-test-result",
+            //     component: ManageWaterTestResult,
+            //     type: "authorized",
+            // },
 
 
             {

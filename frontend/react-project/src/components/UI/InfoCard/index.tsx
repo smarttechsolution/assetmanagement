@@ -20,7 +20,7 @@ export const InfoCard = ({ children, title, subTitle, value, first, second }: Pr
     (state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency
   );
 
-  console.log(getEnglishNumberFromNepali(value) , "englishnumber");
+  console.log(getEnglishNumberFromNepali(value), "englishnumber");
 
   return (
     <div className="infoCard">
@@ -29,7 +29,7 @@ export const InfoCard = ({ children, title, subTitle, value, first, second }: Pr
       </div>
 
       <div className="infoCard-mid-content">
-        <p className="infoCard-sub-title">{subTitle}</p>
+        {subTitle && <p className="infoCard-sub-title">{subTitle}</p>}
 
         {first ? (
           <h1
@@ -45,12 +45,7 @@ export const InfoCard = ({ children, title, subTitle, value, first, second }: Pr
             {currency} {value}
           </h1>
         ) : second ? (
-          <h1
-            className="infoCard-price "
-            style={{ fontFamily: language === "en" ? " Roboto" : "" }}
-          >
-            <img src={UserIcon} alt="" className="userIcon" /> {value}
-          </h1>
+          <></>
         ) : (
           <h1 className="infoCard-price" style={{ fontFamily: language === "en" ? " Roboto" : "" }}>
             {value}

@@ -51,28 +51,28 @@ const LineChart = (props: Props) => {
     {
       id: "actual_income",
       name: `${t("home:actual")} ${t("home:income")}`,
-      color: "rgb(0,256,136)",
+      color: "#4DFFFF",
     },
     {
       id: "actual_expense",
       name: `${t("home:actual")} ${t("home:expense")}`,
-      color: "rgb(255,77,77)",
+      color: "#FF4D4D",
     },
     {
       id: "actual_cf",
       name: `${t("home:accf")}`,
-      color: "#193cf4",
+      color: "#c47df7",
     },
-    { id: "expected_income", name: `${t("home:expected")} ${t("home:income")}`, color: "#607D8B" },
+    { id: "expected_income", name: `${t("home:expected")} ${t("home:income")}`, color: "#fbc757" },
     {
       id: "expected_expense",
       name: `${t("home:expected")} ${t("home:expense")}`,
-      color: "#FEEB3B",
+      color: "#041C44",
     },
     {
       id: "expected_cf",
       name: `${t("home:eccf")}`,
-      color: "#19BCD4",
+      color: "#1d9a36",
     },
   ];
 

@@ -48,16 +48,18 @@ const LineChart = (props: Props) => {
 
   useEffect(() => {
     const newData: ChartDataType = {
-      xAxis: props.waterSupplyData?.supply.map(
+      xAxis: props.waterSupplyData?.supply?.map(
         (item, index) =>
           `${t("home:year")} ${getNumberByLanguage(index + 1)} -  ${getNumberByLanguage(
             getYearFromDate(item.date_from)
           )} - ${getNumberByLanguage(getYearFromDate(item.date_to))}`
       ),
 
-      total_supply_avg: props.waterSupplyData?.supply.map((item) => item.total_supply_avg),
-      total_supply: props.waterSupplyData?.supply.map((item) => item.total_supply),
-      non_revenue_water: props.waterSupplyData?.supply.map((item) => item.non_revenue_water),
+      total_supply_avg: props.waterSupplyData?.supply?.map((item) => Number(item.total_supply_avg)),
+      total_supply: props.waterSupplyData?.supply?.map((item) => Number(item.total_supply)),
+      non_revenue_water: props.waterSupplyData?.supply?.map((item) =>
+        Number(item.non_revenue_water)
+      ),
     };
     setChartData(newData);
   }, [props.waterSupplyData]);
@@ -72,7 +74,7 @@ const LineChart = (props: Props) => {
   };
 
   useEffect(() => {
-    const selectedData = selected.map((item) => ({
+    const selectedData = selected?.map((item) => ({
       ...config,
       name: props.options.find((opt) => opt.id === item)?.name || "",
       data: chartData && chartData[item],
@@ -81,7 +83,7 @@ const LineChart = (props: Props) => {
       },
     }));
 
-    const tableData = selected.map((item) => ({
+    const tableData = selected?.map((item) => ({
       name: props.options.find((opt) => opt.id === item)?.name || "",
       color: props.options.find((opt) => opt.id === item)?.color || "",
       data: chartData && chartData[item],
@@ -90,6 +92,8 @@ const LineChart = (props: Props) => {
     setSeriesData(selectedData);
     setTableData(tableData);
   }, [chartData, selected]);
+
+  console.log(seriesData, ">>seriesData")
 
   const optionData = {
     tooltip: {
@@ -142,7 +146,7 @@ const LineChart = (props: Props) => {
         <p>Visualization Parameters</p>
 
         <ul>
-          {props.options.map((item) => (
+          {props.options?.map((item) => (
             <li key={item.id}>
               <CustomCheckBox
                 id={"" + item.id}

@@ -16,11 +16,11 @@ export type TestParametersType = {
     slug: string
     system_built_date: string
     system_date_format: string
-    system_operation_from: string
-    system_operation_to: string
+    longitude: any
+    latitude: any
     tool_start_date: string 
     currency: string 
-    water_source: any[]
+    water_source: string
 }
 
 const apiDetails = Object.freeze(apiList.waterScheme.getSchemeDetails);

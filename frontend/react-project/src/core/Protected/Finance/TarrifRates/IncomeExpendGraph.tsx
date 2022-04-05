@@ -4,6 +4,7 @@ import { getNumberByLanguage } from "i18n/i18n";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect, ConnectedProps } from "react-redux";
+import { getExpenseCumulativeAction } from "store/modules/report/expenseCumilitiveCashFlow";
 import { getIncomeExpenseAction } from "store/modules/report/incomeExpense";
 import { RootState } from "store/root-reducer";
 import { getYearFromDate } from "utils/utilsFunction/date-converter";
@@ -19,23 +20,29 @@ const IncomeExpendGraph = (props: Props) => {
   const [expense, setExpense] = useState<(string | number)[]>([]);
 
   useEffect(() => {
-    props.getIncomeExpenseAction(props.language, props.schemeSlug);
-  }, []);
+    if (props.schemeSlug) {
+      props.getExpenseCumulativeAction(props.schemeSlug);
+    }
+  }, [props.schemeSlug]);
 
   useEffect(() => {
     if (incomeExpenseData) {
-      const yearArray = incomeExpenseData?.income?.map(
+      const yearArray = incomeExpenseData?.expected_income?.map(
         (item) =>
-          `${t("home:year")} ${getNumberByLanguage(item.year_num)} -  ${getNumberByLanguage(
-            getYearFromDate(item.year_from)
-          )} - ${getNumberByLanguage(getYearFromDate(item.year_to))}`
+          ` ${getNumberByLanguage(getYearFromDate(item.date_from))} - ${getNumberByLanguage(
+            getYearFromDate(item.date_to)
+          )}`
       );
-      const incomeArray = incomeExpenseData?.income?.map((item) => item.total_amount);
+      const incomeArray = incomeExpenseData?.expected_income?.map((item) => item.income_amount);
+      const expenseArray = incomeExpenseData?.expected_expense?.map((item) => item.expense_amount);
 
       setYears(yearArray);
       setIncome(incomeArray);
+      setExpense(expenseArray);
     }
   }, [incomeExpenseData]);
+
+  console.log(incomeExpenseData, "<<<<<<<<incomeExpenseData");
 
   return (
     <>
@@ -83,25 +90,33 @@ const IncomeExpendGraph = (props: Props) => {
               type: "line",
               smooth: true,
               data: income,
-              lineStyle: { color: "rgb(0,256,136)" },
+              lineStyle: { color: "#4DFFFF" },
+            },
+            {
+              name: `${t("home:total")} ${t("home:expense")} `,
+              type: "line",
+              smooth: true,
+              data: expense,
+              lineStyle: { color: "#ff4D4D" },
             },
           ],
         }}
       />
 
-      <IncomeExpendTable heading={years} income={income} />
+      <IncomeExpendTable heading={years} income={income} expense={expense} />
     </>
   );
 };
 
 const mapStateToProps = (state: RootState) => ({
-  incomeExpenseData: state.reportData.incomeExpenseData.data,
   language: state.i18nextData.languageType,
   schemeSlug: state.waterSchemeData.waterSchemeDetailsData.data?.slug,
+  incomeExpenseData: state.reportData.expenseCumulativeCashFlowData.data,
 });
 
 const mapDispatchToProps = {
   getIncomeExpenseAction: getIncomeExpenseAction,
+  getExpenseCumulativeAction: getExpenseCumulativeAction,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -8,9 +8,11 @@ import updateIncomeCategories from './updateIncomeCategories';
 import updateIncome from './updateIncome';
 import deleteIncome from './deleteIncome';
 import postIncome from './postIncome';
+import getAllIncomeData from './getAllIncome';
 
 const outhReducer = combineReducers({
     getIncomeData,
+    getAllIncomeData,
     updateIncome,
     deleteIncome,
     postIncome,

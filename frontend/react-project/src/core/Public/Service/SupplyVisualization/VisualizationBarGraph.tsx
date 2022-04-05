@@ -41,9 +41,9 @@ const VisualizationBarGraph = (props: Props) => {
 
   useEffect(() => {
     const newData: ChartDataType = {
-      xAxis: props.waterSupplyData?.supply.map((item) => `${item[props.compareKey]}`),
-      total_supply: props.waterSupplyData?.supply.map((item) => item.total_supply), 
-      daily_target: props.waterSupplyData?.supply.map((item) => props.waterSupplyData?.daily_target), 
+      xAxis: props.waterSupplyData?.supply?.map((item) => `${item[props.compareKey]}`),
+      total_supply: props.waterSupplyData?.supply?.map((item) => item.total_supply), 
+      daily_target: props.waterSupplyData?.supply?.map((item) => props.waterSupplyData?.daily_target), 
     }; 
     setChartData(newData);
   }, [props.waterSupplyData]);
@@ -58,10 +58,10 @@ const VisualizationBarGraph = (props: Props) => {
   };
 
   useEffect(() => {
-    const selectedData = selected.map((item, index) => ({
+    const selectedData = selected?.map((item, index) => ({
       ...config,
       name: props.options.find((opt) => opt.id === item)?.name || "",
-      type: props.options.find((opt) => opt.id === item)?.type || "",
+      type: "bar",
       data: chartData && chartData[item],
       yAxisIndex: index,
       itemStyle: {
@@ -99,7 +99,7 @@ const VisualizationBarGraph = (props: Props) => {
     series: seriesData,
   };
 
-  console.log(seriesData, "//////////////////")
+  console.log(seriesData, "seriessdaddadadad")
 
   return (
     <div className="row">
@@ -111,7 +111,7 @@ const VisualizationBarGraph = (props: Props) => {
         <p>Visualization Parameters</p>
 
         <ul>
-          {props.options.map((item) => (
+          {props.options?.map((item) => (
             <li key={item.id}>
               <CustomCheckBox
                 id={"" + item.id}

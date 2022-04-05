@@ -1,4 +1,4 @@
-.customCheckbox {
+.custom-checkbox {
     display: block;
     position: relative;
     padding-left: 35px;
@@ -15,7 +15,7 @@
 
 /* Hide the browser's default checkbox */
 
-.customCheckbox input {
+.custom-checkbox input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -40,7 +40,7 @@
 
 /* On mouse-over, add a grey background color */
 
-.customCheckbox:hover input~.checkmark {
+.custom-checkbox:hover input~.checkmark {
     background-color: #FFF;
     border: 1px solid #0371D0;
     border-radius: 6px;
@@ -49,7 +49,7 @@
 
 /* When the checkbox is checked, add a blue background */
 
-.customCheckbox input:checked~.checkmark {
+.custom-checkbox input:checked~.checkmark {
     background-color: #FFF;
     border: 1px solid #0371D0;
     border-radius: 6px;
@@ -67,14 +67,14 @@
 
 /* Show the checkmark when checked */
 
-.customCheckbox input:checked~.checkmark:after {
+.custom-checkbox input:checked~.checkmark:after {
     display: block;
 }
 
 
 /* Style the checkmark/indicator */
 
-.customCheckbox .checkmark:after {
+.custom-checkbox .checkmark:after {
     left: 7px;
     top: 3px;
     width: 5px;

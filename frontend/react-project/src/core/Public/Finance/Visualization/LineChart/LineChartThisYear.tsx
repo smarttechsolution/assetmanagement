@@ -52,37 +52,37 @@ const LineChartThisYear = (props: Props) => {
       key: 1,
       id: "actual_income",
       name: `${t("home:actual")} ${t("home:income")}`,
-      color: "rgb(0,256,136)",
+      color: "#4DFFFF",
     },
     {
       key: 2,
       id: "actual_expense",
       name: `${t("home:actual")} ${t("home:expense")}`,
-      color: "rgb(255,77,77)",
+      color: "#FF4D4D",
     },
     {
       key: 3,
       id: "actual_cf",
       name: `${t("home:accf")}`,
-      color: "#193cf4",
+      color: "#c47df7",
     },
     {
       key: 4,
       id: "expected_income",
       name: `${t("home:expected")} ${t("home:income")}`,
-      color: "#607D8B",
+      color: "#fbc757",
     },
     {
       key: 5,
       id: "expected_expense",
       name: `${t("home:expected")} ${t("home:expense")}`,
-      color: "#FEEB3B",
+      color: "#041C44",
     },
     {
       key: 6,
       id: "expected_cf",
       name: `${t("home:eccf")}`,
-      color: "#19BCD4",
+      color: "#1d9a36",
     },
   ];
 

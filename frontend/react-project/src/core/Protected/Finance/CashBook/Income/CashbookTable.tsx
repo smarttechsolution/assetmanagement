@@ -45,30 +45,26 @@ const CashbookTable = (props: Props) => {
 
   const toggleIncomeModal = () => setIncomeModal(!incomeModal);
 
-  const fetchCashbookDetails = () => {
-    getIncomeAction(
-      language,
-      schemeSlug,
-      props.activeDate?.split("-")[0] ||
-        getDefaultDate(schemeDetails?.system_date_format)?.split("-")[0],
-      props.activeDate?.split("-")[1] ||
-        getDefaultDate(schemeDetails?.system_date_format)?.split("-")[1]
-    );
-    getIncomeCategoryAction(schemeSlug);
-    getPreviousIncomeTotalAction(
-      language,
-      schemeSlug,
-      props.activeDate?.split("-")[0] ||
-        getDefaultDate(schemeDetails?.system_date_format)?.split("-")[0],
-      props.activeDate?.split("-")[1] ||
-        getDefaultDate(schemeDetails?.system_date_format)?.split("-")[1]
-    );
-  };
-
   useEffect(() => {
     if (language && schemeSlug && schemeDetails && props.activeTab) {
       if (props.activeTab === "1") {
-        fetchCashbookDetails();
+        getIncomeAction(
+          language,
+          schemeSlug,
+          props.activeDate?.split("-")[0] ||
+            getDefaultDate(schemeDetails?.system_date_format)?.split("-")[0],
+          props.activeDate?.split("-")[1] ||
+            getDefaultDate(schemeDetails?.system_date_format)?.split("-")[1]
+        );
+        getIncomeCategoryAction(schemeSlug);
+        getPreviousIncomeTotalAction(
+          language,
+          schemeSlug,
+          props.activeDate?.split("-")[0] ||
+            getDefaultDate(schemeDetails?.system_date_format)?.split("-")[0],
+          props.activeDate?.split("-")[1] ||
+            getDefaultDate(schemeDetails?.system_date_format)?.split("-")[1]
+        );
       }
     }
   }, [language, schemeSlug, props.activeDate, schemeDetails, props.activeTab]);
@@ -80,7 +76,7 @@ const CashbookTable = (props: Props) => {
       const response = await props.deleteIncomeAction(editId);
       if (response.status === 204) {
         toast.success(t("home:deleteSuccess"));
-        fetchCashbookDetails();
+        props.getIncomeAction(props.language, props.schemeSlug);
         resetDeleteData();
       } else {
         toast.error(t("home:deleteError"));

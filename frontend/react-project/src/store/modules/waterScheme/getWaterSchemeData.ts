@@ -5,7 +5,14 @@ import { apiList } from "../../actionNames";
 import initDefaultAction, { APIResponseDetail } from "../../helper/default-action";
 import initDefaultReducer from "../../helper/default-reducer";
 import initialState from "../../helper/default-state";
-
+interface RootObject {
+    id: number;
+    household_connection: number;
+    public_connection: number;
+    commercial_connection: number;
+    institutional_connection: number;
+    apply_date: string;
+}
 
 export type YearaIntervalType = {
     apply_date: string
@@ -14,6 +21,9 @@ export type YearaIntervalType = {
     id: number
     institutional_connection: number
     public_taps: number
+    household_connection: number;
+    public_connection: number;
+    commercial_connection: number;
 }[]
 
 const apiDetails = Object.freeze(apiList.waterScheme.getWaterSchemeData);

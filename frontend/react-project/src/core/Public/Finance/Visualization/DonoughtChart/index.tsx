@@ -23,25 +23,57 @@ const DonoughtChart = (props: Props) => {
   const [incomeTableData, setIncomeTableData] = useState<any>();
   const [expenseTableData, setExpenseTableData] = useState<any>();
 
+  const getIncomeCategoryColor = (category) => {
+    if (String(category).toLocaleLowerCase().includes("house")) {
+      return "#2680eb";
+    } else if (String(category).toLocaleLowerCase().includes("inst")) {
+      return "#69a7f1";
+    } else if (String(category).toLocaleLowerCase().includes("water")) {
+      return "#e0efff";
+    } else if (String(category).toLocaleLowerCase().includes("donation")) {
+      return "#f4f9ff";
+    } else {
+      return "#accef7";
+    }
+  };
+
+  const getExpenseCategoryColor = (category) => {
+    console.log(String(category).toLocaleLowerCase(), "<<<<<<<");
+
+    if (String(category).toLocaleLowerCase().includes("indirect")) {
+      return "#f1b369";
+    } else if (String(category).toLocaleLowerCase().includes("direct")) {
+      return "#eb9126";
+    } else if (String(category).toLocaleLowerCase().includes("maint")) {
+      return "#f7d5ac";
+    } else {
+      return "#accef7";
+    }
+  };
+
   useEffect(() => {
     const seriesIncomeData: IncomeExponeseDistribution = {
       this_year: props.incomeByCategory?.income_this_year.map((item) => ({
         value: item.total_amount,
         name: item.category__name,
+        itemStyle: { color: getIncomeCategoryColor(item.category__name) },
       })),
       all_time: props.incomeByCategory?.income_all_time.map((item) => ({
         value: item.total_amount,
         name: item.category__name,
+        itemStyle: { color: getIncomeCategoryColor(item.category__name) },
       })),
     };
     const seriesExpenseData: IncomeExponeseDistribution = {
       this_year: props.expenseByCategory?.expense_this_year.map((item) => ({
         value: item.total_amount,
         name: item.category__name,
+        itemStyle: { color: getExpenseCategoryColor(item.category__name) },
       })),
       all_time: props.expenseByCategory?.expense_all_time.map((item) => ({
         value: item.total_amount,
         name: item.category__name,
+        itemStyle: { color: getExpenseCategoryColor(item.category__name) },
       })),
     };
 
@@ -71,19 +103,10 @@ const DonoughtChart = (props: Props) => {
     setExpenseDisttribution(seriesExpenseData);
   }, [props.incomeByCategory, props.expenseByCategory]);
 
-  console.log(
-    incomeDistriBution?.this_year?.reduce((sum: any, acc) => sum + (acc.value || 0), 0),
-    "asdasdasdasd"
-  );
-
-  var colorPalette = ["#0371D0", "#9457F7", "#93A3FA", "#8DE9FF"];
-
-  var colorPalette2 = ["#FF9696", "#FFCBCB", "#E1C2FC", "#FF7070"];
-
   return (
     <div className="row">
       <div className="col-lg-6">
-        <GeneralCard title={t("home:incomeDistribution")} className="mr-md-3 mt-2">
+        <GeneralCard title={t("home:incomeDistribution")} className="mr-md-3 mt-2" print={true}>
           <GeneralChart
             minHeight={250}
             options={{
@@ -108,7 +131,7 @@ const DonoughtChart = (props: Props) => {
                     show: true,
                     position: "center",
                     formatter: function () {
-                      return `Rs  ${
+                      return `${props.currency}  ${
                         getNumberByLanguage(
                           incomeDistriBution?.this_year?.reduce(
                             (sum: any, acc) => sum + (acc.value || 0),
@@ -119,7 +142,6 @@ const DonoughtChart = (props: Props) => {
                     },
                   },
                   data: incomeDistriBution?.this_year,
-                  color: colorPalette,
                 },
                 {
                   name: t("home:allTime"),
@@ -130,7 +152,7 @@ const DonoughtChart = (props: Props) => {
                     show: true,
                     position: "center",
                     formatter: function () {
-                      return `Rs  ${
+                      return `${props.currency}  ${
                         getNumberByLanguage(
                           incomeDistriBution?.all_time?.reduce(
                             (sum: any, acc) => sum + (acc.value || 0),
@@ -141,7 +163,6 @@ const DonoughtChart = (props: Props) => {
                     },
                   },
                   data: incomeDistriBution?.all_time,
-                  color: colorPalette,
                 },
               ],
             }}
@@ -153,7 +174,11 @@ const DonoughtChart = (props: Props) => {
         </GeneralCard>
       </div>
       <div className="col-lg-6">
-        <GeneralCard title={t("home:expenditureDistribution")} className="ml-md-3  mt-2">
+        <GeneralCard
+          title={t("home:expenditureDistribution")}
+          className="ml-md-3  mt-2"
+          print={true}
+        >
           <GeneralChart
             minHeight={250}
             options={{
@@ -181,7 +206,7 @@ const DonoughtChart = (props: Props) => {
                     show: true,
                     position: "center",
                     formatter: function () {
-                      return `Rs  ${getNumberByLanguage(
+                      return `${props.currency}  ${getNumberByLanguage(
                         expenseDistriBution?.this_year?.reduce(
                           (sum: any, acc) => sum + (acc.value || 0),
                           0
@@ -191,7 +216,6 @@ const DonoughtChart = (props: Props) => {
                   },
 
                   data: expenseDistriBution?.this_year,
-                  color: colorPalette2,
                 },
                 {
                   name: t("home:allTime"),
@@ -205,7 +229,7 @@ const DonoughtChart = (props: Props) => {
                     show: true,
                     position: "center",
                     formatter: function () {
-                      return `  Rs  ${getNumberByLanguage(
+                      return `  ${props.currency}  ${getNumberByLanguage(
                         expenseDistriBution?.all_time?.reduce(
                           (sum: any, acc) => sum + (acc.value || 0),
                           0
@@ -214,7 +238,6 @@ const DonoughtChart = (props: Props) => {
                     },
                   },
                   data: expenseDistriBution?.all_time,
-                  color: colorPalette2,
                 },
               ],
             }}
@@ -233,6 +256,7 @@ const mapStateToProps = (state: RootState) => ({
   language: state.i18nextData.languageType,
   incomeByCategory: state.reportData.incomeByCategoryData.data,
   expenseByCategory: state.reportData.expenseByCategoryData.data,
+  currency: state.waterSchemeData.waterSchemeDetailsData.data?.currency,
 });
 
 const mapDispatchToProps = {};

@@ -1,19 +1,16 @@
+import EnglishDatePicker from "components/React/EnglishDatepicker/EnglishDatepicker";
 import FormikValidationError from "components/React/FormikValidationError/FormikValidationError";
-import StyledSelect from "components/React/StyledSelect/StyledSelect";
 import toast from "components/React/ToastNotifier/ToastNotifier";
 import Button from "components/UI/Forms/Buttons";
-import TimeFromTo from "components/UI/Forms/InputGroup/TimeFromTo";
 import { useFormik } from "formik";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { connect, ConnectedProps } from "react-redux";
-import { getSupplyBeltsAction } from "store/modules/supplyBelts/getWaterSupplyBelts";
 import { getWaterSupplyScheduleAction } from "store/modules/waterSupplySchedule/getWaterSupplySchedule";
 import { postWaterSupplyScheduleAction } from "store/modules/waterSupplySchedule/postSupplySchedule";
 import { updateWaterSupplyScheduleAction } from "store/modules/waterSupplySchedule/updateSupplySchedule";
 import { RootState } from "store/root-reducer";
-import { formatTime } from "utils/utilsFunction/format-time";
-import { supplyBeltInitialValues, supplyBeltValidationSchema } from "./schema";
-import { useTranslation } from "react-i18next";
+import { initialValues, validationSchema } from "./schema";
 
 interface Props extends PropsFromRedux {
   editData: any;
@@ -23,30 +20,20 @@ interface Props extends PropsFromRedux {
 const Form = (props: Props) => {
   const { t } = useTranslation(["home"]);
 
-  const [suppltBeltOptions, setSupplyBeltOptions] = React.useState<OptionType[]>([]);
-  const [initialData, seetInitialData] = React.useState(supplyBeltInitialValues);
-
-  React.useEffect(() => {
-    if (props.schemeSlug && props.language) {
-      props.getSupplyBeltsAction(props.language, props.schemeSlug);
-    }
-  }, [props.language]);
-
-  React.useEffect(() => {
-    if (props.supplyBelts) {
-      const options = props.supplyBelts.map((item) => ({
-        label: item.name,
-        value: item.id,
-      }));
-      setSupplyBeltOptions(options);
-    }
-  }, [props.supplyBelts]);
+  const [initialData, seetInitialData] = React.useState(initialValues);
 
   React.useEffect(() => {
     if (props.editData) {
       seetInitialData({
         ...props.editData,
-        supply_belts: suppltBeltOptions.find((item) => item?.value === props.editData.supply_belts),
+        time_from: new Date().setHours(
+          props.editData.time_from?.split(":")[0],
+          props.editData.time_from?.split(":")[1]
+        ),
+        time_to: new Date().setHours(
+          props.editData.time_to?.split(":")[0],
+          props.editData.time_to?.split(":")[1]
+        ),
       });
     }
   }, [props.editData]);
@@ -63,17 +50,13 @@ const Form = (props: Props) => {
   } = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
-    validationSchema: supplyBeltValidationSchema,
+    validationSchema: validationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
       const requestData = {
         ...submitValue,
-        morning_from_time: formatTime(submitValue.morning_from_time),
-        morning_to_time: formatTime(submitValue.morning_to_time),
-        evening_from_time: formatTime(submitValue.evening_from_time),
-        evening_to_time: formatTime(submitValue.evening_to_time),
-        supply_belts: submitValue.supply_belts?.value,
+        time_from: formatTime(submitValue.time_from),
+        time_to: formatTime(submitValue.time_to),
       };
-
       let res;
       if (props.editData) {
         res = await props.updateWaterSupplyScheduleAction(
@@ -92,7 +75,7 @@ const Form = (props: Props) => {
           resetForm();
           toast.success(t("home:postSuccess"));
         } else {
-          seetInitialData(supplyBeltInitialValues);
+          seetInitialData(initialValues);
           toast.success(t("home:updateSuccess"));
         }
 
@@ -105,6 +88,11 @@ const Form = (props: Props) => {
     },
   });
 
+  const formatTime = (time) => {
+    const receivedTime = new Date(time).toTimeString();
+    return receivedTime.split(" ")[0];
+  };
+
   return (
     <form
       onSubmit={(e) => {
@@ -113,7 +101,7 @@ const Form = (props: Props) => {
       }}
     >
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-4">
           <div className="form-group">
             <label htmlFor="" className="mr-1 ">
               {t("home:day")}
@@ -123,51 +111,46 @@ const Form = (props: Props) => {
             <FormikValidationError name="day" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-4">
           <div className="form-group">
             <label htmlFor="" className="mr-1 ">
-              {t("home:supplyBelt")}
+              {t("home:timeFrom")}
             </label>
 
-            <StyledSelect
-              name="supply_belts"
-              value={values.supply_belts}
-              options={suppltBeltOptions}
-              onChange={({ name, value }) => {
-                setFieldValue(name, value);
+            <EnglishDatePicker
+              name="time_from"
+              value={values.time_from}
+              handleChange={(e) => {
+                setFieldValue("time_from", e);
               }}
+              showTimeSelect={true}
+              showTimeSelectOnly={true}
+              dateFormat="HH:mm"
+              timeIntervals={15}
             />
-            <FormikValidationError name="supply_belts" errors={errors} touched={touched} />
+
+            <FormikValidationError name="time_from" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-6">
-          <TimeFromTo
-            label={`${t("home:morning")}: `}
-            from_name="morning_from_time"
-            to_name="morning_to_time"
-            setFieldValue={setFieldValue}
-            values={values}
-          />
-          {errors.morning_from_time ? (
-            <FormikValidationError name="morning_from_time" errors={errors} touched={touched} />
-          ) : errors.morning_to_time ? (
-            <FormikValidationError name="morning_to_time" errors={errors} touched={touched} />
-          ) : null}
-        </div>
-        <div className="col-md-6">
-          <TimeFromTo
-            label={`${t("home:evening")}: `}
-            name="from"
-            from_name="evening_from_time"
-            to_name="evening_to_time"
-            setFieldValue={setFieldValue}
-            values={values}
-          />
-          {errors.evening_from_time ? (
-            <FormikValidationError name="evening_from_time" errors={errors} touched={touched} />
-          ) : errors.evening_to_time ? (
-            <FormikValidationError name="evening_to_time" errors={errors} touched={touched} />
-          ) : null}
+        <div className="col-md-4">
+          <div className="form-group">
+            <label htmlFor="" className="mr-1 ">
+              {t("home:timeTo")}
+            </label>
+            <EnglishDatePicker
+              name="time_to"
+              value={values.time_to}
+              handleChange={(e) => {
+                setFieldValue("time_to", e);
+              }}
+              showTimeSelect={true}
+              showTimeSelectOnly={true}
+              dateFormat="HH:mm"
+              timeIntervals={15}
+            />
+
+            <FormikValidationError name="time_to" errors={errors} touched={touched} />
+          </div>
         </div>
 
         <div className="col-12 text-right">
@@ -179,7 +162,7 @@ const Form = (props: Props) => {
               loading={props.postLoading || props.updateLoading}
             />
             <Button
-              className="btn custom-btn-outlined mr-3"
+              className="btn custom-btn-outlined"
               text={t("home:cancel")}
               onClick={() => props.toggle()}
               type="button"
@@ -195,13 +178,11 @@ const mapStateToProps = (state: RootState) => ({
   language: state.i18nextData.languageType,
   schemeSlug: state.waterSchemeData.waterSchemeDetailsData.data?.slug,
   supplySchedule: state.waterSupplyData.waterScheduleData.data,
-  supplyBelts: state.supplyBeltsData.getSupplyBeltData.data,
   postLoading: state.waterSupplyData.postWaterScheduleData.isFetching,
   updateLoading: state.waterSupplyData.updateWaterScheduleData.isFetching,
 });
 
 const mapDispatchToProps = {
-  getSupplyBeltsAction,
   postWaterSupplyScheduleAction,
   getWaterSupplyScheduleAction,
   updateWaterSupplyScheduleAction,

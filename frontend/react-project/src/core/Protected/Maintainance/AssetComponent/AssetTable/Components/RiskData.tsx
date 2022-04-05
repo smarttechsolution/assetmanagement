@@ -12,7 +12,7 @@ const RiskDataHeader = (props: HeaderProps) => {
       <th scope="col" rowSpan={2} className="vertical-header bg-red mitigation-tab small">
         {IMPACT_OF_FAILURE_ENUM.TOTAL_LOSS_OF_FUNCTION}
       </th>
-      <th scope="col" rowSpan={2} className="vertical-header bg-green  small">
+      <th scope="col" rowSpan={2} className="vertical-header bg-orange  small">
         {IMPACT_OF_FAILURE_ENUM.REDUCTION_OF_SYSTEM_FUNCTIONALITY}
       </th>
       <th scope="col" rowSpan={2} className="vertical-header bg-yellow small">
@@ -33,7 +33,7 @@ const RiskDataHeader = (props: HeaderProps) => {
         {POSSIBILITY_OF_FAILURE_ENUM.LOW}
       </th>
       <th scope="col" rowSpan={2} className="vertical-header bg-green small">
-        {POSSIBILITY_OF_FAILURE_ENUM.NORMAL}
+        {POSSIBILITY_OF_FAILURE_ENUM.MINIMAL}
       </th>
       <th scope="col" rowSpan={2} className=" text-center h6" role="button" onClick={props.onClick}>
         RISK <br />
@@ -78,7 +78,7 @@ export const RiskData = (props: BodyProps) => {
       <td
         className={`${
           props.data.impact_of_failure === IMPACT_OF_FAILURE_ENUM.HARDLY_ANY_EFFECTS
-            ? "bg-orange"
+            ? "bg-green"
             : "bg-border"
         } `}
       ></td>
@@ -106,8 +106,8 @@ export const RiskData = (props: BodyProps) => {
       ></td>
       <td
         className={`${
-          props.data.possibility_of_failure === POSSIBILITY_OF_FAILURE_ENUM.NORMAL
-            ? "bg-orange"
+          props.data.possibility_of_failure === POSSIBILITY_OF_FAILURE_ENUM.MINIMAL
+            ? "bg-green"
             : "bg-border"
         } `}
       ></td>

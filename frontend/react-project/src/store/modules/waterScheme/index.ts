@@ -5,6 +5,7 @@ import getYearIntervals from './getYearIntervals'
 import getWaterSchemeUser from './getWaterSchemeUser'
 import postWaterSchemeUser from './postWaterSchemeUser'
 import updateWaterSchemeUser from './updateWaterSchemeUser'
+import deleteWaterSchemeUser from './deleteWaterSchemeUser'
 import deleteWaterSchemeData from './deleteWaterSchemeData'
 import postWaterSchemeData from './postWaterSchemeData'
 import getWaterSchemeData from './getWaterSchemeData'
@@ -20,7 +21,8 @@ const waterSchemeReducer = combineReducers({
     deleteWaterSchemeData,
     postWaterSchemeData,
     getWaterSchemeData,
-    updateWaterSchemeData
+    updateWaterSchemeData,
+    deleteWaterSchemeUser
 })
 
 export default waterSchemeReducer

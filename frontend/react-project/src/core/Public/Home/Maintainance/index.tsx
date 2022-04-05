@@ -14,7 +14,7 @@ interface Props extends PropsFromRedux {}
 const Maintainance = (props: Props) => {
   const { t } = useTranslation(["home"]);
   const [activeTab, setActiveTab] = useState("1");
-
+  const component = React.useRef<any>(null);
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
@@ -31,7 +31,7 @@ const Maintainance = (props: Props) => {
 
   return (
     <div className="container py-3 cash-book">
-      <GeneralCard title={t("home:maintainanceCost")}>
+      <GeneralCard title={t("home:maintainance") + " " + t("home:cost")} print={true}>
         <div className="cash-content">
           <div className="flex-between">
             <Nav tabs>
@@ -57,10 +57,12 @@ const Maintainance = (props: Props) => {
               </NavItem>
             </Nav>
 
-            <span className="info-text">{t("home:allAmountInRupee")} {props.currency}</span>
+            <span className="info-text">
+              {t("home:allAmountInRupee")} {props.currency}
+            </span>
           </div>
 
-          <TabContent activeTab={activeTab} className="mt-2">
+          <TabContent activeTab={activeTab} className="mt-2" ref={component}>
             <TabPane tabId="1">
               <Row>
                 <Col sm="12">{activeTab === "1" && <MaintainanceCostChart />}</Col>
@@ -85,7 +87,6 @@ const mapStateToProps = (state: RootState) => ({
   waterTarrifs: state.waterTarrifsData.waterTarrifData.data,
   waterSupplyData: state.waterSupplyData.waterScheduleData.data,
   currency: state.waterSchemeData.waterSchemeDetailsData.data?.currency,
-
 });
 
 const mapDispatchToProps = {

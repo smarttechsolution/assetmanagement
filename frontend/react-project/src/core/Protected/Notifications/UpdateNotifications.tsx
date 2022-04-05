@@ -208,6 +208,46 @@ const GeneralInfo = (props: Props) => {
                     />
                   </div>
                 </div>
+                <div className="col-lg-6">
+                  <div className="form-group ">
+                    <label htmlFor="" className="mr-1 ">
+                      {t("home:mnb")}:
+                    </label>
+
+                    <input
+                      className="form-control"
+                      name="maintenance_notify_before"
+                      value={values.maintenance_notify_before}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    <FormikValidationError
+                      name="maintenance_notify_before"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="form-group ">
+                    <label htmlFor="" className="mr-1 ">
+                      {t("home:mna")}:
+                    </label>
+
+                    <input
+                      className="form-control"
+                      name="maintenance_notify_after"
+                      value={values.maintenance_notify_after}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    <FormikValidationError
+                      name="maintenance_notify_after"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
                 <div className="col-12 text-right mt-5">
                   <Button
                     className="btn custom-btn  mr-3"

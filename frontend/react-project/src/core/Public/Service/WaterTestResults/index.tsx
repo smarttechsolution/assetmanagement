@@ -47,7 +47,7 @@ const WaterTestResults = (props: Props) => {
 
   return (
     <div className="container py-3 cash-book">
-      <GeneralCard title={t("sidebar:qualityTestResult")}>
+      <GeneralCard title={t("sidebar:qualityTestResult")} print={true}>
         <div className="cash-content">
           <div className="flex-between">
             <Nav tabs>

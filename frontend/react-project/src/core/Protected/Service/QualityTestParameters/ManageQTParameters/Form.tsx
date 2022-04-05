@@ -12,6 +12,7 @@ import { testParametersInitialValues, testParametersValidationSchema } from "./s
 import { useTranslation } from "react-i18next";
 import { PARAMETER_TYPES_OPTIONS } from "constants/constants";
 import StyledSelect from "components/React/StyledSelect/StyledSelect";
+import TooltipLabel from "components/UI/TooltipLabel";
 
 interface Props extends PropsFromRedux {
   editData: any;
@@ -90,7 +91,7 @@ const Form = (props: Props) => {
         <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
-              {t("home:parameter")}:
+              {t("home:parameter")} {t("home:name")}:
             </label>
 
             <input
@@ -122,7 +123,7 @@ const Form = (props: Props) => {
         <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
-              {t("home:ndwq")}:
+              {t("home:ndwq")} <TooltipLabel id={"NDWQ"} text={`The quality standards for drinking water`} />:
             </label>
 
             <input

@@ -9,8 +9,7 @@ import initialState from "../../helper/default-state";
 
 export type TestParametersType = any
 
-type requestData = { 
-    username: string,
+type requestData = {  
     name: string,
     phone_number: string, 
     password1: string,

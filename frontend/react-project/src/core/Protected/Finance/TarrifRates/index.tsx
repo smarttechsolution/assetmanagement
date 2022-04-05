@@ -49,7 +49,7 @@ const Tarrifrates = (props: Props) => {
     <div className="container py-3 ">
       <div className="row">
         <div className="col-lg-12">
-          <GeneralCard title={t("home:tariffRates")}>
+          <GeneralCard title={t("sidebar:tariffRates")}>
             <div className="d-flex">
               {tariffType !== "fixed" && (
                 <div className="mr-2">
@@ -80,12 +80,12 @@ const Tarrifrates = (props: Props) => {
             {rateType === "1" ? <UserBased /> : <FixedRate />}
           </GeneralCard>
         </div>
-        <div className="col-lg-7 mt-3 ">
+        <div className="col-lg-8 mt-3 ">
           <GeneralCard title={t("finance:incomeEstimateTY")}>
             <ThisYear rateType={rateType} />
           </GeneralCard>
         </div>
-        <div className="col-lg-5 mt-3 ">
+        <div className="col-lg-4 mt-3 ">
           <GeneralCard title={t("finance:incomeEstimate")}>
             <IncomeEstimates />
           </GeneralCard>

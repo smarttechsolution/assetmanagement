@@ -13,16 +13,16 @@ const OtherExpenses = (props: Props) => {
   return (
     <div className="container py-3 ">
       <div className="row">
-        <div className="col-lg-8">
-          <GeneralCard title={t("finance:other") + " " + t("finance:parameters")}>
+        <div className="col-lg-12">
+          <GeneralCard title={t("sidebar:otherParam")}>
             <ManageOtherExpenses />
           </GeneralCard>
         </div>
-        <div className="col-lg-4">
+        {/* <div className="col-lg-4">
           <GeneralCard title={t("finance:inflation") + " " + t("finance:parameters")}>
             <ManageOtherParameters />
           </GeneralCard>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ const LineChart = (props: Props) => {
     others: TestParametersType;
   }>();
 
-  const [selected, setSelected] = useState<string[]>(props.defaultSelected);
+  const [selected, setSelected] = useState<string[]>([]);
   const [chartData, setChartData] = useState<ChartDataType>();
 
   const [seriesData, setSeriesData] = useState<SeriesConfig[]>();

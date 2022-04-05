@@ -14,7 +14,7 @@ interface Props {
 const CustomCheckBox: FC<InputProps> = ({ label, id, ...rest }) => {
   return (
     <>
-      <label className="customCheckbox" htmlFor={id}>
+      <label className="custom-checkbox" htmlFor={id}>
         {label}
         <input type="checkbox" id={id} {...rest} />
         <span className="checkmark"></span>

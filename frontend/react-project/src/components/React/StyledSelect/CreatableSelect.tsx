@@ -8,8 +8,7 @@ import Select from "react-select/creatable";
  * custom select styles
  */
 const selectStyles: Partial<any> = {
-  control: (_provided: CSSProperties, state: any) => {
-    console.log(state, "statestate");
+  control: (_provided: CSSProperties, state: any) => { 
     return {
       background: state.selectProps.searchModule
         ? "#052354"

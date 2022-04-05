@@ -31,7 +31,7 @@ type ChartDataType = {
 interface Props extends PropsFromRedux {
   type?: string;
   options: any[];
-  compareKey: string;
+  compareKey?: string;
   selectedYear: number;
   defaultSelected: string[];
 }
@@ -46,13 +46,14 @@ const LineChart = (props: Props) => {
 
   const [selected, setSelected] = useState<string[]>(props.defaultSelected);
 
+  const getDataByArray = () => {};
+
   useEffect(() => {
     if (props.intervalData && props.waterSupplyData) {
       const fiscalYearArray = getFiscalYearData(
         props.intervalData,
         props.schemeDetails?.system_date_format
       );
- 
 
       const newData: ChartDataType = {
         xAxis: fiscalYearArray?.map((item) => {
@@ -60,7 +61,7 @@ const LineChart = (props: Props) => {
         }),
         total_supply_avg: fiscalYearArray?.map((item) => {
           return (
-            props.waterSupplyData?.supply?.find((inc) => { 
+            props.waterSupplyData?.supply?.find((inc) => {
               return +inc.supply_date__month < 10
                 ? +inc.supply_date__month?.toString()?.replace("0", "") === item
                 : +inc.supply_date__month === item;
@@ -86,7 +87,7 @@ const LineChart = (props: Props) => {
           );
         }),
       };
- 
+
 
       setChartData(newData);
     }
@@ -111,6 +112,8 @@ const LineChart = (props: Props) => {
       },
     }));
 
+
+
     const tableData = selected.map((item) => ({
       name: props.options.find((opt) => opt.id === item)?.name || "",
       color: props.options.find((opt) => opt.id === item)?.color || "",
@@ -120,6 +123,9 @@ const LineChart = (props: Props) => {
     setSeriesData(selectedData);
     setTableData(tableData);
   }, [chartData, selected]);
+
+  console.log(seriesData, "<<<<<newData")
+
 
   const optionData = {
     tooltip: {

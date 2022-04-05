@@ -49,7 +49,7 @@ const UseBasedList = (props: Props) => {
               <th style={{ borderRadius: "5px 0 0 0" }}>{t("home:sn")}</th>
               <th style={{}}>{t("finance:appliedDate")}</th>
               <th style={{}}>{t("finance:unitRange")}</th>
-              <th style={{}}>{t("home:rate")}</th> <th style={{}}>{t("finance:epc")}</th>
+              <th style={{}}>{t("home:rate")}</th> <th style={{}}>{t("finance:epcs")}</th>
               <th style={{ borderRadius: "0 5px 0 0" }}>{t("home:action")}</th>
             </tr>
           </thead>
@@ -60,8 +60,7 @@ const UseBasedList = (props: Props) => {
                   <React.Fragment key={item.apply_date}>
                     {item.used_based_units?.map((tariff, index) => {
                       count = count + 1;
-
-                      console.log(tariff, "----------tarifftariff");
+ 
                       return (
                         <tr key={tariff.id}>
                           <td>{getNumberByLanguage(count)}</td>

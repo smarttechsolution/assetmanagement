@@ -8,25 +8,32 @@ import initialState from "../../helper/default-state";
 
 type UneBasedType = {
     unit: number
+    unit_from: number
+    unit_to: number
     estimated_paying_connection: number
     rate: number
     income: number
     income_total: number
 }
 
-
 export type IncomeEstimates = {
     use_base: UneBasedType[],
-    total_income: number
     beneficiary_household: number
-    institutional_connection: number
-    total_connection: number
-    public_taps: number
-    estimated_paying_connection_household: number
-    rate_for_household: number
-    estimated_paying_connection_institution: number
-    rate_for_institution: number
-    other_income: number
+    total_income: number;
+    estimated_paying_connection_household: number;
+    rate_for_household: number;
+    estimated_paying_connection_institution: number;
+    rate_for_institution: number;
+    estimated_paying_connection_public: number;
+    rate_for_public: number;
+    estimated_paying_connection_commercial: number;
+    rate_for_commercial: number;
+    household_connection: number;
+    institutional_connection: number;
+    public_connection: number;
+    commercial_connection: number;
+    total_connection: number;
+    other_income: number;
 }
 
 const apiDetails = Object.freeze(apiList.waterTarrif.incomeEstimateThisYear);

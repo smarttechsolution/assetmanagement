@@ -16,6 +16,7 @@ import EnglishDatePicker from "components/React/EnglishDatepicker/EnglishDatepic
 import StyledSelect from "components/React/StyledSelect/StyledSelect";
 import { EXPENSE_CATTEGORY } from "constants/constants";
 import CustomRadio from "components/UI/CustomRadio";
+import TooltipLabel from "components/UI/TooltipLabel";
 
 const validationSchema = Yup.object({
   apply_date: Yup.string().required("This field is required"),
@@ -99,10 +100,11 @@ const OtherExpenseForm = (props: Props) => {
       }}
     >
       <div className="row rate_form align-items-center">
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
-              {t("finance:applyDate")} :
+              {t("finance:applyDate")}{" "}
+              <TooltipLabel id={"apd"} text={`The date from which this record  should be applied to the system.`} />:
             </label>
 
             {props.scheme?.system_date_format === "nep" ? (
@@ -129,7 +131,7 @@ const OtherExpenseForm = (props: Props) => {
             <FormikValidationError name="date" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
               {t("finance:expenseHeading")} :
@@ -145,7 +147,7 @@ const OtherExpenseForm = (props: Props) => {
             <FormikValidationError name="title" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group">
             <label htmlFor="" className="mr-1">
               {t("finance:yearlyExpnd")} :
@@ -162,10 +164,10 @@ const OtherExpenseForm = (props: Props) => {
             <FormikValidationError name="yearly_expense" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group">
             <label htmlFor="" className="mr-1">
-              {t("finance:category")} :
+              {t("finance:transactionType")} :
             </label>
 
             <StyledSelect
@@ -179,7 +181,7 @@ const OtherExpenseForm = (props: Props) => {
             <FormikValidationError name="yearly_expense" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group">
             <label htmlFor="" className="mr-1">
               {t("finance:afsd")} :
@@ -194,6 +196,7 @@ const OtherExpenseForm = (props: Props) => {
                   value={1}
                   checked={values.apply_for_specific_date === true}
                   onChange={(e) => setFieldValue("apply_for_specific_date", true)}
+                  tooltipData = "If yes, the transaction will not be distributed for months"
                 />
               </div>
               <div className="ml-2">
@@ -204,6 +207,7 @@ const OtherExpenseForm = (props: Props) => {
                   value={2}
                   checked={values.apply_for_specific_date === false}
                   onChange={(e) => setFieldValue("apply_for_specific_date", false)}
+                  tooltipData= "If no, the transaction will be distributed every months"
                 />
               </div>
             </div>
@@ -211,7 +215,7 @@ const OtherExpenseForm = (props: Props) => {
             <FormikValidationError name="yearly_expense" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group">
             <label htmlFor="" className="mr-1">
               {t("finance:oneTimeCost")} :

@@ -30,17 +30,11 @@ const Beneficiaries = (props: IProps) => {
           <table className="table mt-2">
             <thead className="paddingHeader">
               <tr>
-                <th className="">{t("home:beneficiary")}</th>
-                <th>
-                  {" "}
-                  {t("home:beneficiary")} {t("home:households")}
-                </th>
-                <th>
-                  {" "}
-                  {t("home:beneficiary")} {t("home:population")}
-                </th>
-                <th> {t("home:publicTaps")}</th>
+                <th className="">{t("home:applyDate")}</th>
                 <th> {t("home:institutions")}</th>
+                <th> {t("home:commercial")}</th>
+                <th> {t("home:household")}</th>
+                <th> {t("home:public")}</th>
                 <th className="action" role="button" onClick={() => toggleModal()}>
                   <img src={EditIcon} />
                 </th>
@@ -52,10 +46,10 @@ const Beneficiaries = (props: IProps) => {
                 props.waterSchemeData?.map((item) => (
                   <tr key={item.id}>
                     <td>{getNumberByLanguage(item.apply_date)}</td>
-                    <td> {getNumberByLanguage(item.beneficiary_household)}</td>
-                    <td> {getNumberByLanguage(item.beneficiary_population)}</td>
-                    <td>{getNumberByLanguage(item.public_taps)}</td>
                     <td>{getNumberByLanguage(item.institutional_connection)}</td>
+                    <td>{getNumberByLanguage(item.commercial_connection)}</td>
+                    <td>{getNumberByLanguage(item.household_connection)}</td>
+                    <td>{getNumberByLanguage(item.public_connection)}</td>
                     <td></td>
                   </tr>
                 ))}

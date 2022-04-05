@@ -13,6 +13,16 @@ const Table = (props: IProps) => {
 
   console.log(props.incomeEstimates, "props.incomeEstimates");
 
+  const showTableOtherThanUseBased =
+    props.incomeEstimates?.rate_for_institution ||
+    props.incomeEstimates?.rate_for_household ||
+    props.incomeEstimates?.rate_for_commercial ||
+    props.incomeEstimates?.rate_for_public ||
+    props.incomeEstimates?.estimated_paying_connection_commercial ||
+    props.incomeEstimates?.estimated_paying_connection_public ||
+    props.incomeEstimates?.estimated_paying_connection_institution ||
+    props.incomeEstimates?.estimated_paying_connection_household;
+
   return (
     <div className="data-table mt-4">
       <div className="table-responsive">
@@ -20,29 +30,29 @@ const Table = (props: IProps) => {
           <thead>
             {is_used_based ? (
               <tr>
-                <th style={{  }}>{t("home:sn")}</th>
-                <th style={{  }}>{t("finance:unitRange")}</th>
-                <th style={{  }}>{t("home:rate")}</th>
-                <th style={{ whiteSpace: "break-spaces",  }} colSpan={2}>{t("finance:epc")}</th> 
-                <th style={{  }}  className="text-right">{t("home:total")}</th>
+                <th style={{}}>{t("home:sn")}</th>
+                <th style={{}}>{t("finance:unitRange")}</th>
+                <th style={{}}>{t("home:rate")}</th>
+                <th style={{ whiteSpace: "break-spaces" }} colSpan={2}>
+                  {t("finance:epc")} (%)
+                </th>
+                <th style={{}} className="text-right">
+                  {t("home:total")}
+                </th>
               </tr>
-            ) : props.incomeEstimates?.rate_for_institution ? (
+            ) : showTableOtherThanUseBased ? (
               <tr>
-                <th style={{ fontSize:12 }}>{t("home:sn")}</th>
-                <th style={{ fontSize:12 }}>
-                  {t("home:rate")} {t("home:institutions")}
-                </th>
-                <th style={{ fontSize:12 }}>
-                  {t("home:rate")} {t("home:households")}
-                </th>
-                <th style={{ whiteSpace: "break-spaces" , fontSize:12}}>
-                  {t("finance:epc")} {t("home:institutions")} (%)
-                </th>
-                <th style={{ whiteSpace: "break-spaces", fontSize:12 }}>
-                  {t("finance:epc")} {t("home:households")} (%)
-                </th>
-                <th style={{ fontSize:12 }}></th>
-                <th >{t("home:total")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:sn")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:roh")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:roi")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:rop")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:roc")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:epch")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:epci")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:epcp")}</th>
+                <th style={{ whiteSpace: "break-spaces", fontSize: 12 }}>{t("finance:epcc")}</th>
+                <th style={{ fontSize: 12 }}></th>
+                <th>{t("home:total")}</th>
               </tr>
             ) : (
               <></>
@@ -52,45 +62,68 @@ const Table = (props: IProps) => {
             {is_used_based ? (
               <>
                 {props.incomeEstimates?.use_base?.map((item, index) => (
-                  <tr key={index}> 
-                      <td>{getNumberByLanguage(index + 1)}</td> 
-                    <td> {item.unit}</td>
-                    <td> {item.rate}</td> 
-                    <td colSpan={2} >{item.estimated_paying_connection} ({props.scheme?.currency}. {item.income || "-"}) x 12</td>
-                    
+                  <tr key={index}>
+                    <td>{getNumberByLanguage(index + 1)}</td>
+                    <td> {item.unit_from} - {item.unit_to} Units</td>
+                    <td> {props.scheme?.currency} {item.rate}</td>
+                    <td colSpan={2}>
+                      {item.estimated_paying_connection} ({props.scheme?.currency}.{" "}
+                      {item.income || "-"}) x 12
+                    </td>
+
                     <td className="text-right">
-                      {props.scheme?.currency}. {item.income_total   || "-"}
+                      {props.scheme?.currency}. {item.income_total || "-"}
                     </td>
                   </tr>
                 ))}
-                
-                <tr  className="table-border-top">
-                  <td className="text-right" colSpan={5}>Other Income</td>
-                  <td  className="text-right" colSpan={3}>{props.incomeEstimates?.other_income || "-"}</td>
+
+                <tr className="table-border-top">
+                  <td className="text-right" colSpan={5}>
+                    Other Income
+                  </td>
+                  <td className="text-right" colSpan={3}>
+                    {props.incomeEstimates?.other_income || "-"}
+                  </td>
                 </tr>
-                <tr className="">   
-                  <td className="text-right" colSpan={5}>Total</td>
-                  <td colSpan={2}  className="text-right">{props.incomeEstimates?.total_income || "-"}</td>
+                <tr className="">
+                  <td className="text-right" colSpan={5}>
+                    Total
+                  </td>
+                  <td colSpan={2} className="text-right">
+                    {props.incomeEstimates?.total_income || "-"}
+                  </td>
                 </tr>
               </>
-            ) : props.incomeEstimates?.rate_for_institution ? (
+            ) : showTableOtherThanUseBased ? (
               <>
                 <tr>
                   <td>1</td>
-                  <td> {props.incomeEstimates?.rate_for_institution}</td>
-                  <td> {props.incomeEstimates?.rate_for_household}</td>
-                  <td>{props.incomeEstimates?.estimated_paying_connection_institution}</td>
-                  <td>{props.incomeEstimates?.estimated_paying_connection_household}</td>
+                  <td> {props.scheme?.currency} {props.incomeEstimates?.rate_for_household}</td>
+                  <td> {props.scheme?.currency} {props.incomeEstimates?.rate_for_institution}</td>
+                  <td> {props.scheme?.currency} {props.incomeEstimates?.rate_for_public}</td>
+                  <td> {props.scheme?.currency} {props.incomeEstimates?.rate_for_commercial}</td>
+                  <td>{props.incomeEstimates?.estimated_paying_connection_household} %</td>
+                  <td>{props.incomeEstimates?.estimated_paying_connection_institution} %</td>
+                  <td>{props.incomeEstimates?.estimated_paying_connection_public} %</td>
+                  <td>{props.incomeEstimates?.estimated_paying_connection_commercial} %</td>
                   <td></td>
                   <td>{props.incomeEstimates?.total_income}</td>
                 </tr>
-                <tr  className="table-border-top">
-                  <td className="text-right" colSpan={5}>Other Parameters</td>
-                  <td  className="text-right" colSpan={3}>{props.incomeEstimates?.other_income || "-"}</td>
+                <tr className="table-border-top">
+                  <td className="text-right" colSpan={8}>
+                    Other Expected Transactions
+                  </td>
+                  <td className="text-right" colSpan={3}>
+                    {props.incomeEstimates?.other_income || 0}
+                  </td>
                 </tr>
-                <tr  className="">
-                  <td className="text-right" colSpan={4}>Total</td>
-                  <td  className="text-right" colSpan={3}>{props.incomeEstimates?.total_income || "-"}</td>
+                <tr className="">
+                  <td className="text-right" colSpan={8}>
+                    Total
+                  </td>
+                  <td className="text-right" colSpan={3}>
+                    {props.incomeEstimates?.total_income || 0}
+                  </td>
                 </tr>
               </>
             ) : (

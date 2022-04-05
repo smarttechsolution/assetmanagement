@@ -23,6 +23,8 @@ import component from "./modules/component";
 import componentInfo from "./modules/componentInfo";
 import notifications from "./modules/notifications";
 import componentLogs from "./modules/componentLogs";
+import waterSupplyRecord from "./modules/waterSupplyRecord";
+import waterSupplyTest from "./modules/waterSupplyTest";
 
 export const appReducer = combineReducers({
     i18nextData: i18nextReducer,
@@ -45,7 +47,9 @@ export const appReducer = combineReducers({
     component,
     componentInfo,
     notifications,
-    componentLogs
+    componentLogs,
+    waterSupplyRecord,
+    waterSupplyTest
 });
 
 export type RootState = ReturnType<typeof appReducer>;

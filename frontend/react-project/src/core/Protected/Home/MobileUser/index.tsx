@@ -37,10 +37,7 @@ const MobileUser = (props: Props) => {
                   </div>
                 </div>
                 <div className="mobile-user-contact">
-                  <p className="contact">
-                    {" "}
-                    +{getNumberByLanguage(977)} - {getNumberByLanguage(item.phone_number)}
-                  </p>
+                  <p className="contact"> {getNumberByLanguage(item.phone_number)}</p>
                 </div>
               </div>
             ))}

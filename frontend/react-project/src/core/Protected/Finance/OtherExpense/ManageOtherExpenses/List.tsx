@@ -44,7 +44,7 @@ const OtherExpenseList = (props: Props) => {
           <thead>
             <tr>
               <th>{t("home:sn")}</th>
-              <th>{t("finance:category")}</th>
+              <th>{t("finance:transactionType")}</th>
               <th>{t("finance:expenseHeading")}</th>
               <th>{t("finance:yearlyExpnd")}</th>
               <th>{t("home:action")}</th>
