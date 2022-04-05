@@ -1,7 +1,6 @@
 from rest_framework.generics import CreateAPIView,ListAPIView,DestroyAPIView,RetrieveUpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from ..models import (WaterScheme,
-SupplyBelts,
 WaterSupplyRecord,
 QualityTestParameter,
 WaterTestResults,
@@ -17,7 +16,6 @@ NotificationStore,)
 from .permission import IsSuperuser
 from .serializers import (WaterSchemeSerializer,
     WaterSchemeListSerializer, 
-    SupplyBeltsSerializer,
     CreateWaterSupplyRecordSerializers,
     QualityTestParameterSerializer,
     CreateWaterTestResultsSerializers,
@@ -154,44 +152,6 @@ class WaterSchemeDataDeleteView(DestroyAPIView):
             previous.apply_upto = next_qs.apply_date
             previous.save()
             instance.delete()
-
-class SupplyBeltsListView(ListAPIView):
-    '''Supply bets lists '''
-
-    queryset = SupplyBelts.objects.all()
-    serializer_class =  SupplyBeltsSerializer
-
-    def get_queryset(self):
-        return SupplyBelts.objects.filter(water_scheme__slug = self.kwargs.get('water_scheme_slug'))
-
-class SupplyBeltsCreateView(CreateAPIView):
-    permission_classes  = [IsAuthenticated, IsSchemeAdministrator]
-    queryset = SupplyBelts.objects.all()
-    serializer_class =  SupplyBeltsSerializer
-
-    def get_queryset(self):
-        user = get_object_or_404(Users, id = self.request.user.id)
-        return SupplyBelts.objects.filter(water_scheme = user.water_scheme)
-
-class SupplyBeltsUpdateView(RetrieveUpdateAPIView):
-    permission_classes  = [IsAuthenticated, IsSchemeAdministrator]
-    queryset = SupplyBelts.objects.all()
-    serializer_class =  SupplyBeltsSerializer
-    lookup_field = 'id'
-
-    def get_object(self):
-        user = get_object_or_404(Users, id = self.request.user.id)
-        return get_object_or_404(SupplyBelts, id = self.kwargs['pk'], water_scheme = user.water_scheme)
-
-class SupplyBeltsDeleteView(DestroyAPIView):
-    permission_classes = [IsAuthenticated, IsSchemeAdministrator]
-    queryset = SupplyBelts.objects.all()
-    serializer_class = SupplyBeltsSerializer
-    lookup_field = 'id'
-
-    def get_object(self):
-        user = get_object_or_404(Users, id = self.request.user.id)
-        return get_object_or_404(SupplyBelts,id = self.kwargs['pk'],water_scheme = user.water_scheme)
 
 class WaterSupplyScheduleListView(ListAPIView):
     """Water supply schedule listing"""
@@ -433,7 +393,7 @@ class GetWaterSupplyRecordView(APIView):
                 date_nep =  nepali_datetime.date(int(date_list[0]), int(date_list[1]), int(date_list[2]))
                 date_to = date_nep.to_datetime_date()
         if date_to and date_from:
-            data = WaterSupplyRecord.objects.filter(water_scheme = user.water_scheme, supply_date__lte = date_to, supply_date__gte = date_from).distinct('total_supply','estimated_household','estimated_beneficiaries','supply_belts','is_daily')
+            data = WaterSupplyRecord.objects.filter(water_scheme = user.water_scheme, supply_date__lte = date_to, supply_date__gte = date_from).distinct('total_supply','is_daily')
             if len(data) == 1 or 0:
                 return data.get()
             raise Http404
@@ -491,10 +451,6 @@ class GetWaterResultsView(APIView):
             obj = self.get_object()
             data_main = {}
             data_main['id']=obj.id
-            if obj.supply_belts:
-                data_main['supply_belts']={'id':obj.supply_belts.id,'name':obj.supply_belts.name}
-            else:
-                data_main['supply_belts']=None
             parameters = []
             for i in obj.test_result_parameter.all():
                 parameters.append({'id':i.id, 'value':i.value, 'parameter_name':i.parameter.parameter_name})
@@ -510,7 +466,6 @@ class CreateWaterTestResultsView(CreateAPIView):
     {
       "date_from": "2021-08-24",
       "date_to": "2021-08-24",
-      "supply_belts": 0,
       "test_result_parameter": [
         {
           "parameter": 1,
@@ -581,7 +536,7 @@ class InflationParameterListView(ListAPIView):
 
     def get_queryset(self):
         user = get_object_or_404(Users, id = self.request.user.id)
-        return OtherExpenseInflationRate.objects.filter(water_scheme = user.water_scheme)
+        return OtherExpenseInflationRate.objects.filter(water_scheme = user.water_scheme)[:1]
 
 class InflationParameterCreateView(CreateAPIView):
     permission_classes  = [IsAuthenticated, IsSchemeAdministrator]
@@ -622,41 +577,31 @@ class WaterSupplyReport(APIView):
     for this month, query param used ----> ?year=2078&this_month=3
     for this week, query param used -----------> ?this_week=true&date_from=2021-1-1&todate_t0=2021-01-7
 
-    also supply_belts with above parameter ?supply_belts=1 or ?this_year=2021&supply_belts=1
     """
     def get(self, request, *args, **kwargs):
         scheme = get_object_or_404(WaterScheme, slug = self.kwargs.get('water_scheme_slug'))
-        start_year = scheme.system_operation_from.year
-        end_year = scheme.system_operation_to.year
+        # start_year = scheme.system_operation_from.year
+        # end_year = scheme.system_operation_to.year
         year_interval = scheme.year_interval.all()
         this_year = request.GET.get('this_year',None)
         this_month = request.GET.get('this_month',None)
         month_year = request.GET.get('year', None)
         this_week = request.GET.get('this_week',None)
         if this_year:
-            this_year_interval = scheme.year_interval.filter(id=this_year).get()
+            this_year_interval = scheme.year_interval.filter(year_num=this_year).get()
         
         if scheme.system_date_format == 'nep':
-            if this_month:
+            if this_month:  
                 this_month = get_month_range(int(month_year),int(this_month))
-        supply_belts = request.GET.get('supply_belts')
 
         if this_year:
             if scheme.system_date_format == 'en':
-                if supply_belts:
-                    supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_year_interval.start_date,supply_date__lte=this_year_interval.end_date,supply_belts_id=supply_belts
-                    ).values('supply_date__year','supply_date__month').annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id'))
-                else:
-                    supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_year_interval.start_date,supply_date__lte=this_year_interval.end_date
-                    ).values('supply_date__year','supply_date__month').annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id'))
+                supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_year_interval.start_date,supply_date__lte=this_year_interval.end_date
+                ).values('supply_date__year','supply_date__month').annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id'))
             else:
                 from itertools import groupby
-                if supply_belts:
-                    supply_list = list(WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_year_interval.start_date,supply_date__lte=this_year_interval.end_date,supply_belts_id=supply_belts
-                    ).order_by('supply_date__year', 'supply_date__month').values('supply_date_np','total_supply'))#.annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id')))
-                else:
-                    supply_list = list(WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_year_interval.start_date,supply_date__lte=this_year_interval.end_date
-                    ).order_by('supply_date__year', 'supply_date__month').values('supply_date_np','total_supply'))#.annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id')))
+                supply_list = list(WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_year_interval.start_date,supply_date__lte=this_year_interval.end_date
+                ).order_by('supply_date__year', 'supply_date__month').values('supply_date_np','total_supply'))#.annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id')))
                 supply_list.sort(key=lambda x:x['supply_date_np'][:7])
                 supply = []
                 for k,v in groupby(supply_list, key=lambda x:x['supply_date_np'][:7]):
@@ -675,24 +620,13 @@ class WaterSupplyReport(APIView):
 
         elif this_month:
             if scheme.system_date_format == 'en':
-                if supply_belts:
-                    supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,
-                    supply_date__month = this_month,supply_date__year= month_year, supply_belts_id=supply_belts
-                        ).values('supply_date','total_supply')
-                    daily_avg = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__month = this_month,supply_date__year= month_year,supply_belts=supply_belts
-                        ).values('supply_date').annotate(daily_avg = Avg('total_supply'), total_supply = Sum('total_supply'))
-                else:
-                    supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__month = this_month,supply_date__year= month_year
-                        ).values('supply_date').annotate(daily_avg = Avg('total_supply'), total_supply = Sum('total_supply'))
-                   
+                supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__month = this_month,supply_date__year= month_year
+                    ).values('supply_date').annotate(daily_avg = Avg('total_supply'), total_supply = Sum('total_supply'))
+               
             else:
                 from itertools import groupby
-                if supply_belts:
-                    supply_list = list(WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_month.get('month_start'),supply_date__lte=this_month.get('month_end'),supply_belts_id=supply_belts
-                    ).order_by('supply_date').values('supply_date_np','total_supply'))#.annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id')))
-                else:
-                    supply_list = list(WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_month.get('month_start'),supply_date__lte=this_month.get('month_end')
-                    ).order_by('supply_date',).values('supply_date_np','total_supply'))#.annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id')))
+                supply_list = list(WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=this_month.get('month_start'),supply_date__lte=this_month.get('month_end')
+                ).order_by('supply_date',).values('supply_date_np','total_supply'))#.annotate(total_supply_avg = Avg('total_supply'), total_supply = Sum('total_supply'), data_count = Count('id')))
                 supply_list.sort(key=lambda x:x['supply_date_np'][:10])
                 supply = []
                 for k,v in groupby(supply_list, key=lambda x:x['supply_date_np'][:10]):
@@ -725,12 +659,9 @@ class WaterSupplyReport(APIView):
                 _from = nep_to_eng_full_date(_from)
                 _to = nep_to_eng_full_date(_to)
             
-            if supply_belts:
-                supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=_from,supply_date__lt=_to,supply_belts_id=supply_belts
-                    ).values('supply_date').annotate(daily_avg = Avg('total_supply'), total_supply = Sum('total_supply'))
-            else:
-                supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=_from,supply_date__lt=_to
-                    ).values('supply_date').annotate(daily_avg = Avg('total_supply'), total_supply = Sum('total_supply'))
+            
+            supply = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=_from,supply_date__lt=_to
+                ).values('supply_date').annotate(daily_avg = Avg('total_supply'), total_supply = Sum('total_supply'))
                     
             if scheme.system_date_format == 'nep':
                 for i in supply:
@@ -743,7 +674,7 @@ class WaterSupplyReport(APIView):
             year_interval = scheme.year_interval.all()
             supply = []
             actual_water_supply = []
-            est_supply_water_value = []
+            water_sales = []
             for i in year_interval:
                 start_date = i.start_date
                 end_date =i.end_date
@@ -751,13 +682,9 @@ class WaterSupplyReport(APIView):
                     start_date = str(nepali_datetime.date.from_datetime_date(start_date))
                     end_date = str(nepali_datetime.date.from_datetime_date(end_date))
 
-                if supply_belts:
-                    data = WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=i.start_date, supply_date__lte =i.end_date,supply_belts_id=supply_belts
-                    ).aggregate(Avg('total_supply'),Sum('total_supply'),Count('id'))
-                else:
-                    data =WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=i.start_date, supply_date__lte =i.end_date
-                    ).values('supply_date__year').aggregate(Avg('total_supply'), Sum('total_supply'), Count('id'))
-                    print(data)
+                
+                data =WaterSupplyRecord.objects.filter(water_scheme = scheme,supply_date__gte=i.start_date, supply_date__lte =i.end_date
+                ).values('supply_date__year').aggregate(Avg('total_supply'), Sum('total_supply'), Count('id'))
                 
                 total_supply__avg = data.get('total_supply__avg')
                 if total_supply__avg is None:
@@ -766,31 +693,36 @@ class WaterSupplyReport(APIView):
                 if total_supply__sum is None:
                     total_supply__sum=0
                 supply.append({'date_from':start_date,'date_to':end_date,'total_supply_avg':total_supply__avg,'total_supply':total_supply__sum,'data_count':data.get('id__count')})
-                est_supply_water_value.append(total_supply__sum)
+                actual_water_supply.append(total_supply__sum)
+                
                 
                 # non_revenue income
-                income = Income.objects.filter(category__water_scheme = scheme, category__name__in = ['Water Sales','water sales'],date__gte = i.start_date, date__lte=i.end_date).aggregate(Sum('income_amount'))
-                if income:
-                    income = income.get('income_amount__sum')
-                    if income is None:
-                        income = 0
+                water_sold = Income.objects.filter(category__water_scheme = scheme, category__name__in = ['Water Sales','water sales'],date__gte = i.start_date, date__lte=i.end_date).aggregate(Sum('water_supplied'))
+                if water_sold:
+                    water_sold = water_sold.get('water_supplied__sum')
+                    if water_sold is None:
+                        water_sold = 0
+                else:
+                    water_sold = 0
 
-                tariff = WaterTeriff.objects.filter(water_scheme=scheme, terif_type='Use Based')
-                tariffs = tariff.filter(Q(Q(apply_date__lte = i.start_date) & Q(apply_upto__gte = i.end_date)) | 
-                Q(Q(apply_date__lt=i.start_date) & Q(Q(apply_upto__gt=i.start_date) & Q(apply_upto__lt = i.end_date))) | 
-                Q(Q(Q(apply_date__lt=i.start_date) | Q(apply_date__gte = i.start_date)) & Q(apply_date__lt=i.end_date) & Q(apply_upto=None)) |
-                Q(Q(apply_date__gte = i.start_date) & Q(apply_upto__lte = i.end_date)) |
-                Q(Q(apply_date__gte = i.start_date) & Q(apply_date__lt = i.end_date) & Q(apply_upto__gte = i.end_date))).values('id')
+                water_sales.append(water_sold)
 
-                datas = UseBasedUnitRange.objects.filter(tariff__id__in = [i.get('id') for i in tariffs if i is not None] )
-                units = 0
-                for data in datas:
-                    units += ((data.estimated_paying_connection/100) * income)/data.rate
-                total_usage = round(units * 1000, 0)
-                actual_water_supply.append(total_usage)
+                # tariff = WaterTeriff.objects.filter(water_scheme=scheme, terif_type='Use Based')
+                # tariffs = tariff.filter(Q(Q(apply_date__lte = i.start_date) & Q(apply_upto__gte = i.end_date)) | 
+                # Q(Q(apply_date__lt=i.start_date) & Q(Q(apply_upto__gt=i.start_date) & Q(apply_upto__lt = i.end_date))) | 
+                # Q(Q(Q(apply_date__lt=i.start_date) | Q(apply_date__gte = i.start_date)) & Q(apply_date__lt=i.end_date) & Q(apply_upto=None)) |
+                # Q(Q(apply_date__gte = i.start_date) & Q(apply_upto__lte = i.end_date)) |
+                # Q(Q(apply_date__gte = i.start_date) & Q(apply_date__lt = i.end_date) & Q(apply_upto__gte = i.end_date))).values('id')
+
+                # datas = UseBasedUnitRange.objects.filter(tariff__id__in = [i.get('id') for i in tariffs if i is not None] )
+                # units = 0
+                # for data in datas:
+                #     units += ((data.estimated_paying_connection/100) * income)/data.rate
+                # total_usage = round(units * 1000, 0)
+                # actual_water_supply.append(total_usage)
 
             non_revenue_water = []
-            zip_object = zip(actual_water_supply,est_supply_water_value)
+            zip_object = zip(actual_water_supply,water_sales)
             count = 0
             for list1_i, list2_i in zip_object:
                 supply[count]['non_revenue_water'] = list1_i-list2_i
@@ -804,19 +736,17 @@ class WaterSupplyReport(APIView):
 class WaterTestResultReport(APIView):
     """
     Report for water test result, this year and all time.
-    query param ?supply_belts=1
+    query param 
 
     """
     def get(self, request, *args, **kwargs):
         scheme = get_object_or_404(WaterScheme, slug = self.kwargs.get('water_scheme_slug'))
         year_interval = scheme.year_interval.all()
         this_year = request.GET.get('this_year',None)
-        supply_belts = request.GET.get('supply_belts',None)
 
         if this_year:
             this_year = datetime.today()
             year_interval = year_interval.filter(start_date__lte = this_year, end_date__gte = this_year)
-            # data_list = []
             from finance.api.utils import get_month_range_in_list
             for i in year_interval:
                 months = get_month_range_in_list(i, scheme.system_date_format)
@@ -826,30 +756,18 @@ class WaterTestResultReport(APIView):
                     datas['month']=month.get('month')
                     datas['year']=month.get('year')
                     if scheme.system_date_format == 'en':
-                        if supply_belts:
-                            item = WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme,
-                                test_result__supply_belts_id=supply_belts,
-                                test_result__date__year=month.get('year'),
-                                test_result__date__month=month.get('month'),
-                                )
-                            data_count = item.count()
-                        else:
-                            item = WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme,
-                            test_result__date__year=month.get('year'),
-                                test_result__date__month=month.get('month'),
-                            )
-                            data_count = item.count()
+                        item = WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme,
+                        test_result__date__year=month.get('year'),
+                            test_result__date__month=month.get('month'),
+                        )
+                        data_count = item.count()
                         data = item.values('parameter__parameter_name', 'parameter__types').annotate(total_value = Sum('value'))
                         datas['data']=data
                         datas['data_count']=data_count
                         data_list.append(datas)
                     else:
                         from itertools import groupby
-                        if supply_belts:
-                            result_list = list(WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme, test_result__date__gte=month.get('month_start'),test_result__date__lte=month.get('month_end'),test_result__supply_belts_id=supply_belts,
-                            ).order_by('test_result__date__year', 'test_result__date__month').values('test_result__date_np', 'parameter__parameter_name','parameter__types','value'))
-                        else:
-                            result_list = list(WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme, test_result__date__gte=month.get('month_start'),test_result__date__lte=month.get('month_end')).order_by('test_result__date__year', 'test_result__date__month').values('test_result__date_np', 'parameter__parameter_name','parameter__types','value'))
+                        result_list = list(WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme, test_result__date__gte=month.get('month_start'),test_result__date__lte=month.get('month_end')).order_by('test_result__date__year', 'test_result__date__month').values('test_result__date_np', 'parameter__parameter_name','parameter__types','value'))
                         result_list.sort(key=lambda x:x['test_result__date_np'][:7])
                         datas = {}
                         datas['month']=month.get('month')
@@ -885,17 +803,10 @@ class WaterTestResultReport(APIView):
                 if scheme.system_date_format == 'nep':
                     start_date = str(nepali_datetime.date.from_datetime_date(start_date))
                     end_date = str(nepali_datetime.date.from_datetime_date(end_date))
-                if supply_belts:
-                    data = WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme,
-                    test_result__supply_belts_id=supply_belts,
-                    test_result__date__gte=i.start_date,
-                    test_result__date__lte=i.end_date,
-                    ).values('parameter__parameter_name','parameter__types').annotate(total_value = Sum('value'))
-                else:
-                    data = WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme,
-                    test_result__date__gte=i.start_date,
-                    test_result__date__lte=i.end_date,
-                    ).values('parameter__parameter_name','parameter__types').annotate(total_value = Sum('value'))
+                data = WaterTestResultParamters.objects.filter(test_result__water_scheme=scheme,
+                test_result__date__gte=i.start_date,
+                test_result__date__lte=i.end_date,
+                ).values('parameter__parameter_name','parameter__types').annotate(total_value = Sum('value'))
                 data_list.append({'year_from':start_date, 'year_to':end_date,'data':list(data),'data_count':data.count()})
         return Response(data_list, status=status.HTTP_200_OK)
 
@@ -950,3 +861,120 @@ class NotificationStoreList(ListAPIView):
     def get_queryset(self):
         user = get_object_or_404(Users, id = self.request.user.id)
         return NotificationStore.objects.filter(water_scheme = user.water_scheme)
+
+
+
+#config api for crud watersupplyrecord
+from .serializers import ConfigWaterSupplyRecordSerializers
+class ConfigWaterSupplyRecordListView(ListAPIView):
+    """
+    query param date_from,date_to,
+    """
+    queryset = WaterSupplyRecord.objects.all()
+    serializer_class =  ConfigWaterSupplyRecordSerializers
+    permission_classes = [IsAuthenticated, IsSchemeAdministrator]
+    
+    def get_queryset(self):
+        user=get_object_or_404(Users, id = self.request.user.id)
+        date_from = self.request.GET.get('date_from',None)
+        date_to = self.request.GET.get('date_to',None)
+
+        if user.water_scheme.system_date_format == 'nep':
+            if date_from:
+                date_from =  nep_to_eng_full_date(date_from)
+            if date_to:
+                date_to = nep_to_eng_full_date(date_to)
+
+        if date_from and date_to:
+            return WaterSupplyRecord.objects.filter(supply_date__gte = date_from, supply_date__lte = date_to,water_scheme = user.water_scheme)
+        elif date_from and not date_to:
+            print(date_from)
+            return WaterSupplyRecord.objects.filter(supply_date = date_from, water_scheme = user.water_scheme)
+        else:
+            return WaterSupplyRecord.objects.filter(water_scheme = user.water_scheme)
+
+
+
+class ConfigWaterSupplyRecordCreateView(CreateAPIView):
+    permission_classes  = [IsAuthenticated, IsSchemeAdministrator]
+    queryset = WaterSupplyRecord.objects.all()
+    serializer_class =  ConfigWaterSupplyRecordSerializers
+
+    def get_queryset(self):
+        user = get_object_or_404(Users, id = self.request.user.id)
+        return WaterSupplyRecord.objects.filter(water_scheme = user.water_scheme)
+
+class ConfigWaterSupplyRecordUpdateView(RetrieveUpdateAPIView):
+    permission_classes  = [IsAuthenticated, IsSchemeAdministrator]
+    queryset = WaterSupplyRecord.objects.all()
+    serializer_class =  ConfigWaterSupplyRecordSerializers
+    lookup_field = 'id'
+
+    def get_object(self):
+        user = get_object_or_404(Users, id = self.request.user.id)
+        return get_object_or_404(WaterSupplyRecord, id = self.kwargs['pk'], water_scheme = user.water_scheme)
+
+class ConfigWaterSupplyRecordDestroyView(DestroyAPIView):
+    permission_classes = [IsAuthenticated, IsSchemeAdministrator]
+    queryset = WaterSupplyRecord.objects.all()
+    lookup_field = 'id'
+
+    def get_object(self):
+        user = get_object_or_404(Users, id = self.request.user.id)
+        return get_object_or_404(WaterSupplyRecord,id = self.kwargs['pk'],water_scheme = user.water_scheme)
+
+#config water test results
+from .serializers import ConfigWaterResultsSerializers
+class ConfigGetWaterResultsList(ListAPIView):
+    """
+    query param date_from,date_to,
+    """
+    queryset = WaterTestResults.objects.all()
+    serializer_class =  ConfigWaterResultsSerializers
+    permission_classes = [IsAuthenticated, IsSchemeAdministrator]
+
+    def get_queryset(self):
+        user=get_object_or_404(Users, id = self.request.user.id)
+        date_from = self.request.GET.get('date_from',None)
+        date_to = self.request.GET.get('date_to',None)
+
+        if user.water_scheme.system_date_format == 'nep':
+            if date_from:
+                date_from =  nep_to_eng_full_date(date_from)
+            if date_to:
+                date_to = nep_to_eng_full_date(date_to)
+
+        if date_from and date_to:
+            return WaterTestResults.objects.filter(date__gte = date_from, date__lte = date_to,water_scheme = user.water_scheme)
+        elif date_from and not date_to:
+            return WaterTestResults.objects.filter(date = date_from, water_scheme = user.water_scheme)
+        else:
+            return WaterTestResults.objects.filter(water_scheme = user.water_scheme)
+
+class ConfigGetWaterResultsCreate(CreateAPIView):
+    permission_classes  = [IsAuthenticated, IsSchemeAdministrator]
+    queryset = WaterTestResults.objects.all()
+    serializer_class =  ConfigWaterResultsSerializers
+
+    def get_queryset(self):
+        user = get_object_or_404(Users, id = self.request.user.id)
+        return WaterTestResults.objects.filter(water_scheme = user.water_scheme)
+
+
+class ConfigGetWaterResultsUpdate(RetrieveUpdateAPIView):
+    permission_classes  = [IsAuthenticated, IsSchemeAdministrator]
+    queryset = WaterTestResults.objects.all()
+    serializer_class =  ConfigWaterResultsSerializers
+
+    def get_object(self):
+        user = get_object_or_404(Users, id = self.request.user.id)
+        return get_object_or_404(WaterTestResults, id = self.kwargs['pk'], water_scheme = user.water_scheme)
+
+class ConfigGetWaterResultsDelete(DestroyAPIView):
+    permission_classes = [IsAuthenticated, IsSchemeAdministrator]
+    queryset = WaterTestResults.objects.all()
+    lookup_field = 'id'
+
+    def get_object(self):
+        user = get_object_or_404(Users, id = self.request.user.id)
+        return get_object_or_404(WaterTestResults,id = self.kwargs['pk'],water_scheme = user.water_scheme)

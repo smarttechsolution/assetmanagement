@@ -182,32 +182,60 @@ def alert_caretaker_for_maintenance_log_creation(self):
     from users.models import Users
     from maintenance.models import ComponentInfo
     from asset_management_system.pusher import sendPushNotification
-    from config_pannel.models import NotificationStore,YearsInterval
-    from maintenance.api.utils import add_months
+    from config_pannel.models import NotificationStore,YearsInterval,NotificationPeriod
+    from maintenance.api.utils import add_months,str_to_datetime,add_month_to_date,add_days_to_date
 
     care_taker = Users.objects.filter(is_care_taker=True)
     for i in care_taker:
+        notification_config = NotificationPeriod.objects.filter(water_scheme = i.water_scheme).last()
         current_year_interval = YearsInterval.objects.get(scheme = i.water_scheme).only('start_date')
-        info = ComponentInfo.objects.filter(component__category__water_scheme = i.water_scheme, maintenance_interval__lte = 1, apply_date__lte  = current_year_interval.start_date).values('id','next_action','maintenance_interval','component__name')
+        # info = ComponentInfo.objects.filter(component__category__water_scheme = i.water_scheme, maintenance_interval__lte = 1, apply_date__lte  = current_year_interval.start_date).values('id','next_action','maintenance_interval','component__name')
+        info = ComponentInfo.objects.filter(component__category__water_scheme = i.water_scheme, apply_date__lte  = current_year_interval.start_date, interval_unit='Month').values('id','next_action','maintenance_interval','component__name')
         data_list  = []
         for j in info:
             data = {}
             next_action = j.get('next_action')
             maintenance_interval = j.get('maintenance_interval')
-            total_logs = int(1/maintenance_interval)
-            next_action_month_interval = int(12/total_logs)
+            total_logs = int(12/maintenance_interval)
+            # next_action_month_interval = int(12/total_logs)
             data['next_action'] = str(next_action)
             data['component__name']=j.get('component__name')
             data_list.append(data)
+            total_logs = total_logs-1
+            next_add_action = next_action
             if total_logs >=1:
                 for logs in range(total_logs):
                     data = {}
-                    data['next_action'] = str(add_months(next_action,next_action_month_interval))
+                    next_action = str(add_month_to_date(str_to_datetime(next_add_action), maintenance_interval, 'en'))
+                    next_add_action=next_action.to_datetime_date()
+                    data['next_action'] = next_action
+                    # data['next_action'] = str(add_months(next_action,next_action_month_interval))
+                    data['component__name']=j.get('component__name')
+                    data_list.append(data)
+
+        info2 = ComponentInfo.objects.filter(component__category__water_scheme = i.water_scheme, apply_date__lte  = current_year_interval.start_date, interval_unit='Day').values('id','next_action','maintenance_interval','component__name')
+        for j in info2:
+            data = {}
+            next_action = j.get('next_action')
+            maintenance_interval = j.get('maintenance_interval')
+            total_logs = int(365/maintenance_interval)
+            data['next_action'] = str(next_action)
+            data['component__name']=j.get('component__name')
+            data_list.append(data)
+            total_logs = total_logs-1
+            next_add_action = next_action
+            if total_logs >=1:
+                for logs in range(total_logs):
+                    data = {}
+                    next_action = str(add_days_to_date(str_to_datetime(next_add_action),maintenance_interval,'en'))
+                    next_add_action=next_action.to_datetime_date()
+                    data['next_action'] = next_action
+                    # data['next_action'] = str(add_months(next_action,next_action_month_interval))
                     data['component__name']=j.get('component__name')
                     data_list.append(data)
        
         diff = get_factors_of(current_year_interval.year_num)
-        component2 = ComponentInfo.objects.filter(component__category__water_scheme = i.water_scheme, maintenance_interval__gt = 1,maintenance_interval__in =diff, apply_date__lte  = current_year_interval.start_date,).values('id','next_action','maintenance_interval','component__name')
+        component2 = ComponentInfo.objects.filter(component__category__water_scheme = i.water_scheme,maintenance_interval__in =diff, apply_date__lte  = current_year_interval.start_date, interval_unit = 'Year').values('id','next_action','maintenance_interval','component__name')
         if component2:
             for comp2 in component2:
                 data = {}
@@ -218,24 +246,31 @@ def alert_caretaker_for_maintenance_log_creation(self):
         
         for data in data_list:
             tod = data.get('next_action')
-            d = datetime.timedelta(days = 5)
-            a = tod - d
-            b= tod + d
+            try:
+                previous_days = notification_config.maintenance_notify_before
+                after_days = notification_config.maintenance_notify_after
+                previous = datetime.timedelta(days = previous_days)
+                after = datetime.timedelta(days = after_days)
+            except:
+                previous = after = 0
+
+            a = tod - previous
+            b= tod + after
             tod_dt = datetime.date(tod.created_at.year,tod.created_at.month,tod.created_at.day)
             tod_np=str(nepali_datetime.date.from_datetime_date(tod_dt))
             
             title = 'Next Maintenance'
             title_np = 'अर्को मर्मतसम्भार'
             notf_type = 'maintenance'
-            if str(datetime.datetime.now().date()) == str(a):
+            if str(datetime.datetime.now().date()) == str(a) and previous not in (0):
                 message = data.get('component__name') + ' has maintenance on '+ tod
                 message_np  =data.get('component__name') + ' मर्मत मिति '+ tod_np
                 notf = NotificationStore.objects.create(water_scheme=i.water_scheme,message=message, message_np=message_np,title=title, title_np=title_np,notf_type=notf_type)
-            elif str(datetime.datetime.now().date()) == str(data.get('next_action')):
-                message = data.get('component__name') + ' has maintenance on '+ tod
-                message_np  =data.get('component__name') + ' मर्मत मिति '+ tod_np
-                notf = NotificationStore.objects.create(water_scheme=i.water_scheme,message=message, message_np=message_np,title=title, title_np=title_np,notf_type=notf_type)
-            elif str(datetime.datetime.now().date()) == str(a):
+            # elif str(datetime.datetime.now().date()) == str(data.get('next_action')):
+            #     message = data.get('component__name') + ' has maintenance on '+ tod
+            #     message_np  =data.get('component__name') + ' मर्मत मिति '+ tod_np
+            #     notf = NotificationStore.objects.create(water_scheme=i.water_scheme,message=message, message_np=message_np,title=title, title_np=title_np,notf_type=notf_type)
+            elif str(datetime.datetime.now().date()) == str(b) and after not in (0):
                 message = data.get('component__name') + ' has maintenance on '+ tod
                 message_np  =data.get('component__name') + ' मर्मत मिति '+ tod_np
                 notf = NotificationStore.objects.create(water_scheme=i.water_scheme,message=message, message_np=message_np,title=title, title_np=title_np,notf_type=notf_type)

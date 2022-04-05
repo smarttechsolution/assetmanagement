@@ -66,14 +66,14 @@ class WaterSchemeForm(forms.ModelForm):
         data = self.cleaned_data
         date_format = data.get('system_date_format',None)
         system_built_date = data.get('system_built_date',None)
-        system_operation_from = self.cleaned_data.get('system_operation_from',None)
-        system_operation_to = self.cleaned_data.get('system_operation_to',None)
+        # system_operation_from = self.cleaned_data.get('system_operation_from',None)
+        # system_operation_to = self.cleaned_data.get('system_operation_to',None)
         tool_start_date = self.cleaned_data.get('tool_start_date',None)
 
         if date_format == 'nep':
             data['system_built_date'] = convert_nep_date_to_english(str(system_built_date))
-            data['system_operation_from'] = convert_nep_date_to_english(str(system_operation_from))
-            data['system_operation_to'] = convert_nep_date_to_english(str(system_operation_to))
+            # data['system_operation_from'] = convert_nep_date_to_english(str(system_operation_from))
+            # data['system_operation_to'] = convert_nep_date_to_english(str(system_operation_to))
             data['tool_start_date'] = convert_nep_date_to_english(str(tool_start_date))
 
         return data

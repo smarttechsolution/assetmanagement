@@ -18,11 +18,13 @@ urlpatterns = [
     path('income/<str:lang>/create/',IncomeCreateView.as_view(),name = 'income-create'),
     path('income/<str:lang>/update/<int:pk>/', IncomeUpdateView.as_view(), name = 'income-update'),
     path('income/delete/<int:pk>/', IncomeDeleteView.as_view(), name = 'income-delete'),
+    path('income/<str:lang>/list-all/<str:water_scheme_slug>/',IncomeAllListdView.as_view()),
 
     path('expenditure/<str:lang>/list/<str:water_scheme_slug>/', ExpenseListView.as_view(), name = 'expense-list'),
     path('expenditure/<str:lang>/create/',ExpenseCreateView.as_view(),name = 'expense-create'),
     path('expenditure/<str:lang>/update/<int:pk>/', ExpenseUpdateView.as_view(), name = 'expense-update'),
     path('expenditure/delete/<int:pk>/', ExpenseDeleteView.as_view(), name = 'expense-delete'),
+    path('expenditure/<str:lang>/list-all/<str:water_scheme_slug>/',ExpenseAllListdView.as_view()),
 
     path('close-income-expense/<str:lang>/',CloseIncomeExpenseView.as_view(), name = 'close-income'),
     path('income-expense/image-by-month/<str:lang>/<str:water_scheme_slug>/',CashBookImageView.as_view()),

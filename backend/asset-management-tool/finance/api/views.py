@@ -171,6 +171,55 @@ class IncomeListView(ListAPIView):
 				return Income.objects.filter(category__water_scheme__slug = self.kwargs.get('water_scheme_slug'), date__gte=week_start, date__lt = week_end).order_by('date')
 			return Income.objects.filter(category__water_scheme__slug = self.kwargs.get('water_scheme_slug'), date__gte = month_range.get('month_start'), date__lte=month_range.get('month_end')).order_by('date')
 
+class IncomeAllListdView(ListAPIView):
+	"""
+	query?date_from=2021-08-01&date_to=2021-08-01
+	"""
+	queryset = Income.objects.all()
+	serializer_class = IncomeListSerializer
+
+	def get_queryset(self):
+		scheme = get_water_scheme(self.kwargs.get('water_scheme_slug'))
+		date_from = self.request.GET.get('date_from',None)
+		date_to = self.request.GET.get('date_to', None)
+
+		if scheme.system_date_format == 'nep':
+			if date_from:
+				date_from = convert_nep_date_to_english(date_from)
+			if date_to:
+				date_to = convert_nep_date_to_english(date_to)
+		if date_from and date_to:
+			return Income.objects.filter(category__water_scheme__slug = self.kwargs.get('water_scheme_slug'), date__gte=date_from, date__lte = date_to).order_by('date')
+		elif date_from and not date_to:
+			return Income.objects.filter(category__water_scheme__slug = self.kwargs.get('water_scheme_slug'), date=date_from).order_by('date')
+		else:
+			return Income.objects.filter(category__water_scheme__slug = self.kwargs.get('water_scheme_slug')).order_by('date')
+
+class ExpenseAllListdView(ListAPIView):
+	"""
+	query?date_from=2021-08-01&date_to=2021-08-01
+	"""
+	queryset = Expenditure.objects.all()
+	serializer_class = ExpenseListSerializer
+
+	def get_queryset(self):
+		scheme = get_water_scheme(self.kwargs.get('water_scheme_slug'))
+		date_from = self.request.GET.get('date_from',None)
+		date_to = self.request.GET.get('date_to', None)
+
+		if scheme.system_date_format == 'nep':
+			if date_from:
+				date_from = convert_nep_date_to_english(date_from)
+			if date_to:
+				date_to = convert_nep_date_to_english(date_to)
+		if date_from and date_to:
+			return Expenditure.objects.filter(category__water_scheme__slug = self.kwargs.get('water_scheme_slug'), date__gte=date_from, date__lte = date_to).order_by('date')
+		elif date_from and not date_to:
+			return Expenditure.objects.filter(category__water_scheme__slug = self.kwargs.get('water_scheme_slug'), date=date_from).order_by('date')
+		else:
+			return Expenditure.objects.filter(category__water_scheme__slug = self.kwargs.get('water_scheme_slug')).order_by('date')
+
+
 
 class MonthIncomeTotal(APIView):
 	"""
@@ -704,11 +753,6 @@ class IncomeExpenditureReport(APIView):
 			net_balance = 0
 			net_income = 0
 			net_expense = 0
-
-		# daily_avg_supply = WaterSupplyRecord.objects.filter(water_scheme = scheme).aggregate(Avg('total_supply')).get('total_supply__avg')
-		# if not daily_avg_supply:
-		# 	daily_avg_supply = 0
-
 		
 		data = {'income':income,
 			'expense':expense,
@@ -716,20 +760,22 @@ class IncomeExpenditureReport(APIView):
 			'net_income': round(net_income,2),
 			'net_expense': round(net_expense,2),
 			'net_balance': round(net_balance,2),
-			'total_population':scheme.beneficiary_population_total,
-			'house_hold':scheme.beneficiary_household_total,
-			'public_taps':scheme.public_taps_total,
+			# 'total_population':scheme.beneficiary_population_total,
+			'house_hold':scheme.household_connection_total,
+			'public_connection':scheme.public_connection_total,
 			'instutions':scheme.institutional_connection_total,
+			'commercial_connection':scheme.commercial_connection_total,
 			'daily_avg_supply':round(scheme.daily_target,2)}
 		
 		if lang == 'nep':
 			data['net_income'] = english_to_nepali_converter(net_income)
 			data['net_expense'] = english_to_nepali_converter(net_expense)
 			data['net_balance'] = english_to_nepali_converter(net_balance)
-			data['total_population'] = english_to_nepali_converter(data['total_population'])
+			# data['total_population'] = english_to_nepali_converter(data['total_population'])
 			data['house_hold'] = english_to_nepali_converter(data['house_hold'])
-			data['public_taps'] = english_to_nepali_converter(data['public_taps'])
+			data['public_connection'] = english_to_nepali_converter(data['public_connection'])
 			data['instutions'] = english_to_nepali_converter(data['instutions'])
+			data['commercial_connection'] = english_to_nepali_converter(data['commercial_connection'])
 			data['daily_avg_supply'] = english_to_nepali_converter(data['daily_avg_supply'])
 		return Response(data = data, status = status.HTTP_200_OK)
 
@@ -779,8 +825,12 @@ def nth_year_nth_month_inflation(year_num,maintenance_cost_list, other_expense_l
 	# inflationable_cost = maintenance_cost + other_expense + monthly_other_expense
 	
 	inflation_amount = maintenance_cost_list[0] + other_expense_list[0] +monthly_other_expense_list[0]
+	try:
+		rate_inflation = inflation_rate.rate
+	except:
+		rate_inflation = 0
 	for i in range(year_num-1):
-		inflation_amount =  inflation_amount + inflation_amount * (inflation_rate.rate/100) + maintenance_cost_list[i+1] + other_expense_list[i+1] +monthly_other_expense_list[i+1]
+		inflation_amount =  inflation_amount + inflation_amount * (rate_inflation/100) + maintenance_cost_list[i+1] + other_expense_list[i+1] +monthly_other_expense_list[i+1]
 	return inflation_amount 
 
 
@@ -799,7 +849,7 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 			months = get_month_range_in_list(year_interval, scheme.system_date_format)
 			inflation_rate = OtherExpenseInflationRate.objects.filter(water_scheme=scheme).last()
 			#other expense of month
-			other_expense = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=False) & Q(category='Expenditure')).aggregate(Sum('yearly_expense'))
+			other_expense = OtherExpense.objects.filter(Q(water_scheme = scheme)& Q(apply_date__gte=year_interval.start_date) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=False) & Q(category='Expenditure')).aggregate(Sum('yearly_expense'))
 			other_expense = other_expense.get('yearly_expense__sum')
 			if not other_expense:
 				other_expense = 0
@@ -807,7 +857,7 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 				other_expense = round(other_expense / 12,0)
 			
 			#other income of month
-			other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=False) & Q(category='Income')).aggregate(Sum('yearly_expense'))
+			other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__gte=year_interval.start_date) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=False) & Q(category='Income')).aggregate(Sum('yearly_expense'))
 			other_income = other_income.get('yearly_expense__sum')
 			if not other_income:
 				other_income = 0
@@ -823,7 +873,7 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 					month_start = month.get('month_start')
 					month_end = month.get('month_end')
 					maintenance_cost = ComponentInfo.get_maintenance_cost(scheme,month_start,month_end,year_interval)
-					monthly_other_expense = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=True) & Q(category='Expenditure')).values('apply_date','yearly_expense')
+					monthly_other_expense = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__gte=year_interval.start_date) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=True) & Q(category='Expenditure')).values('apply_date','yearly_expense')
 					for data in monthly_other_expense:
 						apply_date = get_equivalent_date(data.get('apply_date'), year_interval)
 						data['apply_date'] = apply_date
@@ -854,7 +904,7 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 
 					
 					#for other income calculation
-					monthly_other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=True) & Q(category='Income')).values('apply_date','yearly_expense')
+					monthly_other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__gte=year_interval.start_date) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=True) & Q(category='Income')).values('apply_date','yearly_expense')
 					for data in monthly_other_income:
 						apply_date = get_equivalent_date(data.get('apply_date'), year_interval)
 						data['apply_date'] = apply_date
@@ -916,7 +966,7 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 					if not monthly_one_time_cost_exp:
 						monthly_one_time_cost_exp = 0
 
-					monthly_other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__month=month.get('month')) & Q(apply_for_specific_date=True) & Q(category='Income')).aggregate(Sum('yearly_expense'))
+					monthly_other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__year=month.get('year'))& Q(apply_date__month=month.get('month')) & Q(apply_for_specific_date=True) & Q(category='Income')).aggregate(Sum('yearly_expense'))
 					monthly_other_income = monthly_other_income.get('yearly_expense__sum')
 					if not monthly_other_income:
 						monthly_other_income = 0
@@ -945,28 +995,50 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 					Q(Q(apply_upto__gte = date))
 					) |
 					Q(Q(apply_date__lte = date) & Q(apply_upto = None)))
+
+					
 				
 				try:
-					beneficiary_household = scheme_data[0].beneficiary_household
+					household_connection = scheme_data[0].household_connection
 					institutional_connection = scheme_data[0].institutional_connection
+					commercial_connection = scheme_data[0].commercial_connection
+					public_connection = scheme_data[0].public_connection
 				except:
-					beneficiary_household = 0
+					household_connection = 0
 					institutional_connection = 0
+					commercial_connection = 0 
+					public_connection = 0
 				
 				try:
 					if tariffs and tariffs[0].terif_type == 'Fixed':
-						income = (((tariffs[0].estimated_paying_connection_household/100) * tariffs[0].rate_for_household * beneficiary_household) + ((tariffs[0].estimated_paying_connection_institution/100) * tariffs[0].rate_for_institution * institutional_connection))
+						print('safdasdf,===')
+						income = (
+									(
+									  (tariffs[0].estimated_paying_connection_household/100) * tariffs[0].rate_for_household * household_connection
+									)+
+									(
+									  (tariffs[0].estimated_paying_connection_institution/100) * tariffs[0].rate_for_institution * institutional_connection
+									)+
+									(
+									  (tariffs[0].estimated_paying_connection_public/100) * tariffs[0].rate_for_public * public_connection
+									)+
+									(
+									  (tariffs[0].estimated_paying_connection_commercial/100) * tariffs[0].rate_for_commercial * commercial_connection
+									)
+								)
+						print('asfdasdf')
 						income +=total_monthly_income
+						print(income,'-----')
 						monthly_income.append({'year':month.get('year'),'month':month.get('month'),'income': round(income,0)})
 				
 					elif tariffs and tariffs[0].terif_type == 'Use Based':
-						total_households = beneficiary_household + institutional_connection
+						total_connection = household_connection + institutional_connection+commercial_connection+public_connection
 						income =  0
 						for j in tariffs[0].used_based_units.all():
 							if j.unit_from <=0:
-								income += j.rate * ((j.estimated_paying_connection/100) * total_households)
+								income += j.rate * ((j.estimated_paying_connection/100) * total_connection)
 							else:	
-								income+=  ((j.unit_to - j.unit_from)+1) * j.rate * ((j.estimated_paying_connection/100) * total_households)
+								income+=  ((j.unit_to - j.unit_from)+1) * j.rate * ((j.estimated_paying_connection/100) * total_connection)
 						income += total_monthly_income
 						monthly_income.append({'year':month.get('year'),'month':month.get('month'),'income': round(income,0),'monthly_other_income':monthly_other_income})
 					else:
@@ -976,7 +1048,11 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 					monthly_income.append({'year':month.get('year'),'month':month.get('month'),'income': income})
 				
 				inflationable_cost = other_expense+ monthly_other_expense + maintenance_cost
-				total_expense =inflationable_cost*(pow(1+(inflation_rate.rate/100),year_interval.year_num-1)) + monthly_one_time_cost_exp
+				try:
+					_rate_inflation = inflation_rate.rate
+				except:
+					_rate_inflation = 0
+				total_expense =inflationable_cost*(pow(1+(_rate_inflation/100),year_interval.year_num-1)) + monthly_one_time_cost_exp
 				monthly_expense.append({'year':month.get('year'),'month':month.get('month'),'expense': round(total_expense,0)})
 				cf = pcf+(income-total_expense)
 				pcf=cf
@@ -988,7 +1064,7 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 			income_list_val = []
 			income_list = []
 			for i in year_interval:
-				other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__lte=i.end_date) & Q(category='Income') & Q(one_time_cost = False)).aggregate(Sum('yearly_expense'))
+				other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__gte=i.start_date) & Q(apply_date__lte=i.end_date) & Q(category='Income') & Q(apply_for_specific_date = True)).aggregate(Sum('yearly_expense'))
 				other_income = other_income.get('yearly_expense__sum')
 				if not other_income:
 					other_income = 0
@@ -1044,19 +1120,24 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 						) |
 						Q(Q(apply_date__lte = date) & Q(apply_upto = None)))
 					
-					if scheme_data:
-						beneficiary_household = scheme_data[0].beneficiary_household
+					try:
+						household_connection = scheme_data[0].household_connection
 						institutional_connection = scheme_data[0].institutional_connection
-					else:
-						beneficiary_household = 0
+						commercial_connection = scheme_data[0].commercial_connection
+						public_connection = scheme_data[0].public_connection
+					except:
+						household_connection = 0
 						institutional_connection = 0
+						commercial_connection = 0 
+						public_connection = 0
 					
 					try:
 						if tariffs and tariffs[0].terif_type == 'Fixed':
-							year_total_income += (((tariffs[0].estimated_paying_connection_household/100) * tariffs[0].rate_for_household * beneficiary_household) + ((tariffs[0].estimated_paying_connection_institution/100) * tariffs[0].rate_for_institution * institutional_connection))
+							year_total_income += (((tariffs[0].estimated_paying_connection_household/100) * tariffs[0].rate_for_household * household_connection) + ((tariffs[0].estimated_paying_connection_institution/100) * tariffs[0].rate_for_institution * institutional_connection) \
+							+ ((tariffs[0].estimated_paying_connection_public/100) * tariffs[0].rate_for_public * public_connection) + ((tariffs[0].estimated_paying_connection_commercial/100) * tariffs[0].rate_for_commercial * commercial_connection))
 						
 						elif tariffs and tariffs[0].terif_type == 'Use Based':
-							total_households = beneficiary_household + institutional_connection
+							total_households = household_connection + institutional_connection +public_connection + commercial_connection
 							income =  0
 							for j in tariffs[0].used_based_units.all():
 								if j.unit_from <=0:
@@ -1080,7 +1161,7 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 			expense_list_val = []
 			expense_list = []
 			for i in year_interval:
-				expense_total = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__lte=i.end_date) & Q(category='Expenditure') & Q(one_time_cost = False)).aggregate(Sum('yearly_expense'))
+				expense_total = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__gte=i.start_date)& Q(apply_date__lte=i.end_date) & Q(category='Expenditure') & Q(apply_for_specific_date = True)).aggregate(Sum('yearly_expense'))
 				expense_total = expense_total.get('yearly_expense__sum')
 				if not expense_total:
 					expense_total = 0
@@ -1090,13 +1171,19 @@ class ExpectedIncomeExpenseCumulativeCashReport(APIView):
 				if not one_time_cost:
 					one_time_cost = 0
 				maintenance_cost = ComponentInfo.get_estimated_cost(i, scheme)
-				
 				total_expense = expense_total + maintenance_cost
-				total_expense =total_expense*(pow(1+(inflation_rate.rate/100),i.year_num-1)) + one_time_cost
+				
+				try:
+					_rate_inflation = inflation_rate.rate
+				except:
+					_rate_inflation = 0
+
+				total_expense =total_expense*(pow(1+(_rate_inflation/100),i.year_num-1)) + one_time_cost
 				data = {}
 				data['date_from'] = i.start_date
 				data['date_to'] = i.end_date
 				data['expense_amount'] = round(total_expense, 0)
+				data['maintenance_cost'] = maintenance_cost
 				expense_list.append(data)
 				expense_list_val.append(round(total_expense, 0))
 			
@@ -1156,16 +1243,20 @@ class CashBookImageView(ListAPIView):
 			return CashBookImage.objects.filter(closing_date__water_scheme = scheme, closing_date__date__year =date.year, closing_date__date__month = date.month)
 		return None
 
+
+from .utils import diff_month
+
 class TariffListWithExpectedIncome(APIView):
 	"""Tariff list with expected income"""
 	def get(self, request, *args, **kwargs):
+		from config_pannel.models import WaterSchemeData
 		scheme = get_object_or_404(WaterScheme, slug = self.kwargs.get('water_scheme_slug'))
 		year_interval = scheme.year_interval.all().order_by('year_num')
 		this_year = datetime.datetime.today()
 		year_interval = year_interval.filter(start_date__lte = this_year, end_date__gte = this_year).get()
 
 		tariffs = WaterTeriff.objects.filter(Q(water_scheme=scheme) & Q(
-		Q(apply_date__year__in = [year_interval.start_date.year,year_interval.end_date.year]) |
+		Q(Q(apply_date__gte = year_interval.start_date) & Q(apply_date__lte = year_interval.end_date)) |
 		Q(
 			Q(apply_date__year__lte = year_interval.start_date.year) & Q(apply_upto__year__gte = year_interval.start_date.year)
 		) |
@@ -1173,11 +1264,29 @@ class TariffListWithExpectedIncome(APIView):
 			Q(apply_date__year__lte = year_interval.start_date.year) & Q(apply_upto = None)
 		))).last()
 
-		beneficiary_household = scheme.beneficiary_household_total
-		institutional_connection = scheme.institutional_connection_total
-		public_taps = scheme.public_taps_total
-		total_connection = beneficiary_household + institutional_connection
+		month_diff = diff_month(tariffs.apply_date, year_interval.end_date)
+
+
+
+		scheme_data = WaterSchemeData.objects.filter(Q(water_scheme=scheme) & Q(
+		Q(Q(apply_date__gte = year_interval.start_date)&Q(apply_date__lte = year_interval.end_date)) |
+		Q(
+			Q(apply_date__year__lte = year_interval.start_date.year) & Q(apply_upto__year__gte = year_interval.start_date.year)
+		) |
+		Q(
+			Q(apply_date__year__lte = year_interval.start_date.year) & Q(apply_upto = None)
+		))).last()
 		
+		try:
+			household_connection = scheme_data.household_connection
+			institutional_connection = scheme_data.institutional_connection
+			public_connection = scheme_data.public_connection
+			commercial_connection = scheme_data.commercial_connection
+		except:
+			household_connection=institutional_connection=public_connection=commercial_connection=0
+
+		total_connection = household_connection + institutional_connection+public_connection+commercial_connection
+
 		other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__lte=year_interval.end_date) & Q(category='Income')).aggregate(Sum('yearly_expense'))
 		other_income = other_income.get('yearly_expense__sum')
 		if not other_income:
@@ -1186,17 +1295,23 @@ class TariffListWithExpectedIncome(APIView):
 		datas = {}
 		try:
 			if tariffs and tariffs.terif_type == 'Fixed':
-				total_income = (((tariffs.estimated_paying_connection_household/100) * tariffs.rate_for_household * beneficiary_household) + ((tariffs.estimated_paying_connection_institution/100) * tariffs.rate_for_institution * institutional_connection))
+				total_income = (((tariffs.estimated_paying_connection_household/100) * tariffs.rate_for_household * household_connection) + ((tariffs.estimated_paying_connection_institution/100) * tariffs.rate_for_institution * institutional_connection)+((tariffs.estimated_paying_connection_public/100) * tariffs.rate_for_public * public_connection)+((tariffs.estimated_paying_connection_commercial/100) * tariffs.rate_for_commercial * commercial_connection))
 				# total_income += other_income
-				# total_income = round(total_income,0)
+				total_income = round(total_income,0)
+				datas['total_income'] = total_income
 				datas['estimated_paying_connection_household']=tariffs.estimated_paying_connection_household
 				datas['rate_for_household']=tariffs.rate_for_household
 				datas['estimated_paying_connection_institution']=tariffs.estimated_paying_connection_institution
 				datas['rate_for_institution']=tariffs.rate_for_institution
-				datas['other_income']=other_income
+				datas['estimated_paying_connection_public']=tariffs.estimated_paying_connection_public
+				datas['rate_for_public']=tariffs.rate_for_public
+				datas['estimated_paying_connection_commercial']=tariffs.estimated_paying_connection_commercial
+				datas['rate_for_commercial']=tariffs.rate_for_commercial
+
+				
 
 			elif tariffs and tariffs.terif_type == 'Use Based':
-				total_households = beneficiary_household + institutional_connection
+				total_households = total_connection
 				total_income =  0
 				use_base = []
 				for j in tariffs.used_based_units.all():
@@ -1206,19 +1321,170 @@ class TariffListWithExpectedIncome(APIView):
 					else:
 						income+= ((j.unit_to - j.unit_from)+1) * j.rate * ((j.estimated_paying_connection/100) * total_households)
 					total_income+=income
-					use_base.append({'unit':j.unit_to,'estimated_paying_connection':j.estimated_paying_connection,'rate':j.rate,'income':round(income,0), 'income_total':round(income*12,0)})
+					use_base.append({'unit_from':j.unit_from,'unit_to':j.unit_to,'estimated_paying_connection':j.estimated_paying_connection,'rate':j.rate,'income':round(income,0), 'income_total':round(income*12,0)})
 				# total_income += income
 				datas['use_base']=use_base
-				datas['other_income']=other_income
+				# datas['total_income']=total_income
 			else:
 				total_income=0
 		except:
 			total_income=0
 		
-		datas['total_income']= (round(total_income,0) * 12) + other_income
-		datas['beneficiary_household']=beneficiary_household
+		datas['total_income']= (round(total_income,0) * abs(month_diff)) + other_income
+		datas['household_connection']=household_connection
 		datas['institutional_connection']=institutional_connection
+		datas['public_connection']=public_connection
+		datas['commercial_connection']=commercial_connection
 		datas['total_connection']=total_connection
-		datas['public_taps']=public_taps
+		datas['other_income']=other_income
 		return Response(datas, status=status.HTTP_200_OK)
 
+
+
+			# this_year = datetime.datetime.today()
+			# year_interval = year_interval.filter(start_date__lte = this_year, end_date__gte = this_year).get()
+			# months = get_month_range_in_list(year_interval, scheme.system_date_format)
+					
+			# #other income of month
+			# other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__gte=year_interval.start_date) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=False) & Q(category='Income')).aggregate(Sum('yearly_expense'))
+			# other_income = other_income.get('yearly_expense__sum')
+			# if not other_income:
+			# 	other_income = 0
+			# else:
+			# 	other_income = round(other_income / 12,0)
+
+			# monthly_income = []
+			# for month in months:
+			# 	if scheme.system_date_format == 'nep':
+			# 		month_start = month.get('month_start')
+			# 		month_end = month.get('month_end')
+					
+			# 		#for other income calculation
+			# 		monthly_other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__gte=year_interval.start_date) & Q(apply_date__lte=year_interval.end_date) & Q(apply_for_specific_date=True) & Q(category='Income')).values('apply_date','yearly_expense')
+			# 		for data in monthly_other_income:
+			# 			apply_date = get_equivalent_date(data.get('apply_date'), year_interval)
+			# 			data['apply_date'] = apply_date
+					
+			# 		monthly_other_income_list = []
+			# 		for data in monthly_other_income:
+			# 			monthly_other_income_list.append({'apply_date':data.get('apply_date'),'yearly_income':data.get('yearly_expense')})
+					
+			# 		monthly_other_income = 0
+			# 		for income in monthly_other_income_list:
+			# 			if income.get('apply_date') >= month_start and income.get('apply_date') <= month_end:
+			# 				monthly_other_income += income.get('yearly_income')
+					
+			# 		#one time cost income
+			# 		monthly_one_time_cost_inc = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__lte=year_interval.end_date) & Q(one_time_cost=True) & Q(category='Income')).values('apply_date','yearly_expense')
+			# 		for data in monthly_one_time_cost_inc:
+			# 			apply_date = get_equivalent_date(data.get('apply_date'), year_interval)
+			# 			data['apply_date'] = apply_date
+					
+			# 		monthly_one_time_cost_inc_list = []
+			# 		for data in monthly_one_time_cost_inc:
+			# 			monthly_one_time_cost_inc_list.append({'apply_date':data.get('apply_date'),'yearly_income':data.get('yearly_expense')})
+					
+			# 		monthly_one_time_cost_inc = 0
+			# 		for income in monthly_one_time_cost_inc_list:
+			# 			if income.get('apply_date') >= month_start and income.get('apply_date') <= month_end:
+			# 				monthly_one_time_cost_inc += income.get('yearly_income')
+
+			# 		total_monthly_income = monthly_other_income + other_income + monthly_one_time_cost_inc
+  
+
+			# 		tariffs = WaterTeriff.objects.filter(Q(water_scheme=scheme) &
+			# 				Q(
+			# 					Q(
+			# 						Q(apply_date__lte = month.get('month_start')) &
+			# 						Q(apply_upto__gte = month.get('month_start'))
+			# 					) |
+			# 					Q(
+			# 						Q(apply_date__lte = month.get('month_start')) & Q(apply_upto = None)
+			# 					)
+			# 				)
+			# 			)
+
+			# 		scheme_data = scheme.water_scheme_data.filter(Q(
+			# 			Q(Q(apply_date__lte = month.get('month_start'))) &
+			# 			Q(Q(apply_upto__gte = month.get('month_start')))
+			# 			) |
+			# 			Q(Q(apply_date__lte = month.get('month_start')) & Q(apply_upto = None)))
+			# 	else:
+			# 		monthly_other_income = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__year=month.get('year'))& Q(apply_date__month=month.get('month')) & Q(apply_for_specific_date=True) & Q(category='Income')).aggregate(Sum('yearly_expense'))
+			# 		monthly_other_income = monthly_other_income.get('yearly_expense__sum')
+			# 		if not monthly_other_income:
+			# 			monthly_other_income = 0
+
+			# 		monthly_one_time_cost_inc = OtherExpense.objects.filter(Q(water_scheme = scheme) & Q(apply_date__month=month.get('month')) & Q(one_time_cost=True) & Q(category='Income')).aggregate(Sum('yearly_expense'))
+			# 		monthly_one_time_cost_inc = monthly_one_time_cost_inc.get('yearly_expense__sum')
+			# 		if not monthly_one_time_cost_inc:
+			# 			monthly_one_time_cost_inc = 0
+			# 		total_monthly_income = monthly_other_income + other_income + monthly_one_time_cost_inc
+
+			# 		date = datetime.date(month.get('year'),month.get('month'),1)
+			# 		tariffs = WaterTeriff.objects.filter(Q(water_scheme=scheme) &
+			# 				Q(
+			# 					Q(
+			# 						Q(apply_date__lte = date) &
+			# 						Q(apply_upto__gte = date)
+			# 					) |
+			# 					Q(
+			# 						Q(apply_date__lte = date) & Q(apply_upto = None)
+			# 					)
+			# 				)
+			# 			)
+
+			# 		scheme_data = scheme.water_scheme_data.filter(Q(
+			# 		Q(Q(apply_date__lte = date)) &
+			# 		Q(Q(apply_upto__gte = date))
+			# 		) |
+			# 		Q(Q(apply_date__lte = date) & Q(apply_upto = None)))
+
+					
+				
+			# 	try:
+			# 		household_connection = scheme_data[0].household_connection
+			# 		institutional_connection = scheme_data[0].institutional_connection
+			# 		commercial_connection = scheme_data[0].commercial_connection
+			# 		public_connection = scheme_data[0].public_connection
+			# 	except:
+			# 		household_connection = 0
+			# 		institutional_connection = 0
+			# 		commercial_connection = 0 
+			# 		public_connection = 0
+				
+			# 	try:
+			# 		if tariffs and tariffs[0].terif_type == 'Fixed':
+			# 			income = (
+			# 						(
+			# 						  (tariffs[0].estimated_paying_connection_household/100) * tariffs[0].rate_for_household * household_connection
+			# 						)+
+			# 						(
+			# 						  (tariffs[0].estimated_paying_connection_institution/100) * tariffs[0].rate_for_institution * institutional_connection
+			# 						)+
+			# 						(
+			# 						  (tariffs[0].estimated_paying_connection_public/100) * tariffs[0].rate_for_public * public_connection
+			# 						)+
+			# 						(
+			# 						  (tariffs[0].estimated_paying_connection_commercial/100) * tariffs[0].rate_for_commercial * commercial_connection
+			# 						)
+			# 					)
+			# 			income +=total_monthly_income
+			# 			monthly_income.append({'year':month.get('year'),'month':month.get('month'),'income': round(income,0)})
+				
+			# 		elif tariffs and tariffs[0].terif_type == 'Use Based':
+			# 			total_connection = household_connection + institutional_connection+commercial_connection+public_connection
+			# 			income =  0
+			# 			for j in tariffs[0].used_based_units.all():
+			# 				if j.unit_from <=0:
+			# 					income += j.rate * ((j.estimated_paying_connection/100) * total_connection)
+			# 				else:	
+			# 					income+=  ((j.unit_to - j.unit_from)+1) * j.rate * ((j.estimated_paying_connection/100) * total_connection)
+			# 			income += total_monthly_income
+			# 			monthly_income.append({'year':month.get('year'),'month':month.get('month'),'income': round(income,0),'monthly_other_income':monthly_other_income})
+			# 		else:
+			# 			income = total_monthly_income
+			# 	except:
+			# 		income = total_monthly_income
+			# 		monthly_income.append({'year':month.get('year'),'month':month.get('month'),'income': income})
+				

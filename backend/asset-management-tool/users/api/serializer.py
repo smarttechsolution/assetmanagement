@@ -155,19 +155,22 @@ class CreateCareTakerSerializers(serializers.ModelSerializer):
     
     class Meta:
         model = Users
-        fields = ['id', 'username', 'name', 'phone_number','password1','password2']
+        fields = ['id', 'name', 'phone_number','password1','password2']
 
     def validate(self, attrs):
-        username = attrs.get('username',None)
-        if not username:
-            raise serializers.ValidationError('User must have an username')
+        # username = attrs.get('username',None)
+        # if not username:
+        #     raise serializers.ValidationError('User must have an username')
 
-        if Users.objects.filter(username=username).exists():
-            raise serializers.ValidationError('Username already exists.')
+        # if Users.objects.filter(username=username).exists():
+        #     raise serializers.ValidationError('Username already exists.')
 
         phone_number = attrs.get('phone_number','')
         if not phone_number:
             raise serializers.ValidationError('Phone number required.')
+        if not len(phone_number) == 10:
+            raise serializers.ValidationError('Phone number must have 10 digits.')
+
         if Users.objects.filter(phone_number=phone_number).exists():
             raise serializers.ValidationError('Phone number already exists.')
 
@@ -180,6 +183,9 @@ class CreateCareTakerSerializers(serializers.ModelSerializer):
 
         password1 = attrs.get('password1','')
         password2 = attrs.get('password2','')
+        import random
+        num = random.randrange(1, 10**3)
+        attrs['username'] = str(int(phone_number) + int(num))
 
         if password1 != password2:
             raise serializers.ValidationError('Password does not match!')
@@ -198,21 +204,24 @@ class UpdateCareTakerSerializers(serializers.ModelSerializer):
     password2 = serializers.CharField(max_length=30, min_length=4, write_only=True, required=False)
     class Meta:
         model = Users
-        fields = ['id', 'username', 'name', 'phone_number','password1','password2']
+        fields = ['id', 'name', 'phone_number','password1','password2']
 
     def validate(self, attrs):
         if self.instance:
-            username = attrs.get('username',None)
-            if not username:
-                raise serializers.ValidationError('User must have an username')
+            # username = attrs.get('username',None)
+            # if not username:
+            #     raise serializers.ValidationError('User must have an username')
 
-            if not self.instance.username == username:
-                if Users.objects.filter(username=username).exists():
-                    raise serializers.ValidationError('Username already exists.')
+            # if not self.instance.username == username:
+            #     if Users.objects.filter(username=username).exists():
+            #         raise serializers.ValidationError('Username already exists.')
 
             phone_number = attrs.get('phone_number','')
             if not phone_number:
                 raise serializers.ValidationError('Phone number is required.')
+            if not len(phone_number) == 10:
+                raise serializers.ValidationError('Phone number must have 10 digits.')
+
             if not self.instance.phone_number == phone_number:
                 if Users.objects.filter(phone_number=phone_number).exists():
                     raise serializers.ValidationError('Phone number already exists.')
@@ -236,11 +245,15 @@ class UpdateCareTakerSerializers(serializers.ModelSerializer):
             attrs['password'] = password1
         else:
             attrs['password'] = None
+
+        import random
+        num = random.randrange(1, 10**3)
+        attrs['username'] = str(int(phone_number) + int(num))
         return attrs
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password')
-        Users.objects.filter(id=instance.id).update(username = validated_data.get('username'),
+        Users.objects.filter(id=instance.id).update(username = validated_data.get('phone_number'),
             phone_number = validated_data.get('phone_number'),
             name = validated_data.get('name'))
         if password:

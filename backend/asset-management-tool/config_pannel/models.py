@@ -17,11 +17,12 @@ class WaterScheme(m.Model):
 		NEPALI = 'nep','NEPALI-BS'
 
 	scheme_name = m.CharField(_("Name of Water Scheme"), max_length = 250, unique=True)
+	water_source = m.CharField(max_length=200, null=True, blank=True)
 	slug = m.CharField(max_length=250, unique=True)
 	location = m.CharField(_("Scheme Location"), max_length = 250)
 	system_built_date = m.DateField(blank=True, null=True)
-	system_operation_from = m.DateField(blank=True, null=True)
-	system_operation_to = m.DateField(blank=True, null=True)
+	longitude = m.FloatField(blank=True, null=True)
+	latitude = m.FloatField(blank=True, null=True)
 	daily_target = m.FloatField(default=0)
 	tool_start_date = m.DateField()
 	period = m.IntegerField()
@@ -45,48 +46,37 @@ class WaterScheme(m.Model):
 		return self.get_np_tool_start_date
 
 	@property
-	def beneficiary_household_total(self):
-		# if self.water_scheme_data.all().exists():
-		# 	return self.water_scheme_data.all().aggregate(Sum('beneficiary_household')).get('beneficiary_household__sum')
-		# return 0
+	def household_connection_total(self):
 		if self.water_scheme_data.all().exists():
 			import datetime
 			today_date = datetime.date.today()
-			return self.water_scheme_data.filter(apply_date__lte=today_date).last().beneficiary_household
+			return self.water_scheme_data.filter(apply_date__lte=today_date).last().household_connection
 		return 0
 
 	@property
-	def beneficiary_population_total(self):
-		# if self.water_scheme_data.all().exists():
-		# 	return self.water_scheme_data.all().aggregate(Sum('beneficiary_population')).get('beneficiary_population__sum')
-		# return 0
+	def commercial_connection_total(self):
 		if self.water_scheme_data.all().exists():
 			import datetime
 			today_date = datetime.date.today()
-			return self.water_scheme_data.filter(apply_date__lte=today_date).last().beneficiary_population
+			return self.water_scheme_data.filter(apply_date__lte=today_date).last().commercial_connection
 		return 0
 
 	@property
-	def public_taps_total(self):
-		# if self.water_scheme_data.all().exists():
-		# 	return self.water_scheme_data.all().aggregate(Sum('public_taps')).get('public_taps__sum')
-		# return 0
+	def public_connection_total(self):
 		if self.water_scheme_data.all().exists():
 			import datetime
 			today_date = datetime.date.today()
-			return self.water_scheme_data.filter(apply_date__lte=today_date).last().public_taps
+			return self.water_scheme_data.filter(apply_date__lte=today_date).last().public_connection
 		return 0
 	
 	@property
 	def institutional_connection_total(self):
-		# if self.water_scheme_data.all().exists():
-		# 	return self.water_scheme_data.all().aggregate(Sum('institutional_connection')).get('institutional_connection__sum')
-		# return 0
 		if self.water_scheme_data.all().exists():
 			import datetime
 			today_date = datetime.date.today()
 			return self.water_scheme_data.filter(apply_date__lte=today_date).last().institutional_connection
 		return 0
+		
 
 class YearsInterval(m.Model):
 	scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='year_interval')
@@ -161,9 +151,9 @@ def create_years_interval(sender, instance, created, **kwargs):
 
 class WaterSchemeData(m.Model):
 	water_scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='water_scheme_data')
-	beneficiary_household = m.IntegerField(_("Number of Households"))
-	beneficiary_population = m.IntegerField(_("Number of Benfficiary Population"))
-	public_taps = m.IntegerField(_("Number of Public Taps"))
+	household_connection = m.IntegerField(_("Number of Households"))
+	public_connection = m.IntegerField(_("Number of public Population"))
+	commercial_connection = m.IntegerField(_("Number of Public Taps"))
 	institutional_connection = m.IntegerField()
 	apply_date = m.DateField()
 	apply_upto = m.DateField(null = True, blank=True)
@@ -172,27 +162,15 @@ class WaterSchemeData(m.Model):
 		ordering = ['apply_date']
 
 	def __str__(self):
-		return f"{str(self.beneficiary_household)}-{self.water_scheme.scheme_name}"
+		return f"{str(self.household_connection)}-{self.water_scheme.scheme_name}"
 
-class WaterSource(m.Model):
-	water_scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='water_source')
-	name = m.CharField(_("Water Source Name"), max_length = 250)
+# class WaterSource(m.Model):
+# 	water_scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='water_source')
+# 	name = m.CharField(_("Water Source Name"), max_length = 250)
 
-	def __str__(self):
-		return f"{self.water_scheme.scheme_name}"
+# 	def __str__(self):
+# 		return f"{self.water_scheme.scheme_name}"
 
-class SupplyBelts(m.Model):
-	water_scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='supply_belts')
-	name = m.CharField(max_length=100)
-	belt_type = m.CharField(max_length = 50)
-	beneficiary_household = m.IntegerField()
-	beneficiary_population = m.IntegerField()
-	public_taps = m.IntegerField()
-	institutional_connection = m.IntegerField()
-	coverage_area = m.CharField(max_length=250, null=True, blank=True)
-
-	def __str__(self):
-		return f"{self.name}-{self.water_scheme.scheme_name}"
 
 
 class MinimumUnitRange(m.Model):
@@ -207,12 +185,9 @@ class MinimumUnitRange(m.Model):
 class WaterSupplySchedule(m.Model):
 	water_scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='water_supply_schedule')
 	day = m.CharField(max_length=40)
-	morning_from_time = m.TimeField()
-	morning_to_time = m.TimeField()
-	evening_from_time = m.TimeField()
-	evening_to_time = m.TimeField()
-	supply_belts = m.ForeignKey(SupplyBelts, on_delete = m.SET_NULL, null=True, blank=True, related_name='supply_schedule_belts')
-
+	time_from = m.TimeField()
+	time_to = m.TimeField()
+	
 	def __str__(self):
 		return f"{str(self.day)}-{self.water_scheme.scheme_name}"
 
@@ -225,10 +200,15 @@ class WaterTeriff(m.Model):
 	terif_type = m.CharField(max_length=50, choices=Types.choices)
 	rate_for_institution =m.FloatField(null=True, blank=True)
 	rate_for_household =m.FloatField(null=True, blank=True)
+	rate_for_public =m.FloatField(null=True, blank=True)
+	rate_for_commercial =m.FloatField(null=True, blank=True)
 	apply_date = m.DateField()
 	apply_upto = m.DateField(null=True, blank=True)
 	estimated_paying_connection_household = m.FloatField(null=True, blank=True)
 	estimated_paying_connection_institution = m.FloatField(null=True, blank=True)
+	estimated_paying_connection_public = m.FloatField(null=True, blank=True)
+	estimated_paying_connection_commercial = m.FloatField(null=True, blank=True)
+
 	is_active = m.BooleanField(default=False)
 
 	class Meta:
@@ -251,9 +231,8 @@ class WaterSupplyRecord(m.Model):
 	supply_date = m.DateField()
 	supply_date_np = m.CharField(max_length=13)
 	total_supply = m.FloatField()
-	estimated_household = m.IntegerField()
-	estimated_beneficiaries = m.IntegerField()
-	supply_belts = m.ForeignKey(SupplyBelts, on_delete=m.SET_NULL, null=True, blank=True)
+	# estimated_household = m.IntegerField()
+	# estimated_beneficiaries = m.IntegerField()
 	is_daily = m.BooleanField(default=False)
 	created_at = m.DateTimeField(auto_now_add=True)
 
@@ -277,7 +256,6 @@ class WaterTestResults(m.Model):
 	water_scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='water_test_results')
 	date = m.DateField()
 	date_np = m.CharField(max_length=13)
-	supply_belts = m.ForeignKey(SupplyBelts, on_delete=m.SET_NULL, null=True, blank=True)
 	created_at = m.DateTimeField(auto_now_add=True)
 
 class WaterTestResultParamters(m.Model):
@@ -308,7 +286,7 @@ class OtherExpense(m.Model):
 
 class OtherExpenseInflationRate(m.Model):
 	water_scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='inflation_parameter')
-	rate = m.FloatField()
+	rate = m.FloatField(default = 0)
 	dis_allow_edit = m.BooleanField(default=False)
 
 	def __str__(self):
@@ -327,6 +305,8 @@ class NotificationPeriod(m.Model):
 	expenditure_notification_period = m.IntegerField(default=30)
 	test_result_notification_period = m.IntegerField(default=30)
 	supply_record_notification_period = m.IntegerField(default=30)
+	maintenance_notify_before = m.IntegerField(default=0)
+	maintenance_notify_after = m.IntegerField(default=0)
 	
 	# def save(self, *args, **kwargs):
 	# 	if not self.id:

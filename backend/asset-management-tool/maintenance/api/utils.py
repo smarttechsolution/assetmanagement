@@ -1,5 +1,6 @@
 import datetime
 import calendar
+import nepali_datetime
 
 def str_to_datetime(date):
     '''Return date by converting str date'''
@@ -52,3 +53,24 @@ def add_nep_year(nep_date, interval):
     year = int(date_list[0]) + int(interval)
     date_nep =  nepali_datetime.date(year,int(date_list[1]),int(date_list[2]))
     return date_nep
+
+
+
+
+def add_month_to_date(date,month, date_format):
+    from datetime import datetime, timedelta
+    from dateutil.relativedelta import relativedelta
+    date_after_month = date + relativedelta(months=month)
+    if date_format == 'nep':
+        return nepali_datetime.date.from_datetime_date(date_after_month)
+    return date_after_month
+
+def add_days_to_date(date,days,date_format):
+    from datetime import datetime, timedelta
+    from dateutil.relativedelta import relativedelta
+
+    date = datetime.strptime(str(date), "%Y-%m-%d")
+    date_days = date + timedelta(days=days)
+    if date_format == 'nep':
+        return nepali_datetime.date.from_datetime_date(date_days.date())
+    return date_days.date()

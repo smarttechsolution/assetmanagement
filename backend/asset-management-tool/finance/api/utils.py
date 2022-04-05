@@ -121,3 +121,8 @@ def get_equivalent_date(date, year_interval):
 		year = year_interval.end_date.year
 	date = str(year) +'-' +str(month.month) +'-' +str(month.day)
 	return str_to_datetime(date)
+
+
+def diff_month(d1, d2):
+	from datetime import datetime
+	return (d1.year - d2.year) * 12 + d1.month - d2.month

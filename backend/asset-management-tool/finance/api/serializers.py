@@ -36,11 +36,21 @@ class IncomeCategorySerializer(serializers.ModelSerializer):
 
 	def create(self, validate_data):
 		return IncomeCategory.objects.create(**validate_data)
+		
 	def to_representation(self, data):
 		data = super(IncomeCategorySerializer, self).to_representation(data)
-		scheme=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
-		category = default_income_category(scheme, data['name'])
-		data['name'] = category
+		try:
+			scheme=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		except:
+			scheme = self.context.get('request').parser_context.get('kwargs').get('water_scheme_slug')
+			scheme = get_object_or_404(WaterScheme, slug=scheme)
+		if scheme.system_date_format == 'nep' and data['name'] == 'Water Sales':
+			category = default_income_category(scheme, data['name'])
+			data['e_name'] = data['name']
+			data['name'] = category
+		else:
+			print('fdasfaf')
+			data['e_name']=data['name']
 		return data
 
 class ExpenseCategorySerializer(serializers.ModelSerializer):
@@ -67,9 +77,18 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
 
 	def to_representation(self, data):
 		data = super(ExpenseCategorySerializer, self).to_representation(data)
-		scheme=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
-		category = default_expense_category(scheme, data['name'])
-		data['name'] = category
+		try:
+			scheme=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		except:
+			scheme = self.context.get('request').parser_context.get('kwargs').get('water_scheme_slug')
+			scheme = get_object_or_404(WaterScheme, slug=scheme)
+		
+		if scheme.system_date_format == 'nep' and data['name'] == 'Maintenance':
+			category = default_expense_category(scheme, data['name'])
+			data['e_name'] = data['name']
+			data['name'] = category
+		else:
+			data['e_name']=data['name']
 		return data
 
 class IncomeListSerializer(serializers.ModelSerializer):
@@ -191,7 +210,7 @@ class ExpenseCreateSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Expenditure
-		fields = ['id','category','date','title','income_amount','remarks','date_np']
+		fields = ['id','category','date','title','income_amount','labour_cost','consumables_cost','replacement_cost','remarks','date_np']
 
 	def validate(self, attrs):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
@@ -228,6 +247,9 @@ class ExpenseCreateSerializer(serializers.ModelSerializer):
 			date = validate_data.get('date_en'),
 			title = validate_data.get('title'),
 			income_amount = validate_data.get('income_amount'),
+			labour_cost = validate_data.get('labour_cost'),
+			consumables_cost = validate_data.get('consumables_cost'),
+			replacement_cost = validate_data.get('replacement_cost'),
 			remarks = validate_data.get('remarks'),
 			date_np = validate_data.get('date_np'))
 
@@ -236,6 +258,9 @@ class ExpenseCreateSerializer(serializers.ModelSerializer):
 			date = validate_data.get('date_en'),
 			title = validate_data.get('title'),
 			income_amount = validate_data.get('income_amount'),
+			labour_cost = validate_data.get('labour_cost'),
+			consumables_cost = validate_data.get('consumables_cost'),
+			replacement_cost = validate_data.get('replacement_cost'),
 			remarks = validate_data.get('remarks'),
 			date_np = validate_data.get('date_np'))
 		return Expenditure.objects.get(id=instance.id)
@@ -248,6 +273,10 @@ class ExpenseCreateSerializer(serializers.ModelSerializer):
 			data['date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data['date'])))
 		if lang == 'nep':
 			data['income_amount'] = english_to_nepali_converter(str(data.get('income_amount')))
+			data['labour_cost'] = english_to_nepali_converter(str(data.get('labour_cost')))
+			data['consumables_cost'] = english_to_nepali_converter(str(data.get('consumables_cost')))
+			data['material_cost'] = english_to_nepali_converter(str(data.get('material_cost')))
+			
 		return data
 
 class CloseIncomeExpenseSerializer(serializers.ModelSerializer):

@@ -56,6 +56,7 @@ class ComponentInfoListSerializer(serializers.ModelSerializer):
 		'componant_picture',
 		'resulting_risk_score',
 		'maintenance_interval',
+		'interval_unit',
 		'log_entry',
 		'responsible',
 		'impact_of_failure',
@@ -63,7 +64,8 @@ class ComponentInfoListSerializer(serializers.ModelSerializer):
 		'apply_date',
 		'labour_cost',
 		'material_cost',
-		'replacement_cost']
+		'replacement_cost',
+		'seggregated_or_unseggregated_cost']
 
 	def get_log_entry(self, obj):
 		year = self.context.get('request').query_params.get('year')
@@ -99,7 +101,7 @@ data = {
 	'High':4,
 	'Medium':3,
 	'Low':2,
-	'Normal': 1,
+	'Minimal': 1,
 	'Total Loss Of Function':4,
 	'Reduction of System Functionality':3,
 	'Reduction of Parts Functionality':2,
@@ -134,8 +136,8 @@ class ComponentInfoCreateSerializer(serializers.ModelSerializer):
 		'material_cost',
 		'replacement_cost',
 		'maintenance_action',
-		'supply_belt',
 		'maintenance_interval',
+		'interval_unit',
 		'impact_of_failure',
 		'possibility_of_failure',
 		'resulting_risk_score',
@@ -149,15 +151,22 @@ class ComponentInfoCreateSerializer(serializers.ModelSerializer):
 		'estimated_cost',
 		'apply_date',
 		'main_component',
+		'is_cost_seggregated',
 		]
 
 	def validate(self, attrs):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language should be either en or nep')
-		
 		self.user = get_object_or_404(Users, id=self.context['request'].user.id)
 		
+		if attrs['is_cost_seggregated'] or attrs['is_cost_seggregated'] == True or attrs['is_cost_seggregated'] == 'true':
+			attrs['maintenance_cost'] = 0
+		else:
+			attrs['labour_cost'] = 0
+			attrs['material_cost'] = 0
+			attrs['replacement_cost'] =0
+
 		maintenance_interval = attrs.get('maintenance_interval')
 		apply_date = attrs.get('apply_date')
 		next_action = attrs.get('next_action')
@@ -207,11 +216,6 @@ class ComponentInfoCreateSerializer(serializers.ModelSerializer):
 				if future_date <= attrs.get('next_action'):
 					raise serializers.ValidationError('Your next action must be earlier than '+ str(future_date) )
 
-			# if future_date < attrs.get('next_action'):
-			# 	if self.user.water_scheme.system_date_format == 'nep':
-			# 		future_date = nepali_datetime.date.from_datetime_date(future_date)
-			# 	raise serializers.ValidationError('Your next action must be earlier than '+ str(future_date) )
-			
 			if attrs.get('next_action') < attrs.get('apply_date'):
 				raise serializers.ValidationError('Your next action must be later then apply date.')
 		attrs['resulting_risk_score'] = get_resulting_risk_score(attrs.get('impact_of_failure'),attrs.get('possibility_of_failure'))
@@ -298,25 +302,28 @@ class ComponentInfoCreateSerializer(serializers.ModelSerializer):
 
 		total_estimated_cost =0
 		if obj.maintenance_interval <= 1:
-			if obj.maintenance_cost:
+			if not obj.is_cost_seggregated:
 				total_estimated_cost += obj.maintenance_cost* int(round(1/obj.maintenance_interval,0)) * obj.component_numbers
-			if obj.replacement_cost:
-				total_estimated_cost += obj.replacement_cost*int(round(1/obj.maintenance_interval,0)) * obj.component_numbers
-			if obj.material_cost:
-				total_estimated_cost += obj.material_cost*int(round(1/obj.maintenance_interval,0)) * obj.component_numbers
-			if obj.labour_cost:
-				total_estimated_cost += obj.maintenance_cost*int(round(1/obj.maintenance_interval,0)) * obj.component_numbers
+			else:
+				if obj.replacement_cost:
+					total_estimated_cost += obj.replacement_cost*int(round(1/obj.maintenance_interval,0)) * obj.component_numbers
+				if obj.material_cost:
+					total_estimated_cost += obj.material_cost*int(round(1/obj.maintenance_interval,0)) * obj.component_numbers
+				if obj.labour_cost:
+					total_estimated_cost += obj.labour_cost*int(round(1/obj.maintenance_interval,0)) * obj.component_numbers
 
 		data = ComponentInfo.objects.filter(id=obj.id, maintenance_interval__in = factors, maintenance_interval__gt=1)
 		if data:
-			if data[0].maintenance_cost:
-				total_estimated_cost += obj.maintenance_cost * obj.component_numbers
-			if data[0].replacement_cost:
-				total_estimated_cost += obj.replacement_cost * obj.component_numbers
-			if data[0].material_cost:
-				total_estimated_cost += obj.material_cost * obj.component_numbers
-			if data[0].labour_cost:
-				total_estimated_cost += obj.maintenance_cost * obj.component_numbers
+			if not data[0].is_cost_seggregated:
+				if data[0].maintenance_cost:
+					total_estimated_cost += obj.maintenance_cost * obj.component_numbers
+			else:
+				if data[0].replacement_cost:
+					total_estimated_cost += obj.replacement_cost * obj.component_numbers
+				if data[0].material_cost:
+					total_estimated_cost += obj.material_cost * obj.component_numbers
+				if data[0].labour_cost:
+					total_estimated_cost += obj.labour_cost * obj.component_numbers
 		return total_estimated_cost
 
 	def get_existing_log_ids(self, obj):
@@ -346,14 +353,15 @@ class ComponentLogCreateSerializer(serializers.ModelSerializer):
 		'maintenance_date',
 		'possible_failure',
 		'maintenance_action',
+		'log_type',
 		'duration',
 		'cost_total',
 		'labour_cost',
 		'material_cost',
 		'replacement_cost',
 		'componant_picture',
-		'supply_belt',
-		'remarks'
+		'remarks',
+		'is_cost_seggregated'
 		]
 
 	def validate(self, attrs):
@@ -363,7 +371,14 @@ class ComponentLogCreateSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError('Language suhould be either en or nep')
 		user = get_object_or_404(Users, id=self.context['request'].user.id)
 		component_info = get_object_or_404(ComponentInfo, id = attrs.get('component').id)
-	
+		
+		if attrs['is_cost_seggregated'] or attrs['is_cost_seggregated'] == True or attrs['is_cost_seggregated'] == 'true':
+			attrs['maintenance_cost'] = 0
+		else:
+			attrs['labour_cost'] = 0
+			attrs['material_cost'] = 0
+			attrs['replacement_cost'] =0
+
 		scheme = component_info.component.category.water_scheme
 		if user.water_scheme.system_date_format == 'nep':
 			date_list = str(attrs.get('maintenance_date')).split('-')
@@ -381,15 +396,18 @@ class ComponentLogCreateSerializer(serializers.ModelSerializer):
 			year = get_object_or_404(YearsInterval, start_date__lte = attrs.get('maintenance_date'), end_date__gte = attrs.get('maintenance_date'),scheme=scheme)
 			diff = get_factors_of(year.year_num)
 			obj = get_object_or_404(ComponentInfo, id = attrs.get('component').id)
-			total_log =0
-			if obj.maintenance_interval <= 1:
-				total_log += int(round(1/obj.maintenance_interval,0))
-			total_log += ComponentInfo.objects.filter(id=obj.id, maintenance_interval__in = diff,maintenance_interval__gt=1).count()
+			total_log = 0
+			if obj.interval_unit == 'Day':
+				total_log += int(365/obj.maintenance_interval)
+			elif obj.interval_unit == 'Month':
+				total_log += int(12/obj.maintenance_interval)
+			else:
+				total_log += ComponentInfo.objects.filter(id=obj.id, maintenance_interval__in = diff,interval_unit = 'Year').count()
 
 			existing_log = ComponentInfoLog.objects.filter(component=component_info, maintenance_date__gte = year.start_date, maintenance_date__lte = year.end_date).count()
 			if not self.instance:
 				if existing_log >= total_log:
-					raise serializers.ValidationError('You cannot create more than '+ str(total_log) + ' logs per year.')
+					raise serializers.ValidationError('You cannot create more than '+ str(total_log) + ' logs for scheduled maintenance.')
 		return attrs
 
 	def to_representation(self, data):
@@ -424,8 +442,9 @@ class ConfigComponentInfoLogListSerializer(serializers.ModelSerializer):
 		'material_cost',
 		'replacement_cost',
 		'componant_picture',
-		'supply_belt',
-		'remarks'
+		'remarks',
+		'is_cost_seggregated',
+		'log_type',
 		]
 
 	def validate(self, attrs):
@@ -433,8 +452,15 @@ class ConfigComponentInfoLogListSerializer(serializers.ModelSerializer):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language suhould be either en or nep')
+		if attrs['is_cost_seggregated'] or attrs['is_cost_seggregated'] == True or attrs['is_cost_seggregated'] == 'true':
+			attrs['maintenance_cost'] = 0
+		else:
+			attrs['labour_cost'] = 0
+			attrs['material_cost'] = 0
+			attrs['replacement_cost'] =0
+
 		user = get_object_or_404(Users, id=self.context['request'].user.id)
-	
+		
 		if user.water_scheme.system_date_format == 'nep':
 			date_list = str(attrs.get('maintenance_date')).split('-')
 			date_nep =  nepali_datetime.date(int(date_list[0]), int(date_list[1]), int(date_list[2]))

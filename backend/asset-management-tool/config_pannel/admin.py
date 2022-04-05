@@ -3,7 +3,7 @@ from .models import *
 # Register your models here.
 
 admin.site.register([WaterScheme,
- WaterSource,
+ # WaterSource,
   QualityTestParameter,
   WaterTestResults,
   WaterTestResultParamters,
@@ -13,7 +13,6 @@ admin.site.register([WaterScheme,
   OtherExpense,
   OtherExpenseInflationRate,
   WaterSchemeData,
-  SupplyBelts,
   UseBasedUnitRange,
   YearsInterval,
   NotificationPeriod,

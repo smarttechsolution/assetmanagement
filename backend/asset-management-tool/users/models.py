@@ -120,7 +120,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(_('Username'),max_length=100, unique=True)
     first_name = None  # type: ignore
     last_name = None  # type: ignore
-    phone_number = models.CharField(max_length=15,null = True, blank = True)
+    phone_number = models.CharField(max_length=10,null = True, blank = True)
     is_care_taker = models.BooleanField(default = False)
     is_administrative_staff = models.BooleanField(default = False)
     is_verified     = models.BooleanField(_('Is Verified'), default=False)

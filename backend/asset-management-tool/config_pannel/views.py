@@ -103,8 +103,8 @@ class UpdateWaterSchemeView(LoginRequiredMixin,UpdateView):
         """Insert the single object into the context dict."""
         if self.object.system_date_format == 'nep':
             self.object.system_built_date = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_built_date))))
-            self.object.system_operation_from = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_operation_from))))
-            self.object.system_operation_to = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_operation_to))))
+            # self.object.system_operation_from = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_operation_from))))
+            # self.object.system_operation_to = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_operation_to))))
             self.object.tool_start_date = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.tool_start_date))))
         context = {}
         if self.object:

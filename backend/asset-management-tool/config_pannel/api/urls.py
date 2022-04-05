@@ -18,11 +18,6 @@ urlpatterns = [
     path('water-scheme-data/<str:lang>/<int:pk>/', WaterSchemeDataUpdateView.as_view()),
     path('water-scheme-data/<str:lang>/<int:pk>/delete/', WaterSchemeDataDeleteView.as_view()),
 
-    path('supply-belts/list/<str:lang>/<str:water_scheme_slug>/', SupplyBeltsListView.as_view()),
-    path('supply-belts/<str:lang>/create/', SupplyBeltsCreateView.as_view()),
-    path('supply-belts/<str:lang>/<int:pk>/', SupplyBeltsUpdateView.as_view()),
-    path('supply-belts/<str:lang>/<int:pk>/delete/', SupplyBeltsDeleteView.as_view()),
-
     path('water-tariff/list/<str:lang>/<str:water_scheme_slug>/', WaterTariffListView.as_view()),
     path('water-tariff/<str:lang>/create/', WaterTariffCreateView.as_view()),
     path('water-tariff/use-based-data/create/<str:lang>/',UseBasedUnitRangeView.as_view()),
@@ -61,7 +56,22 @@ urlpatterns = [
     path('notification/period-create/', NotificationPeriodCreateView.as_view()),
     path('notification/period-update/<int:pk>/',NotificationPeriodUpdateView.as_view()),
     
-    path('notification/list/',NotificationStoreList.as_view())
+    path('notification/list/',NotificationStoreList.as_view()),
+
+
+
+
+    path('config/water-supply-record/list/<str:lang>/', ConfigWaterSupplyRecordListView.as_view()),
+    path('config/water-supply-record/<str:lang>/create/', ConfigWaterSupplyRecordCreateView.as_view()),
+    path('config/water-supply-record/<str:lang>/<int:pk>/', ConfigWaterSupplyRecordUpdateView.as_view()),
+    path('config/water-supply-record/<int:pk>/delete/', ConfigWaterSupplyRecordDestroyView.as_view()),
+
+
+    path('config/water-test-results/list/<str:lang>/', ConfigGetWaterResultsList.as_view()),
+    path('config/water-test-results/<str:lang>/create/', ConfigGetWaterResultsCreate.as_view()),
+    path('config/water-test-results/<str:lang>/<int:pk>/', ConfigGetWaterResultsUpdate.as_view()),
+    path('config/water-test-results/<int:pk>/delete/', ConfigGetWaterResultsDelete.as_view()),
+
 ]
 urlpatterns += router.urls
 
