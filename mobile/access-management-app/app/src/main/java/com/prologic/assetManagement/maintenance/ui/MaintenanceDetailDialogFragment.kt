@@ -24,11 +24,9 @@
 package com.prologic.assetManagement.maintenance.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -99,19 +97,39 @@ class MaintenanceDetailDialogFragment : BaseDialog() {
         binding.tvTitle.text = args.componentName
         binding.labelMainComponent.text = args.componentName
         binding.tvRiskScore.setRiskScore(detail.riskScore)
-        binding.tvActionDate.text =  detail.actionDate
-        binding.tvEstimatedCost.setEstimatedCost(detail.maintenanceCost)
+        binding.tvActionDate.text = detail.actionDate
+
+        if (detail.maintenanceCost > 1) {
+            binding.tvEstimatedCost.setEstimatedCost(detail.maintenanceCost)
+            Timber.d("inside if::"+detail.maintenanceCost)
+        } else {
+            Timber.d("inside elese::")
+            var labourCost = detail.labourCost
+            var replacementCost = detail.replacementCost
+            var materialCost = detail.maintenanceCost
+
+            var total = labourCost + replacementCost + materialCost
+            Timber.d("the toal is:"+total)
+            binding.tvEstimatedCost.setEstimatedCost(total)
+
+        }
+
+
+
+
+
         binding.tvResponsiblePerson.text = detail.designatedPerson
         binding.tvInterval.setInterval(detail.maintenanceInterval)
         binding.tvLogEntries.text = detail.logEntry
 
         binding.ivPic.loadImage(detail.picture)
 
-        binding.tvReasonFailureAndSolution.text = "1. "+ detail.possibleFailure+"\n 2. "+detail.action
+        binding.tvReasonFailureAndSolution.text =
+            "1. " + detail.possibleFailure + "\n 2. " + detail.action
 
 
-
-        val totalLogs = NumberFormat.getNumberInstance(Locale.US).parse(detail.possibleTotalLogs).toInt()
+        val totalLogs =
+            NumberFormat.getNumberInstance(Locale.US).parse(detail.possibleTotalLogs).toInt()
         if (totalLogs >= 1) {
             binding.btnAddLog.show()
             binding.btnAddLog.setOnClickListener {

@@ -73,6 +73,7 @@
     <string name="add_cashbook_income_amount">आय रकम</string>
     <string name="add_cashbook_expense_title">खर्च शीर्षक</string>
     <string name="add_cashbook_expense_amount">खर्च रकम</string>
+    <string name="add_cashbook_expense_maintenance_amount">मर्मत रकम</string>
     <string name="add_cashbook_water_supplied">पानी आपूर्ति</string>
     <string name="add_cashbook_remarks">टिप्पणी</string>
 
@@ -121,8 +122,13 @@
     <string name="unscheduled_maintenance_date_empty">कृपया मिति चयन गर्नुहोस्</string>
     <string name="unscheduled_maintenance_add_cost">कृपया लागत थप्नुहोस्</string>
     <string name="unscheduled_duration_empty">कृपया अवधि थप्नुहोस्</string>
+    <string name="unscheduled_log_type_empty">कृपया लग प्रकार थप्नुहोस्</string>
     <string name="unscheduled_maintenance_action">मर्मत कार्य</string>
     <string name="unscheduled_possible_failure">सम्भावित असफलता</string>
+    <string name="unscheduled_maintenance_log_entry_title">कम्पोनेन्ट</string>
+    <string name="unscheduled_maintenance_log_type_title">लग प्रकार</string>
+    <string name="unscheduled_maintenance_log_type_maintenance">मर्मत लग</string>
+    <string name="unscheduled_maintenance_log_type_issue">मुद्दा लग</string>
 
     <string name="service_add_record">पानी वितरण रेकर्ड जोड्नुहोस्</string>
     <string name="service_total_supply">कुल पानी वितरण</string>
@@ -136,6 +142,7 @@
     <string name="error_invalid_date">उचित मिति छान्नुहोस्</string>
     <string name="service_units">एकाइहरु</string>
     <string name="service_mg_per_litre">M.G/L</string>
+    <string name="service_per_litre">/ लिटर</string>
     <string name="service_households">अनुमानित घरधुरी </string>
     <string name="service_beneficiaries">अनुमानित लाभार्थी</string>
 

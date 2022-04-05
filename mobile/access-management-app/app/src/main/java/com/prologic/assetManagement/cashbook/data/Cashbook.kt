@@ -23,6 +23,7 @@
 
 package com.prologic.assetManagement.cashbook.data
 
+import androidx.annotation.StringRes
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -58,7 +59,8 @@ sealed class CashbookUiModel {
 
 data class CashbookCategory(
     val id: String,
-    val name: String
+    val name: String,
+    val eName:String?
 
 )
 
@@ -88,6 +90,9 @@ data class AddCashbookParam(
     val date: String,
     val title: String,
     val income: Double,
+    val replacementAmt:Double?,
+    val labourAmount:Double?,
+    val materialAmount:Double?,
     val waterSupplied: Int?,
     val isWeek: Boolean?,
     val remarks: String?,
@@ -109,7 +114,10 @@ data class AddExpenseParam(
     @SerializedName("date") val date: String,
     @SerializedName("title") val title: String,
     @SerializedName("income_amount") val amount: Double,
-    @SerializedName("remarks") val remarks: String?
+    @SerializedName("remarks") val remarks: String?,
+    @SerializedName("consumables_cost") val consumableCost:Double?,
+    @SerializedName("replacement_cost") val replacementCost:Double?,
+    @SerializedName("labour_cost") val labourCost:Double?
 )
 
 data class AddCashbookResponse(
@@ -140,7 +148,8 @@ data class CashbookResponse(
 
 data class CashbookCategoryRes(
     @SerializedName("id") val id: String,
-    @SerializedName("name") val name: String
+    @SerializedName("name") val name: String,
+    @SerializedName("e_name") val eName: String?,
 
 )
 

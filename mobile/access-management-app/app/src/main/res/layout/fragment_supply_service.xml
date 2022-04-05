@@ -95,14 +95,24 @@
 
             <EditText
                 android:id="@+id/etTotalSupply"
-                style="@style/EditTextStyle"
+                style="@style/EditTextStyleUnit"
                 android:inputType="numberDecimal"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/view_margin_medium"
                 android:hint="@string/service_total_supply"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/labelUnit"
                 app:layout_constraintTop_toBottomOf="@id/btnShowToDate" />
 
+            <TextView
+                android:id="@+id/labelUnit"
+                app:layout_constraintTop_toTopOf="@id/etTotalSupply"
+                app:layout_constraintBottom_toBottomOf="@id/etTotalSupply"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="wrap_content"
+                style="@style/TextStyleUnit.Litre"
+                android:layout_height="0dp"/>
 
             <Spinner
                 android:id="@+id/spinnerSupplyBelt"
@@ -114,7 +124,7 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/etTotalSupply" />
 
-            <EditText
+          <!--  <EditText
                 android:id="@+id/etEstimatedHouseholds"
                 style="@style/EditTextStyle"
                 android:inputType="number"
@@ -133,7 +143,7 @@
                 android:layout_marginTop="@dimen/view_margin_medium"
                 android:hint="@string/service_beneficiaries"
                 app:layout_constraintTop_toBottomOf="@id/etEstimatedHouseholds" />
-
+-->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveRecord"
                 android:layout_width="wrap_content"
@@ -142,7 +152,7 @@
                 android:text="@string/action_save_record"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/etEstimatedBeneficiaries" />
+                app:layout_constraintTop_toBottomOf="@id/etTotalSupply" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

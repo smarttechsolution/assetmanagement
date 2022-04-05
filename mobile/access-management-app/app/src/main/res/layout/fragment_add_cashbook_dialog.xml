@@ -88,6 +88,8 @@
 
         app:layout_constraintTop_toBottomOf="@id/btnSelectDate" />
 
+
+
     <EditText
         android:id="@+id/etIncomeAmount"
         style="@style/EditTextStyle"
@@ -96,19 +98,103 @@
         android:hint="@string/add_cashbook_income_amount"
         android:inputType="numberDecimal"
         app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
-        app:layout_constraintRight_toRightOf="@id/engGuideline"
-
+        app:layout_constraintRight_toLeftOf="@id/engGuideline"
         app:layout_constraintTop_toBottomOf="@id/etIncomeTitle" />
 
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupExtraCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="etLabour,etMaterial,etReplacementCost" />
+
+    <EditText
+        android:id="@+id/etLabour"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/maintenance_log_labour_cost"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toLeftOf="@id/etMaterial"
+        app:layout_constraintTop_toBottomOf="@id/etIncomeAmount" />
+
+    <EditText
+        android:id="@+id/etMaterial"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/maintenance_log_material_cost"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toRightOf="@id/etLabour"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        app:layout_constraintTop_toBottomOf="@id/etIncomeAmount" />
+
+    <EditText
+        android:id="@+id/etReplacementCost"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/maintenance_log_replacement_cost"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toRightOf="@id/engGuideline"
+        app:layout_constraintTop_toBottomOf="@id/etLabour" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupExtraCostCb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="cbAddExtraCost,labelAddExtraCost" />
+
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/cbAddExtraCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintTop_toBottomOf="@id/etReplacementCost" />
+
+    <TextView
+        android:id="@+id/labelAddExtraCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maintenance_log_add_cost_separately"
+        android:textAppearance="@style/TextAppearance.Caption"
+        android:textColor="@color/gray_400"
+        app:layout_constraintBottom_toBottomOf="@id/cbAddExtraCost"
+        app:layout_constraintLeft_toRightOf="@id/cbAddExtraCost"
+        app:layout_constraintTop_toTopOf="@id/cbAddExtraCost" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupWaterSupply"
+        android:visibility="gone"
+        app:constraint_referenced_ids="etWaterSupply,labelUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <EditText
         android:id="@+id/etWaterSupply"
-        style="@style/EditTextStyle"
+        android:visibility="visible"
+        style="@style/EditTextStyleUnit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/add_cashbook_water_supplied"
         app:layout_constraintLeft_toLeftOf="@id/beginGuideline"
+        app:layout_constraintRight_toLeftOf="@id/labelUnit"
+        app:layout_constraintTop_toBottomOf="@id/cbAddExtraCost" />
+
+    <TextView
+        android:id="@+id/labelUnit"
+        app:layout_constraintTop_toTopOf="@id/etWaterSupply"
+        app:layout_constraintBottom_toBottomOf="@id/etWaterSupply"
         app:layout_constraintRight_toRightOf="@id/engGuideline"
-        app:layout_constraintTop_toBottomOf="@id/etIncomeAmount" />
+        android:layout_width="wrap_content"
+        style="@style/TextStyleUnit.Litre"
+        android:layout_height="0dp"/>
 
     <EditText
         android:id="@+id/etRemarks"

@@ -49,8 +49,8 @@ data class CreateWaterSupplyParam(
     @SerializedName("date_from") val dateFrom: String,
     @SerializedName("date_to") val dateTo: String?,
     @SerializedName("total_supply") val totalSupply: String,
-    @SerializedName("estimated_household") val estimatedHouseholds: String,
-    @SerializedName("estimated_beneficiaries") val estimatedBeneficiaries: String,
+  //  @SerializedName("estimated_household") val estimatedHouseholds: String,
+   // @SerializedName("estimated_beneficiaries") val estimatedBeneficiaries: String,
     @SerializedName("supply_belts") val supplyBelt: String,
     @SerializedName("is_daily") val isDaily: Boolean
 

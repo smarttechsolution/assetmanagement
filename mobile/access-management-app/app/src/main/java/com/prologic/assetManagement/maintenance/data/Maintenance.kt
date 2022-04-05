@@ -83,9 +83,9 @@ data class MaintenanceDetailResponse(
     @SerializedName("id") val id:String,
     @SerializedName("component") val component:String,
     @SerializedName("possible_failure") val possibleFailure:String,
-    @SerializedName("maintenance_cost") val maintenanceCost:String,
-    @SerializedName("labour_cost") val labourCost:String?,
-    @SerializedName("replacement_cost") val replacementCost:String,
+    @SerializedName("maintenance_cost") val maintenanceCost:Double,
+    @SerializedName("labour_cost") val labourCost:Double,
+    @SerializedName("replacement_cost") val replacementCost:Double,
     @SerializedName("maintenance_action") val action:String,
     @SerializedName("supply_belt") val supplyBelt:String,
     @SerializedName("maintenance_interval") val maintenanceInterval:String,
@@ -147,5 +147,7 @@ data class MaintenanceLog(
     var supplyBelt:String?,
     var labourCost: String?,
     var materialCost:String?,
-    var replacementCost: String?
+    var replacementCost: String?,
+    var isCostSegregated:Boolean,
+    var logType:String?
 )

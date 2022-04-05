@@ -151,16 +151,20 @@ class MaintenanceLogAdapter(val isEditable:Boolean,val clickListener: (String, M
                     log.failureReason = binding.etMaintenanceProblem.text.toString()
                 }
                 if(binding.cbAddExtraCost.isChecked){
+                    log.isCostSegregated = true
                     log.totalCost = "0"
                     log.materialCost = binding.etMaterial.text.toString()
                     log.labourCost = binding.etLabour.text.toString()
                     log.replacementCost = binding.etReplacementCost.text.toString()
                 }else{
+                    log.isCostSegregated = false
                     log.totalCost = binding.etTotalPrice.text.toString()
                     log.materialCost = null
                     log.labourCost = null
                     log.replacementCost = null
                 }
+
+                log.logType = "Maintenance"
 
                 if (log.serverId == null)
                     clickListener("save", log)

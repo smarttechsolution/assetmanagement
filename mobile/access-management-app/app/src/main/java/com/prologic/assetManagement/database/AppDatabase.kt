@@ -31,7 +31,7 @@ import androidx.room.TypeConverters
 import com.prologic.assetManagement.cashbook.data.Cashbook
 import com.prologic.assetManagement.cashbook.data.local.CashbookDao
 
-@Database(entities = [Cashbook::class],version = 2)
+@Database(entities = [Cashbook::class],version = 3)
 @TypeConverters(Converter::class)
 abstract class AppDatabase:RoomDatabase() {
     abstract val cashbookDao: CashbookDao

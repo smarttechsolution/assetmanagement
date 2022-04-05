@@ -28,19 +28,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prologic.assetManagement.R
-import com.prologic.assetManagement.auth.data.AuthRepository
 import com.prologic.assetManagement.auth.data.AuthStore
-import com.prologic.assetManagement.cashbook.ui.add.AddCashbookViewModel
 import com.prologic.assetManagement.network.ResponseWrapper
 import com.prologic.assetManagement.service.data.CreateWaterSupplyParam
 import com.prologic.assetManagement.service.data.SupplyBelt
 import com.prologic.assetManagement.service.data.WaterServiceRepository
 import com.prologic.assetManagement.service.data.WaterSupplyRecordResponse
-import com.prologic.assetManagement.util.getServerDateFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -50,30 +46,31 @@ import javax.inject.Inject
 class SupplyServiceViewModel @Inject constructor(val supplyRepository:WaterServiceRepository,val authStore: AuthStore) : ViewModel(){
 
     val _supplybelts = MutableLiveData<List<SupplyBelt>>()
-    val supplyBelts:LiveData<List<SupplyBelt>> = _supplybelts
+    val supplyBelts: LiveData<List<SupplyBelt>> = _supplybelts
 
 
     val _actionResponse = MutableLiveData<ResponseWrapper<WaterSupplyRecordResponse>>()
-    val actionResponse :LiveData<ResponseWrapper<WaterSupplyRecordResponse>> = _actionResponse
+    val actionResponse: LiveData<ResponseWrapper<WaterSupplyRecordResponse>> = _actionResponse
 
 
-    var selectedSupplyBelt :String? = null
-    var fromDate:String? = null
-    var toDate:String? = null
-    var estimatedHouseholds:String? = null
-    var estimatedBeneficiaries:String? = null
-    var totalSupply:String? = null
+    var selectedSupplyBelt: String? = null
+    var fromDate: String? = null
+    var toDate: String? = null
+
+    // var estimatedHouseholds:String? = null
+    //var estimatedBeneficiaries:String? = null
+    var totalSupply: String? = null
 
 
-    fun createWaterSupply(){
+    fun createWaterSupply() {
         viewModelScope.launch {
             val createWaterSupplyParam = CreateWaterSupplyParam(
                 dateFrom = fromDate!!,
                 dateTo = toDate,
-                estimatedHouseholds = estimatedHouseholds?:"0",
-                estimatedBeneficiaries = estimatedBeneficiaries?:"0",
-                supplyBelt = selectedSupplyBelt?:"",
-                isDaily = true,totalSupply = totalSupply?:"0"
+                //estimatedHouseholds = estimatedHouseholds?:"0",
+                // estimatedBeneficiaries = estimatedBeneficiaries?:"0",
+                supplyBelt = selectedSupplyBelt ?: "",
+                isDaily = true, totalSupply = totalSupply ?: "0"
             )
             _actionResponse.postValue(supplyRepository.createWaterSupplySource(createWaterSupplyParam))
         }
@@ -103,12 +100,12 @@ class SupplyServiceViewModel @Inject constructor(val supplyRepository:WaterServi
         //    SupplyValidateMessage(false, R.string.error_supply_belt_empty)
         else if (totalSupply == null)
             SupplyValidateMessage(false, R.string.error_supply_total_units)
-        else if (estimatedHouseholds == null)
-           SupplyValidateMessage(false, R.string.error_supply_estimated_household_empty)
-        else if (estimatedBeneficiaries==null)
-           SupplyValidateMessage(false, R.string.error_supply_estimated_beneficiaries_empty)
+        //  else if (estimatedHouseholds == null)
+        //   SupplyValidateMessage(false, R.string.error_supply_estimated_household_empty)
+        // else if (estimatedBeneficiaries==null)
+        //  SupplyValidateMessage(false, R.string.error_supply_estimated_beneficiaries_empty)
         else
-           SupplyValidateMessage(true, 0)
+            SupplyValidateMessage(true, 0)
     }
 
     data class SupplyValidateMessage(val valid: Boolean, val message: Int)

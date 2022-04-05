@@ -25,16 +25,14 @@ package com.prologic.assetManagement.cashbook.data
 
 import com.prologic.assetManagement.AssetManagementApp
 import com.prologic.assetManagement.auth.data.LANGUAGE
-import com.prologic.assetManagement.util.getServerDateFormat
-import java.util.*
 
 fun CashbookCategoryRes.toCashbookCategory() = CashbookCategory(
-    id, name
+    id, name, eName
 )
 
 fun getEmptyCashbook(id:String,cashbookType: CashbookType, date: String) = Cashbook(
     id, "", "---------", "------", "", "", date, true, null, cashbookType,
-    CashbookCategory("-1", "---")
+    CashbookCategory("-1", "---", null)
 
 )
 
@@ -73,7 +71,7 @@ fun AddCashbookParam.toAddIncomeParam() = AddIncomeParam(
 )
 
 fun AddCashbookParam.toAddExpenseParam() = AddExpenseParam(
-    category.id, date, title, income, remarks = remarks
+    category.id, date, title, income, remarks = remarks, replacementCost =  replacementAmt, labourCost = labourAmount, consumableCost = materialAmount ,
 )
 
 fun PresentPreviousResponse.toCashbookTotal(cashbookType: CashbookType) = CashbookTotal(

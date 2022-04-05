@@ -31,22 +31,15 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.prologic.assetManagement.AssetManagementApp
 import com.prologic.assetManagement.R
-import com.prologic.assetManagement.auth.data.LANGUAGE
 import com.prologic.assetManagement.databinding.FragmentSupplyServiceBinding
 import com.prologic.assetManagement.network.ResponseWrapper
 import com.prologic.assetManagement.service.data.SupplyBelt
 import com.prologic.assetManagement.util.*
 import dagger.hilt.android.AndroidEntryPoint
-import np.com.naveenniraula.ghadi.Pal
-import np.com.naveenniraula.ghadi.data.GhadiResult
-import np.com.naveenniraula.ghadi.listeners.DatePickCompleteListener
-import java.util.*
 
 
 @AndroidEntryPoint
@@ -146,25 +139,24 @@ class SupplyServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
             if (it != null) {
                 serviceViewModel._actionResponse.postValue(null)
                 hideProgressDialog()
-                resetForm()
                 when (it) {
                     is ResponseWrapper.Success -> {
-                        if (serviceViewModel.estimatedBeneficiaries == null || serviceViewModel.estimatedHouseholds == null) {
-                            binding.etEstimatedHouseholds.setText(it.value.estimatedHouseholds.toString())
-                            binding.etEstimatedBeneficiaries.setText(it.value.estimatedBeneficiaries.toString())
-                            binding.etTotalSupply.setText(it.value.totalSupply.toString())
+                        if (serviceViewModel.totalSupply == null) {
+                            //  binding.etEstimatedHouseholds.setText(it.value.estimatedHouseholds.toString())
+                            // binding.etEstimatedBeneficiaries.setText(it.value.estimatedBeneficiaries.toString())
+                            binding.etTotalSupply.setText(it.value.totalSupply)
 
                             val belts = serviceViewModel.supplyBelts.value
                             val item = belts?.find { belt -> belt.id == it.value.supplyBelts }
                             val pos = belts?.indexOf(item)
                             pos?.let {
-                                binding.spinnerSupplyBelt.setSelection(it+1)
+                                binding.spinnerSupplyBelt.setSelection(it + 1)
                             }
 
-                            serviceViewModel.estimatedBeneficiaries =
-                                it.value.estimatedBeneficiaries
-                            serviceViewModel.estimatedHouseholds = it.value.estimatedHouseholds
-                            serviceViewModel.totalSupply = it.value.totalSupply
+                            //    serviceViewModel.estimatedBeneficiaries =
+                            //      it.value.estimatedBeneficiaries
+                            // serviceViewModel.estimatedHouseholds = it.value.estimatedHouseholds
+                            //serviceViewModel.totalSupply = it.value.totalSupply
                             serviceViewModel.selectedSupplyBelt = it.value.supplyBelts
 
 
@@ -172,7 +164,7 @@ class SupplyServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             showToast(getString(R.string.response_save_data_success))
                             serviceViewModel.fromDate = null
                             serviceViewModel.toDate = null
-
+                            resetForm()
                             binding.btnShowToDate.setText("")
                             binding.btnShowFromDate.setText("")
                         }
@@ -191,9 +183,9 @@ class SupplyServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         binding.btnSaveRecord.setOnClickListener {
             serviceViewModel.totalSupply = binding.etTotalSupply.text.toString()
-            serviceViewModel.estimatedBeneficiaries =
-                binding.etEstimatedBeneficiaries.text.toString()
-            serviceViewModel.estimatedHouseholds = binding.etEstimatedHouseholds.text.toString()
+            //  serviceViewModel.estimatedBeneficiaries =
+            //    binding.etEstimatedBeneficiaries.text.toString()
+            // serviceViewModel.estimatedHouseholds = binding.etEstimatedHouseholds.text.toString()
 
 
             val response = serviceViewModel.validateAddIncomeCashbook()
@@ -208,12 +200,12 @@ class SupplyServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private fun resetForm() {
         binding.etTotalSupply.setText("")
-        binding.etEstimatedBeneficiaries.setText("")
-        binding.etEstimatedHouseholds.setText("")
+        //  binding.etEstimatedBeneficiaries.setText("")
+        // binding.etEstimatedHouseholds.setText("")
 
         serviceViewModel.totalSupply = null
-        serviceViewModel.estimatedBeneficiaries = null
-        serviceViewModel.estimatedHouseholds = null
+        // serviceViewModel.estimatedBeneficiaries = null
+        // serviceViewModel.estimatedHouseholds = null
 
     }
 

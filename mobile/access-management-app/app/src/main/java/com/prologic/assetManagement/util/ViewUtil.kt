@@ -124,7 +124,7 @@ fun TextView.setAmount(amount: String) {
 }
 
 
-fun TextView.setEstimatedCost(amount: String) {
+fun TextView.setEstimatedCost(amount: Double) {
     text = " $amount"
 }
 

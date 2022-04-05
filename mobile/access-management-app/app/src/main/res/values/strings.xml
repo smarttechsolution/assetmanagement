@@ -72,7 +72,8 @@
     <string name="add_cashbook_income_amount">Income Amount</string>
     <string name="add_cashbook_expense_title">Expense Title</string>
     <string name="add_cashbook_expense_amount">Expense Amount</string>
-    <string name="add_cashbook_water_supplied">Water Supplied</string>
+    <string name="add_cashbook_expense_maintenance_amount">Maintenance Amount</string>
+    <string name="add_cashbook_water_supplied">Water Sold</string>
     <string name="add_cashbook_remarks">Remarks</string>
     <string name="add_cashbook_information">Enter water supplied, while recording water sales</string>
 
@@ -84,8 +85,8 @@
     <string name="cashbook_date_empty">Please select date</string>
     <string name="cashbook_income_title_empty">Please add income title</string>
     <string name="cashbook_expense_title_empty">Please add expense title</string>
-    <string name="cashbook_income_amount_empty">Please add income title</string>
-    <string name="cashbook_expense_amount_empty">Please add expense title</string>
+    <string name="cashbook_income_amount_empty">Please add income amount</string>
+    <string name="cashbook_expense_amount_empty">Please add expense amount</string>
     <string name="cashbook_water_supply_empty">Please add water supply</string>
 
     <string name="maintenance_empty">No records available for {maintenanceType}</string>
@@ -102,25 +103,32 @@
 
     <string name="maintenance_log_total_cost"> Total cost </string>
     <string name="maintenance_log_labour_cost">Labour</string>
-    <string name="maintenance_log_material_cost">Material</string>
+    <string name="maintenance_log_material_cost">Consumable</string>
     <string name="maintenance_log_replacement_cost">Replacement</string>
     <string name="maintenance_log_add_cost_separately"> Add Cost Separately</string>
     <string name="maintenance_log_interval"> Interval (in days)</string>
     <string name="maintenance_log_supply_belt">Supply belt</string>
     <string name="maintenance_log_entry_title">Maintenance Log</string>
-    <string name="maintenance_log_entry_remarks">Remarks</string>
+   <string name="maintenance_log_entry_remarks">Remarks</string>
 
-    <string name="maintenance_sort_by_action_date">Action Date</string>
-    <string name="maintenance_sort_by_estimated_cost">Est. Cost</string>
-    <string name="maintenance_sort_by_risk_score">Risk Score</string>
+
+
+
+    <string name="maintenance_sort_by_action_date">Date</string>
+    <string name="maintenance_sort_by_estimated_cost">Cost</string>
+    <string name="maintenance_sort_by_risk_score">Risk</string>
     
     <string name="unscheduled_maintenance_log_required">Select maintenance</string>
     <string name="unscheduled_maintenance_date_empty">Please select date</string>
     <string name="unscheduled_maintenance_add_cost">Please add cost</string>
     <string name="unscheduled_duration_empty">Please add intervals</string>
+    <string name="unscheduled_log_type_empty">Please add log type</string>
     <string name="unscheduled_maintenance_action">Maintenance action</string>
     <string name="unscheduled_possible_failure">Possible Failure</string>
-
+    <string name="unscheduled_maintenance_log_entry_title">Component</string>
+    <string name="unscheduled_maintenance_log_type_title">Log Type</string>
+    <string name="unscheduled_maintenance_log_type_maintenance">Maintenance Log</string>
+    <string name="unscheduled_maintenance_log_type_issue">Issue Log</string>
 
 
     <string name="service_add_record">Add water supply record</string>
@@ -129,6 +137,7 @@
     <string name="service_to_date">End Date</string>
     <string name="service_units">Units</string>
     <string name="service_mg_per_litre">M.G/L</string>
+    <string name="service_per_litre">/ Litre</string>
     <string name="service_households">Estimated Households</string>
     <string name="service_beneficiaries">Estimated Beneficiaries</string>
 
@@ -184,5 +193,11 @@
     <string name="loader_loading">Loading...</string>
     <string name="loader_saving">Saving...</string>
     <string name="loader_updating">Updating...</string>
+
+    <array name="array_unscheduled_log_type">
+        <item>@string/unscheduled_maintenance_log_type_title</item>
+        <item>@string/unscheduled_maintenance_log_type_maintenance</item>
+        <item>@string/unscheduled_maintenance_log_type_issue</item>
+    </array>
 
 </resources>

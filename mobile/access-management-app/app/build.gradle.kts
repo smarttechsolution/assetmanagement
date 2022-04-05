@@ -42,8 +42,8 @@ android {
         applicationId = "com.prologic.assetManagement"
         minSdk = 21
         targetSdk = 31
-        versionCode = 14
-        versionName = "1.14"
+        versionCode = 19
+        versionName = "1.19"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

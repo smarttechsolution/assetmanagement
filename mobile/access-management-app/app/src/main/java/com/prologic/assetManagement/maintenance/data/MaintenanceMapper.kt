@@ -69,7 +69,9 @@ fun MaintenanceLogDetailResponse.toMaintenanceDetail(componentName:String) = Mai
     supplyBelt = supplyBelt,
     labourCost = labourCost,
     materialCost = materialCost,
-    replacementCost = replacementCost
+    replacementCost = replacementCost,
+    isCostSegregated =  false,
+    logType = null
 
 )
 fun getMaintenanceLog(componentId:String,componentName: String,possibleFailure:String,possibleSolution:String) = MaintenanceLog(
@@ -88,5 +90,7 @@ fun getMaintenanceLog(componentId:String,componentName: String,possibleFailure:S
     supplyBelt = null,
     labourCost = null,
     materialCost = null,
-    replacementCost = null
+    replacementCost = null,
+    isCostSegregated = false,
+    logType = null
 )

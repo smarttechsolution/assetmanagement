@@ -28,10 +28,10 @@ import com.prologic.assetManagement.R
 import com.prologic.assetManagement.auth.data.AuthStore
 import com.prologic.assetManagement.cashbook.data.*
 import com.prologic.assetManagement.network.ResponseWrapper
-import com.prologic.assetManagement.util.getServerDateFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -60,6 +60,9 @@ class AddCashbookViewModel @Inject constructor(
     var selectedDate: String? = null
     var incomeTitle: String? = null
     var incomeAmount: String? = null
+    var replacementAmount: String? = null
+    var labourAmount: String? = null
+    var materialAmount: String? = null
     var waterSupplied: String? = null
     var remarks: String? = null
 
@@ -103,7 +106,7 @@ class AddCashbookViewModel @Inject constructor(
      * @param cashbookType received from the argument the fragment [AddCashbookDialogFragment]
      * @param isWeek is also received from the argument of the fragment [AddCashbookDialogFragment]
      */
-    fun editCashbook(cashbookId: String, cashbookType: CashbookType, isWeek: Boolean?) {
+    fun editCashbook(cashbookId: String, cashbookType: CashbookType, isWeek: Boolean?,extraCost: Boolean) {
         viewModelScope.launch {
             val format = NumberFormat.getNumberInstance(Locale.getDefault())
 
@@ -115,7 +118,8 @@ class AddCashbookViewModel @Inject constructor(
                         date = selectedDate!!,
                         title = incomeTitle!!,
                         income = format.parse(incomeAmount).toDouble(),
-                        waterSupplied = waterSupplied?.let { format.parse(waterSupplied).toInt() },
+                        replacementAmt = null, labourAmount = null, materialAmount = null,
+                        waterSupplied = waterSupplied?.let { format.parse(waterSupplied).toInt() }?:0,
                         isWeek = isWeek, remarks = remarks,
 
                         )
@@ -131,7 +135,10 @@ class AddCashbookViewModel @Inject constructor(
                         category = selectedCategory!!,
                         date = selectedDate!!,
                         title = incomeTitle!!,
-                        income = format.parse(incomeAmount).toDouble(),
+                        income = getExpenditureAmount(extraCost),
+                        replacementAmt = replacementAmount?.let { format.parse(it).toDouble() },
+                        labourAmount = labourAmount?.let { format.parse(it).toDouble() },
+                        materialAmount = materialAmount?.let { format.parse(it).toDouble() },
                         waterSupplied = null,
                         isWeek = isWeek, remarks = remarks
                     )
@@ -151,7 +158,7 @@ class AddCashbookViewModel @Inject constructor(
      *  cashbook type is either [CashbookType.EXPENDITURE] or [CashbookType.INCOME]
      *  add income or expense as per the cashbook type
      */
-    fun addCashbook(cashbookType: CashbookType, isWeek: Boolean?) {
+    fun addCashbook(cashbookType: CashbookType, isWeek: Boolean?, extraCost: Boolean) {
         viewModelScope.launch {
             val format = NumberFormat.getNumberInstance(Locale.getDefault())
 
@@ -162,6 +169,7 @@ class AddCashbookViewModel @Inject constructor(
                         date = selectedDate!!,
                         title = incomeTitle!!,
                         income = format.parse(incomeAmount).toDouble(),
+                        replacementAmt = null, labourAmount = null, materialAmount = null,
                         waterSupplied = waterSupplied?.let { format.parse(waterSupplied).toInt() },
                         isWeek,
                         remarks = remarks
@@ -169,19 +177,43 @@ class AddCashbookViewModel @Inject constructor(
                     _addCashbookResponse.postValue(cashbookRepository.addIncome(addParam))
                 }
                 CashbookType.EXPENDITURE -> {
+
+
                     val addParam = AddCashbookParam(
                         category = selectedCategory!!,
                         date = selectedDate!!,
                         title = incomeTitle!!,
-                        income = format.parse(incomeAmount).toDouble(),
+                        income = getExpenditureAmount(extraCost),
+                        replacementAmt = replacementAmount?.let { format.parse(it).toDouble() },
+                        labourAmount = labourAmount?.let { format.parse(it).toDouble() },
+                        materialAmount = materialAmount?.let { format.parse(it).toDouble() },
                         waterSupplied = null,
                         isWeek,
                         remarks = remarks
                     )
+                    Timber.d("the add param is:" + addParam)
+
                     _addCashbookResponse.postValue(cashbookRepository.addExpense(addParam))
                 }
             }
         }
+    }
+
+
+    fun getExpenditureAmount(extraCost: Boolean): Double {
+        var amount = 0.0
+        val format = NumberFormat.getNumberInstance(Locale.getDefault())
+
+        amount = if (extraCost) {
+
+            val rAmnt = replacementAmount?.let { format.parse(it).toDouble() } ?: 0.0
+            val lAmnt = labourAmount?.let { format.parse(it).toDouble() } ?: 0.0
+            val mAmnt = materialAmount?.let { format.parse(it).toDouble() } ?: 0.0
+            lAmnt + rAmnt + mAmnt
+        } else {
+            format.parse(incomeAmount).toDouble()
+        }
+        return amount
     }
 
 
@@ -198,17 +230,27 @@ class AddCashbookViewModel @Inject constructor(
             ValidateMessage(true, 0)
     }
 
-    fun validateAddExpenseCashbook(): ValidateMessage {
+    fun validateAddExpenseCashbook(extraCost: Boolean): ValidateMessage {
         return if (selectedCategory == null)
             ValidateMessage(false, R.string.add_cashbook_select_category)
         else if (selectedDate == null)
             ValidateMessage(false, R.string.add_cashbook_select_date)
         else if (incomeTitle == null || incomeTitle!!.length < 3)
             ValidateMessage(false, R.string.cashbook_expense_title_empty)
-        else if (incomeAmount == null)
-            ValidateMessage(false, R.string.cashbook_expense_amount_empty)
-        else
-            ValidateMessage(true, 0)
+        else {
+            if (extraCost) {
+                if (labourAmount == null || materialAmount == null || replacementAmount == null) {
+                    ValidateMessage(false, R.string.cashbook_expense_amount_empty)
+                } else {
+                    ValidateMessage(true, 0)
+                }
+            } else {
+                if (incomeAmount == null)
+                    ValidateMessage(false, R.string.cashbook_expense_amount_empty)
+                else
+                    ValidateMessage(true, 0)
+            }
+        }
     }
 
     data class ValidateMessage(val valid: Boolean, val message: Int)

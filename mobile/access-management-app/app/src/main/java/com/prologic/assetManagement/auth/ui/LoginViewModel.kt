@@ -48,7 +48,6 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
 
     val phoneNumber = _phoneNumber
     val password = _password
-
     var _isPhoneNumberValid = MutableLiveData<Boolean> (false)
     var isPhoneNumberValid = _isPhoneNumberValid
 

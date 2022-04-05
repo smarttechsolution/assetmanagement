@@ -25,6 +25,7 @@ package com.prologic.assetManagement.network
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.HttpException
 import timber.log.Timber
@@ -78,9 +79,26 @@ private fun convertErrorBody(throwable: HttpException): ApiError? {
         val jsonObject = JSONObject(throwable.response()?.errorBody()?.string())
         return when {
             jsonObject.has("detail") -> ApiError(jsonObject.getString("detail"), throwable.code())
-            jsonObject.has("error") -> ApiError(jsonObject.getString("error"), throwable.code())
+            jsonObject.has("error") -> {
+                when {
+                    jsonObject.get("error") is JSONObject -> {
+                        ApiError(jsonObject.getString("error"), throwable.code())
+                    }
+                    jsonObject.get("error") is JSONArray -> {
+                        val item = jsonObject.getJSONArray("error")
+                        ApiError(item.get(0).toString(), throwable.code())
+                    }
+                    else -> {
+                        ApiError("Something wrong happened", throwable.code())
+                    }
+                }
+            }
             jsonObject.has("message") -> ApiError(jsonObject.getString("message"), throwable.code())
-            jsonObject.has("maintenance_date") -> ApiError("maintenance_date "+jsonObject.getJSONArray("maintenance_date").get(0).toString(), throwable.code())
+            jsonObject.has("maintenance_date") -> ApiError(
+                "maintenance_date " + jsonObject.getJSONArray(
+                    "maintenance_date"
+                ).get(0).toString(), throwable.code()
+            )
             else -> ApiError("Something wrong happened", throwable.code())
         }
     } catch (exception: Exception) {

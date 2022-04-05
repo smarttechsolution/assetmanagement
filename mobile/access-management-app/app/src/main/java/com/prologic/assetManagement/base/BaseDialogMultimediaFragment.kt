@@ -91,12 +91,12 @@ open class BaseDialogMultimediaFragment : BaseDialog() {
 
 
     /**
-     * The server can only handle the total image size of 1 mb hence this condition
+     * The server can only handle the total image size of 10 mb hence this condition
      */
     private fun isFileSizeCorrect(length: Long): Boolean {
         val fileSize = (length / 1024).toInt()
         Timber.d("the is:$fileSize")
-        return fileSize <= 1024
+        return fileSize <= (9216)
     }
 
     private fun getFileFromUri(uri: Uri): File? {
@@ -163,6 +163,8 @@ open class BaseDialogMultimediaFragment : BaseDialog() {
             }
             .show()
     }
+
+
 
 
     fun launchImageSelection() {

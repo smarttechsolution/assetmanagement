@@ -24,11 +24,10 @@
 package com.prologic.assetManagement.maintenance.ui.notScheduled;
 
 import android.graphics.Color
-import android.net.Uri
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -37,13 +36,11 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.prologic.assetManagement.R
-import com.prologic.assetManagement.base.BaseDialogMultimediaFragment;
-import com.prologic.assetManagement.cashbook.data.CashbookCategory
+import com.prologic.assetManagement.base.BaseDialogMultimediaFragment
 import com.prologic.assetManagement.databinding.FragmentAddUnscheduledDialogBinding
 import com.prologic.assetManagement.maintenance.data.Maintenance
 import com.prologic.assetManagement.maintenance.data.MaintenanceLog
 import com.prologic.assetManagement.maintenance.data.getMaintenanceLog
-import com.prologic.assetManagement.maintenance.ui.log.MaintenanceLogDialogFragmentArgs
 import com.prologic.assetManagement.network.ResponseWrapper
 import com.prologic.assetManagement.util.*
 import timber.log.Timber
@@ -77,6 +74,7 @@ class AddUnScheduledLogDialogFragment : BaseDialogMultimediaFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpLogTypeSpinner()
         viewModel.getUnscheduledMaintenanceLogs(args.rangeId, "not-schedule")
 
         viewModel.addLogResponse.observe(viewLifecycleOwner, Observer {
@@ -133,7 +131,8 @@ class AddUnScheduledLogDialogFragment : BaseDialogMultimediaFragment(),
                     it.selectedDate.isNullOrEmpty() -> showToast(getString(R.string.unscheduled_maintenance_date_empty))
                     it.totalCost.isNullOrEmpty() -> showToast(getString(R.string.unscheduled_maintenance_add_cost))
                     it.intervalDay.isNullOrEmpty() -> showToast(getString(R.string.unscheduled_duration_empty))
-                    else ->{
+                    it.logType.isNullOrEmpty() -> showToast(getString(R.string.unscheduled_log_type_empty))
+                    else -> {
                         showProgressDialog(getString(R.string.loader_saving))
                         viewModel.saveMaintenanceLog(it)
                     }
@@ -141,12 +140,15 @@ class AddUnScheduledLogDialogFragment : BaseDialogMultimediaFragment(),
 
             } ?: showToast(getString(R.string.unscheduled_maintenance_log_required))
         }
+
+
+
         viewModel.unscheduledMaintenanceLogs.observe(viewLifecycleOwner, Observer {
             if (!it.isNullOrEmpty()) {
 
                 val namesList: MutableList<String> = it.map { it.component.name }.toMutableList()
                 Timber.d("the names list is:" + namesList.size)
-                namesList.add(0, getString(R.string.maintenance_log_entry_title))
+                namesList.add(0, getString(R.string.unscheduled_maintenance_log_entry_title))
 
                 Timber.d("the size now is:" + namesList.size)
                 val spinnerAdapter: ArrayAdapter<String> = object : ArrayAdapter<String>(
@@ -210,31 +212,51 @@ class AddUnScheduledLogDialogFragment : BaseDialogMultimediaFragment(),
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-        if (position > 0) {
-            (p0!!.getChildAt(0) as TextView).setTextColor(Color.BLACK)
-            val categoryList: List<Maintenance>? = viewModel.unscheduledMaintenanceLogs.value
-            val item = categoryList?.elementAt(position - 1)
-            item?.let {
-                viewModel.selectedMaintenance = it
-                log = getMaintenanceLog(
-                    componentId = it.id,
-                    componentName = it.component.name,
-                    possibleFailure = it.possibleFailure,
-                    possibleSolution = it.logEntry
-                ).also { newlog ->
-                    // log?.id = it.id
-                    //  newlog.serverId = it.id
-                   // binding.etMaintenanceProblem.setText(it.possibleFailure)
-                    //binding.etMaintenanceSolution.setText(it.action)
-                   // binding.etMaintenanceInterval.setText(it.interval)
+        when (p0?.id) {
+            R.id.spinnerMaintenanceLogs -> {
 
+                if (position > 0) {
+                    (p0!!.getChildAt(0) as TextView).setTextColor(Color.BLACK)
+                    val categoryList: List<Maintenance>? = viewModel.unscheduledMaintenanceLogs.value
+                    val item = categoryList?.elementAt(position - 1)
+                    item?.let {
+                        viewModel.selectedMaintenance = it
+                        log = getMaintenanceLog(
+                            componentId = it.id,
+                            componentName = it.component.name,
+                            possibleFailure = it.possibleFailure,
+                            possibleSolution = it.logEntry
+                        ).also { newlog ->
+                            // log?.id = it.id
+                            //  newlog.serverId = it.id
+                            // binding.etMaintenanceProblem.setText(it.possibleFailure)
+                            //binding.etMaintenanceSolution.setText(it.action)
+                            // binding.etMaintenanceInterval.setText(it.interval)
+
+                        }
+
+
+                    }
+                } else {
+                    viewModel.selectedMaintenance = null
                 }
-
-
             }
-        } else {
-            viewModel.selectedMaintenance = null
+
+            R.id.spinnerLogType -> {
+                if (position > 0) {
+                    (p0!!.getChildAt(0) as TextView).setTextColor(Color.BLACK)
+                    if (position == 1) {
+                        log?.logType = "Maintenance"
+                    } else if (position == 2) {
+                        log?.logType = "Issue"
+                    }
+
+                } else {
+                    log?.logType = null
+                }
+            }
         }
+
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -252,5 +274,37 @@ class AddUnScheduledLogDialogFragment : BaseDialogMultimediaFragment(),
             }
 
         }
+    }
+
+    private fun setUpLogTypeSpinner() {
+
+        val logTypeSpinnerAdapter: ArrayAdapter<String> = object : ArrayAdapter<String>(
+            requireContext(),
+            R.layout.item_simple_spinner,
+            resources.getStringArray(R.array.array_unscheduled_log_type)
+        ) {
+
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+
+            override fun getDropDownView(
+                position: Int, convertView: View?,
+                parent: ViewGroup?
+            ): View? {
+                val view = super.getDropDownView(position, convertView, parent)
+                val tv = view as TextView
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY)
+                } else {
+                    tv.setTextColor(Color.BLACK)
+                }
+                return view
+            }
+        }
+        binding.spinnerLogType.onItemSelectedListener = this
+        binding.spinnerLogType.adapter = logTypeSpinnerAdapter
+
     }
 }

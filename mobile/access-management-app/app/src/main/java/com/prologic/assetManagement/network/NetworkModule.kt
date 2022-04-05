@@ -61,7 +61,7 @@ class NetworkModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .baseUrl("http://3.110.105.23/api/v1/")
+            .baseUrl("https://assetmgmttool.com/api/v1/")
             .client(okHttpClient)
 
             .addConverterFactory(GsonConverterFactory.create())

@@ -145,6 +145,12 @@ class RemoteMaintenanceSource @Inject constructor(
         log.supplyBelt?.toRequestBody()?.let {
             requestBodyMap["supply_belt"] = it
         }
+        log.isCostSegregated.toString().toRequestBody().let {
+            requestBodyMap["is_cost_seggregated"] = it
+        }
+        log.logType?.toRequestBody()?.let {
+            requestBodyMap["log_type"] = it
+        }
         return requestBodyMap
 
 

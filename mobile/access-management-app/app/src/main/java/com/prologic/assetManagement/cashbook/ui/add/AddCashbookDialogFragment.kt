@@ -23,44 +23,30 @@
 
 package com.prologic.assetManagement.cashbook.ui.add
 
+
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.fragment.app.activityViewModels
-import com.prologic.assetManagement.R
-import com.prologic.assetManagement.base.BaseDialog
-import com.prologic.assetManagement.cashbook.ui.CashbookViewModel
-import com.prologic.assetManagement.databinding.FragmentAddCashbookDialogBinding
-import com.prologic.assetManagement.databinding.FragmentCashbookBinding
-
-
 import android.widget.ArrayAdapter
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
+import android.widget.TextView
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.prologic.assetManagement.AssetManagementApp
-import com.prologic.assetManagement.auth.data.LANGUAGE
+import com.prologic.assetManagement.R
+import com.prologic.assetManagement.base.BaseDialog
 import com.prologic.assetManagement.cashbook.data.CashbookCategory
 import com.prologic.assetManagement.cashbook.data.CashbookType
+import com.prologic.assetManagement.cashbook.ui.CashbookFragment
+import com.prologic.assetManagement.databinding.FragmentAddCashbookDialogBinding
 import com.prologic.assetManagement.network.ResponseWrapper
 import com.prologic.assetManagement.util.*
 import dagger.hilt.android.AndroidEntryPoint
-import np.com.naveenniraula.ghadi.Pal
-import np.com.naveenniraula.ghadi.data.GhadiResult
-import np.com.naveenniraula.ghadi.listeners.DatePickCompleteListener
-import np.com.naveenniraula.ghadi.ui.CalendarDialogFragment
 import timber.log.Timber
-import java.util.*
-import android.widget.TextView
-import com.prologic.assetManagement.cashbook.ui.CashbookFragment
 
 
 /**
@@ -98,9 +84,8 @@ class AddCashbookDialogFragment : BaseDialog(), AdapterView.OnItemSelectedListen
 
         when (args.cashbookType) {
             CashbookType.INCOME -> {
-                binding.etWaterSupply.setText("0")
+               // binding.etWaterSupply.setText("0")
                 binding.etRemarks.hide()
-                binding.etWaterSupply.show()
                 binding.etWaterSupply.inputType = InputType.TYPE_CLASS_NUMBER
                 binding.etIncomeTitle.hint = getString(R.string.add_cashbook_income_title)
                 binding.etIncomeAmount.hint = getString(R.string.add_cashbook_income_amount)
@@ -111,6 +96,8 @@ class AddCashbookDialogFragment : BaseDialog(), AdapterView.OnItemSelectedListen
                 binding.etWaterSupply.inputType = InputType.TYPE_CLASS_TEXT
                 binding.etIncomeTitle.hint = getString(R.string.add_cashbook_expense_title)
                 binding.etIncomeAmount.hint = getString(R.string.add_cashbook_expense_amount)
+
+
             }
         }
 
@@ -171,29 +158,48 @@ class AddCashbookDialogFragment : BaseDialog(), AdapterView.OnItemSelectedListen
                         binding.btnSelectDate.text = cashbook.dateEn
                         binding.etWaterSupply.setText(cashbook.waterSupplied)
                         cashbookViewModel.selectedDate = cashbook.dateEn
+
                     }
                 })
         }
         binding.btnActionSave.setOnClickListener {
-            cashbookViewModel.incomeAmount = binding.etIncomeAmount.text.toString()
             cashbookViewModel.incomeTitle = binding.etIncomeTitle.text.toString()
             cashbookViewModel.waterSupplied = binding.etWaterSupply.text.toString()
             cashbookViewModel.remarks = binding.etRemarks.text.toString()
 
+            var extraCost = false
+            if (binding.groupExtraCost.isVisible) {
+                extraCost = true
+                var labourCost = binding.etLabour.text.toString()
+                var replacementCost = binding.etReplacementCost.text.toString()
+                var materialCost = binding.etMaterial.text.toString()
+                if (materialCost.isNotEmpty())
+                    cashbookViewModel.materialAmount = materialCost
+                if (replacementCost.isNotEmpty())
+                    cashbookViewModel.replacementAmount = replacementCost
+                if (labourCost.isNotEmpty())
+                    cashbookViewModel.labourAmount = labourCost
+            } else {
+                extraCost = false
+                cashbookViewModel.incomeAmount = binding.etIncomeAmount.text.toString()
+
+            }
+
             val valid = if (args.cashbookType == CashbookType.INCOME)
                 cashbookViewModel.validateAddIncomeCashbook()
             else
-                cashbookViewModel.validateAddExpenseCashbook()
+                cashbookViewModel.validateAddExpenseCashbook(extraCost)
 
             if (valid.valid) {
                 showProgressDialog(getString(R.string.loader_loading))
                 if (args.cashbookId == null) {
-                    cashbookViewModel.addCashbook(args.cashbookType, args.isWeek)
+                    cashbookViewModel.addCashbook(args.cashbookType, args.isWeek, extraCost)
                 } else {
                     cashbookViewModel.editCashbook(
                         args.cashbookId ?: "",
                         args.cashbookType,
-                        args.isWeek
+                        args.isWeek,
+                        extraCost
                     )
                 }
             } else {
@@ -257,10 +263,26 @@ class AddCashbookDialogFragment : BaseDialog(), AdapterView.OnItemSelectedListen
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (position > 0) {
+
             (parent!!.getChildAt(0) as TextView).setTextColor(Color.BLACK)
             val categoryList: List<CashbookCategory>? = cashbookViewModel.categories.value
             val item = categoryList?.elementAt(position - 1)
             item?.let {
+
+                if (args.cashbookType == CashbookType.EXPENDITURE) {
+                    if (it.eName?.equals("Maintenance") == true) {
+                        showSegregatedCost()
+                    } else {
+                        hideSegregatedCost()
+                    }
+                } else if (args.cashbookType == CashbookType.INCOME) {
+                    if (it.eName?.equals("Water Sales") == true) {
+                        showWaterSupply()
+                    } else {
+                        hideWaterSupply()
+                    }
+
+                }
                 cashbookViewModel.selectedCategory = it
             }
         } else {
@@ -273,5 +295,41 @@ class AddCashbookDialogFragment : BaseDialog(), AdapterView.OnItemSelectedListen
 
     }
 
+    private fun showWaterSupply() {
+        binding.groupWaterSupply.show()
 
+    }
+
+    private fun hideWaterSupply() {
+        binding.groupWaterSupply.hide()
+    }
+
+    private fun showSegregatedCost() {
+        binding.etIncomeAmount.setHint(getString(R.string.add_cashbook_expense_maintenance_amount))
+        binding.groupExtraCostCb.show()
+
+        binding.cbAddExtraCost.setOnCheckedChangeListener { compoundButton, b ->
+            if (b) {
+                binding.etIncomeAmount.setText("")
+                binding.groupExtraCost.show()
+                binding.etIncomeAmount.hide()
+            } else {
+                binding.etLabour.setText("")
+                binding.etMaterial.setText("")
+                binding.etReplacementCost.setText("")
+                binding.groupExtraCost.hide()
+                binding.etIncomeAmount.show()
+            }
+        }
+
+    }
+
+    private fun hideSegregatedCost() {
+        binding.etIncomeAmount.setHint(getString(R.string.add_cashbook_expense_amount))
+        cashbookViewModel.replacementAmount = null
+        cashbookViewModel.labourAmount = null
+        cashbookViewModel.materialAmount = null
+        binding.groupExtraCost.hide()
+        binding.etIncomeAmount.show()
+    }
 }

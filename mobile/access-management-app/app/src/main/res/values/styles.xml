@@ -154,6 +154,10 @@
         <item name="android:text">@string/service_mg_per_litre</item>
     </style>
 
+    <style name="TextStyleUnit.Litre" parent="TextStyleUnit">
+        <item name="android:text">@string/service_per_litre</item>
+    </style>
+
 
     <style name="TextViewStyle" parent="Widget.AppCompat.TextView">
         <item name="android:background">@drawable/bg_textview</item>

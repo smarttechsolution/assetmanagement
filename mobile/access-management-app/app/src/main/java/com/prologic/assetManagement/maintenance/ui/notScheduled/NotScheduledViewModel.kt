@@ -23,14 +23,14 @@
 
 package com.prologic.assetManagement.maintenance.ui.notScheduled
 
-import androidx.lifecycle.*
-import com.prologic.assetManagement.cashbook.data.CashbookCategory
-import com.prologic.assetManagement.cashbook.data.CashbookResponse
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.prologic.assetManagement.maintenance.data.*
 import com.prologic.assetManagement.network.ResponseWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
