@@ -18,6 +18,9 @@ import ComponentInfoForm from "./ComponentInfoForm";
 import CostDataHeader, { CostData } from "./Components/CostData";
 import NormalDataHeader, { NormalData } from "./Components/NormalData";
 import RiskDataHeader, { RiskData } from "./Components/RiskData";
+import { SRLWrapper } from "simple-react-lightbox";
+import Thumbnail from "assets/images/thumbnail.png";
+
 
 interface IProps extends PropsFromRedux {}
 
@@ -34,7 +37,12 @@ const AssetTable = (props: IProps) => {
 
   const [tableData, setTableData] = React.useState<any>(null);
 
-  const toggleComponentModal = () => setModalForm(!modalForm);
+  const toggleComponentModal = () => {
+    if (modalForm) {
+      setEditData(null);
+    }
+    setModalForm(!modalForm);
+  };
 
   React.useEffect(() => {
     if (props.schemeSlug) {
@@ -73,7 +81,7 @@ const AssetTable = (props: IProps) => {
     }
   };
 
-  const handleEditClick = (id, component) => { 
+  const handleEditClick = (id, component) => {
     props.getComponentInfoByIdAction(props.language, id).then((res) => {
       if (res.data) {
         setEditData({ ...res.data, component });
@@ -88,7 +96,7 @@ const AssetTable = (props: IProps) => {
         <tbody>
           <>
             <tr className="">
-              <th scope="col" colSpan={5}>
+              <th scope="col" colSpan={7}>
                 <Button
                   className="btn custom-btn mb-2"
                   text={t("maintainance:aci")}
@@ -105,13 +113,13 @@ const AssetTable = (props: IProps) => {
               >
                 {!showRisk && !showCost && t("maintainance:mitigation")}
               </th>
-              <th
+              {/* <th
                 scope="col"
                 className={showRisk || showCost ? "placeholder" : "top-headers"}
                 colSpan={3}
               >
                 {!showRisk && !showCost && t("maintainance:responsible")}
-              </th>
+              </th> */}
             </tr>
           </>
 
@@ -119,9 +127,20 @@ const AssetTable = (props: IProps) => {
             <th scope="col" className="bg-header" style={{ width: 350, borderRadius: "5px 0 0 0" }}>
               {t("maintainance:assetComponent")}
             </th>
-            <th scope="col" className="bg-header" colSpan={2} style={{ borderRadius: "0 5px 0 0" }}>
+            <th scope="col" className="bg-header" colSpan={1} style={{  }}>
               {t("maintainance:dopf")}
             </th>
+            <th scope="col" className="bg-header" style={{  }}>
+              {t("maintainance:interval")}
+            </th>
+            <th scope="col" className="bg-header" style={{  }}>
+              {t("maintainance:responsible")}
+            </th>
+            <th scope="col" className="bg-header" style={{ borderRadius: "0 5px 0 0" }}>
+              {t("home:action")}
+            </th>
+
+            {/* add responsible here */}
 
             {showCost ? (
               <CostDataHeader onClick={() => setShowCost(false)} />
@@ -176,16 +195,26 @@ const AssetTable = (props: IProps) => {
               return (
                 <React.Fragment>
                   <tr>
-                    <td colSpan={showCost ? 8 : 3} className="component-title">
+                    <td colSpan={showCost ? 9 : 5} className="component-title">
                       {item[0]}
                     </td>
-                    <td></td>
                   </tr>
                   {item[1] instanceof Array &&
                     item[1].map((data: DashboardComponentInfoType) => (
                       <tr>
-                        <td>{data.component.name}</td>
+                        <td>
+                          <div className="d-flex">
+                            <div className="component-image-wrapper">
+                              <SRLWrapper >
+                                <img src={data.componant_picture || Thumbnail} alt="" />
+                              </SRLWrapper>
+                            </div>
+                            {data.component.name}
+                          </div>
+                        </td>
                         <td>{data.possible_failure}</td>
+                        <td>{data.maintenance_interval} {data.interval_unit}</td>
+                        <td>{data.responsible}</td>
                         <td className="action">
                           <div
                             role="button"
@@ -231,7 +260,7 @@ const AssetTable = (props: IProps) => {
                           <></>
                         ) : (
                           <td className="text-center">
-                            {props.currency} {data.maintenance_cost}
+                            {props.currency} {data.seggregated_or_unseggregated_cost}
                           </td>
                         )}
                         {showRisk || showCost ? (

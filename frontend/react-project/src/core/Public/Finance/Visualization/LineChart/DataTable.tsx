@@ -1,9 +1,9 @@
 import { getNumberByLanguage } from "i18n/i18n";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { Table } from "reactstrap";
-import { RootState } from "store/root-reducer";
+// import { RootState } from "store/root-reducer";
 
 interface Props {
   years: any;
@@ -14,7 +14,7 @@ interface Props {
 const DataTable = (props: Props) => {
   const { t } = useTranslation();
 
-  const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
+  // const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
 
 
   return (
@@ -40,7 +40,8 @@ const DataTable = (props: Props) => {
                 </td>
                 {item.data?.map((data, index) => (
                   <td key={index}>
-                    {currency} {getNumberByLanguage(props.months ? data?.value : data) || "0"}
+                    {/* {currency} */}
+                    {getNumberByLanguage(props.months ? data?.value : data) || "0"}
                   </td>
                 ))}
               </tr>

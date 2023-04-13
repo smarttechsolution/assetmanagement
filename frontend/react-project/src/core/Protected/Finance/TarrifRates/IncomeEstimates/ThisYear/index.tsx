@@ -1,4 +1,4 @@
-import { HouseIcon, InstitutionIcon, UserGroupIcon } from "assets/images/xd";
+import { HouseIcon, InstitutionIcon, UserGroupIcon, UserIcon } from "assets/images/xd";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { getFixedRateIncomeEstimatesAction } from "store/modules/waterTarrifs/getFixedRateIncomeEstimates";
@@ -15,16 +15,15 @@ const IncomeEstimatesThisYear = (props: IProps) => {
   const { t } = useTranslation();
 
   React.useEffect(() => {
-    if (props.schemeSlug) { 
+    if (props.schemeSlug) {
       props.getUsIncomeEstimateThisYearAction(props.schemeSlug);
     }
   }, [props.schemeSlug]);
- 
 
   return (
     <div>
       <div className="row">
-        <div className="col">
+        <div className="col-2 col-md-2">
           <div className="estimates">
             <span>{t("finance:incomeEstimateTY")}</span>
             <h5>
@@ -32,25 +31,16 @@ const IncomeEstimatesThisYear = (props: IProps) => {
             </h5>
           </div>
         </div>
-        <div className="col-6 col-md-2">
+        <div className="col-2 col-md-2">
           <div className="estimates">
             <span>{t("home:households")}</span>
             <h6>
               <img src={HouseIcon} alt="" className="icon" />{" "}
-              {getNumberByLanguage(props.incomeEstimates?.beneficiary_household)}
+              {getNumberByLanguage(props.incomeEstimates?.household_connection)}
             </h6>
           </div>
         </div>
-        <div className="col-6 col-md-2">
-          <div className="estimates">
-            <span>{t("home:publicTaps")}</span>
-            <h6>
-              <img src={UserGroupIcon} alt="" className="icon" />{" "}
-              {getNumberByLanguage(props.incomeEstimates?.public_taps)}
-            </h6>
-          </div>
-        </div>
-        <div className="col-6 col-md-2">
+        <div className="col-2 col-md-2">
           <div className="estimates">
             <span>{t("home:institutions")}</span>
             <h6>
@@ -59,7 +49,27 @@ const IncomeEstimatesThisYear = (props: IProps) => {
             </h6>
           </div>
         </div>
-        <div className="col-6 col-md-2">
+        <div className="col-2 col-md-2">
+          <div className="estimates">
+            <span>{t("home:public")}</span>
+            <h6>
+              <img src={UserIcon} alt="" className="icon" />{" "}
+              {getNumberByLanguage(props.incomeEstimates?.public_connection)}
+            </h6>
+          </div>
+        </div>
+
+       
+        <div className="col-2 col-md-2">
+          <div className="estimates">
+            <span>{t("home:commercial")}</span>
+            <h6>
+              <img src={InstitutionIcon} alt="" className="icon" />{" "}
+              {getNumberByLanguage(props.incomeEstimates?.commercial_connection)}
+            </h6>
+          </div>
+        </div>
+        <div className="col-2 col-md-2">
           <div className="estimates">
             <span>{t("home:totalConn")} </span>
             <h6> {getNumberByLanguage(props.incomeEstimates?.total_connection)}</h6>

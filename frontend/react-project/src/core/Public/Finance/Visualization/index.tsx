@@ -50,7 +50,7 @@ const Visualization = (props: Props) => {
 
   return (
     <div className="container py-3 cash-book">
-      <GeneralCard title={t("finance:FinancialDataVisualization")} className="my-0 mt-3">
+      <GeneralCard title={t("finance:FinancialDataVisualization")} className="my-0 mt-3" print={true}>
         <div className="cash-content">
           <div className="flex-between">
             <Nav tabs>

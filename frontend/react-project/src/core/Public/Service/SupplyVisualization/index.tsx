@@ -8,7 +8,7 @@ import StyledSelect from "components/React/StyledSelect/StyledSelect";
 import { GeneralCard } from "components/UI/GeneralCard";
 import { useTranslation } from "react-i18next";
 import { connect, ConnectedProps } from "react-redux";
-import { getWaterSupplyReportAction, resetWaterSupply } from "store/modules/report/waterSupply";
+import { getWaterSupplyReportAction } from "store/modules/report/waterSupply";
 import { getSchemeYearIntervalsAction } from "store/modules/waterScheme/getYearIntervals";
 import { RootState } from "store/root-reducer";
 import { allTimeOptions, thisYearOptions, thisMonthOptions, thisWeekOptions } from "./datas";
@@ -66,15 +66,13 @@ const SupplyVIsualization = (props: Props) => {
             getDefaultDate(props.schemeDetails?.system_date_format)?.split("-")[1]
           }`
         );
-      } else if (activeTab === "4" && activeDate) {
+      } else if (activeTab === "4") {
         props.getWaterSupplyReportAction(
           props.schemeSlug,
-          `this_week=true&date_from=${activeDate}&date_to=${ADToBS(
-            new Date(new Date(BSToAD(activeDate)).getTime() + 7 * 24 * 60 * 60 * 1000)
+          `this_week=true&date_from=${formatDate(activeDate || new Date())}&date_to=${formatDate(
+            new Date(new Date(activeDate || new Date()).getTime() + 7 * 24 * 60 * 60 * 1000)
           )}`
         );
-      } else {
-        props.resetWaterSupply();
       }
     }
   }, [props.language, activeTab, props.schemeSlug, selectedYear, activeDate, props.schemeDetails]);
@@ -82,7 +80,7 @@ const SupplyVIsualization = (props: Props) => {
   console.log(activeDate, "asdasdasdasdasdasd");
   return (
     <div className="container py-3 cash-book customCase">
-      <GeneralCard title={t("sidebar:supplyVisualization")}>
+      <GeneralCard title={t("sidebar:supplyVisualization")} print={true}>
         <div className="cash-content">
           <div className="flex-between">
             <Nav tabs>
@@ -154,7 +152,7 @@ const SupplyVIsualization = (props: Props) => {
                         ) : (
                           <EnglishDatePicker
                             name="eng"
-                            value={new Date()}
+                            value={activeDate || new Date()}
                             handleChange={(e) => {
                               setActiveDate(formatDate(e));
                             }}
@@ -166,9 +164,9 @@ const SupplyVIsualization = (props: Props) => {
                 </NavItem>
               )}
             </Nav>
-            <span className="info-text">
+            {/* <span className="info-text">
               {t("home:allAmountInRupee")} {props.currency}
-            </span>
+            </span> */}
           </div>
 
           <TabContent activeTab={activeTab} className="mt-2">
@@ -181,6 +179,7 @@ const SupplyVIsualization = (props: Props) => {
                       compareKey="date_from"
                       defaultSelected={["total_supply_avg"]}
                       options={allTimeOptions}
+                      key="allTimeGraph"
                     />
                   )}
                 </Col>
@@ -192,10 +191,10 @@ const SupplyVIsualization = (props: Props) => {
                   {activeTab === "2" && (
                     <VisualizationGraphThisYear
                       type="Month"
-                      compareKey="supply_date__month"
                       defaultSelected={["total_supply_avg"]}
                       options={thisYearOptions}
                       selectedYear={selectedYear}
+                      key="yearGraph"
                     />
                   )}
                 </Col>{" "}
@@ -207,8 +206,9 @@ const SupplyVIsualization = (props: Props) => {
                   {activeTab === "3" && (
                     <VisualizationBarGraph
                       compareKey="supply_date"
-                      defaultSelected={["total_supply", "daily_target"]}
+                      defaultSelected={["total_supply"]}
                       options={thisMonthOptions}
+                      key="thisMonthGraph"
                     />
                   )}
                 </Col>{" "}
@@ -222,6 +222,7 @@ const SupplyVIsualization = (props: Props) => {
                       compareKey="supply_date"
                       defaultSelected={["total_supply_avg"]}
                       options={thisWeekOptions}
+                      key={"thisWeek"}
                     />
                   )}
                 </Col>{" "}
@@ -245,7 +246,6 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   getWaterSupplyReportAction: getWaterSupplyReportAction,
   getSchemeYearIntervalsAction: getSchemeYearIntervalsAction,
-  resetWaterSupply: resetWaterSupply,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

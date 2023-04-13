@@ -53,3 +53,23 @@
 @import "assets/scss/views/maintainance.scss";
 @import "assets/scss/views/notfound.scss";
 @import "src/components/UI/InfoCard/InfoCard.scss";
+
+/*for checkbox and radio*/
+
+@import "src/components/UI/customCheckbox/customCheckbox.scss";
+@import "src/components/UI/customRadio/customRadio.scss";
+
+#checksupplydate{
+  margin-top: -6px;
+  // padding-left: 3px;
+}
+#cost_seperately{
+  margin-top: -7px;
+padding-left: 3px;
+}
+
+#inco{
+  position: absolute;
+top: 16px;
+right: 85px;
+}

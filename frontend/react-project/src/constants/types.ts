@@ -18,7 +18,7 @@ export enum POSSIBILITY_OF_FAILURE_ENUM {
     HIGH = "High",
     MEDIUM = "Medium",
     LOW = "Low",
-    NORMAL = "Normal",
+    MINIMAL = "Minimal",
 }
 
 
@@ -50,5 +50,6 @@ export enum RESPONSIBLE_ENUM {
 
 export enum PARAMETER_TYPES_ENUM {
     CHEMICAL = "Chemical",
-    OTHER = "Other", 
+    PHYSICAL = "Physical",
+    OTHERS = "Others", 
 }

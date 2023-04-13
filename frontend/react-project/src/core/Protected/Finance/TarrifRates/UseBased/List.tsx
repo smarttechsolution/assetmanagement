@@ -1,12 +1,14 @@
-import { DeleteIcon, EditIcon, EditIconDark } from "assets/images/xd";
+import { DeleteIcon, EditIconDark, ViewIcon } from "assets/images/xd";
 import toast from "components/React/ToastNotifier/ToastNotifier";
 import ConfirmationModal from "components/UI/ConfirmationModal";
+import GeneralModal from "components/UI/GeneralModal";
 import useDeleteConfirmation from "hooks/useDeleteConfirmation";
 import { getNumberByLanguage } from "i18n/i18n";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect, ConnectedProps } from "react-redux";
 import { deleteUseBasedWaterTariffAction } from "store/modules/waterTarrifs/deleteUseBasedWaterTariff";
+import { deleteWaterTariffAction } from "store/modules/waterTarrifs/deleteWaterTariff";
 import { getUsIncomeEstimateThisYearAction } from "store/modules/waterTarrifs/getIncomeEstimateThisYear";
 import { getUseBasedWaterTarrifsAction } from "store/modules/waterTarrifs/getUseBasedWaterTarrifs";
 import { getWaterTarrifsAction } from "store/modules/waterTarrifs/getWaterTarrifs";
@@ -18,6 +20,9 @@ interface Props extends PropsFromRedux {
 
 const UseBasedList = (props: Props) => {
   const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [tariffData, setTariffData] = React.useState<any>([]);
+
   const { editId, modal, handleDeleteClick, resetDeleteData, toggleModal } =
     useDeleteConfirmation();
 
@@ -47,54 +52,45 @@ const UseBasedList = (props: Props) => {
           <thead>
             <tr>
               <th style={{ borderRadius: "5px 0 0 0" }}>{t("home:sn")}</th>
-              <th style={{}}>{t("finance:appliedDate")}</th>
-              <th style={{}}>{t("finance:unitRange")}</th>
-              <th style={{}}>{t("home:rate")}</th> <th style={{}}>{t("finance:epc")}</th>
-              <th style={{ borderRadius: "0 5px 0 0" }}>{t("home:action")}</th>
+              <th style={{}} colSpan={2}>
+                {t("finance:appliedDate")}
+              </th>
+              {/* <th style={{}}>{t("finance:unitRange")}</th> */}
+              {/* <th style={{}}>{t("home:rate")}</th> <th style={{}}>{t("finance:epcs")}</th> */}
+              <th style={{ borderRadius: "0 5px 0 0", width: 200 }}>{t("home:action")}</th>
             </tr>
           </thead>
           <tbody>
             {props.waterTarrifs && props.waterTarrifs?.length > 0 ? (
-              props.waterTarrifs?.map((item, index) => {
-                return (
-                  <React.Fragment key={item.apply_date}>
-                    {item.used_based_units?.map((tariff, index) => {
-                      count = count + 1;
+              props.waterTarrifs?.map((item, index) => (
+                <tr key={item.id}>
+                  <td>{getNumberByLanguage(count)}</td>
+                  <td colSpan={2}> {getNumberByLanguage(item.apply_date)}</td>
 
-                      console.log(tariff, "----------tarifftariff");
-                      return (
-                        <tr key={tariff.id}>
-                          <td>{getNumberByLanguage(count)}</td>
-                          <td> {getNumberByLanguage(item.apply_date)}</td>
-                          <td>
-                            {" "}
-                            {getNumberByLanguage(tariff.unit_from)} -{" "}
-                            {getNumberByLanguage(tariff.unit_to)} {t("home:units")}
-                          </td>
-                          <td>
-                            {props.scheme?.currency}. {getNumberByLanguage(tariff.rate) || "-"} |{" "}
-                            {t("home:unit")}
-                          </td>
-                          <td style={{}}>
-                            {getNumberByLanguage(tariff.estimated_paying_connection)}
-                          </td>
-                          <td className="action">
-                            <div role="button" onClick={() => props.setEditData({ tariff, item })}>
-                              <img src={EditIconDark} alt="" />
-                            </div>
-                            <div role="button" onClick={() => handleDeleteClick(tariff.id)}>
-                              <img src={DeleteIcon} alt="" />
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </React.Fragment>
-                );
-              })
+                  <td className="action">
+                    <div
+                      role="button"
+                      onClick={() => {
+                        setOpen(true);
+                        setTariffData(item?.used_based_units);
+                      }}
+                    >
+                      <img src={ViewIcon} alt="" />
+                    </div>
+                    <div role="button" onClick={() => props.setEditData(item)}>
+                      <img src={EditIconDark} alt="" />
+                    </div>
+                    <div role="button" onClick={() => handleDeleteClick(item.id)}>
+                      <img src={DeleteIcon} alt="" />
+                    </div>
+                  </td>
+                </tr>
+              ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center">No Data Available</td>
+                <td colSpan={6} className="text-center">
+                  No Data Available
+                </td>
               </tr>
             )}
           </tbody>
@@ -105,6 +101,47 @@ const UseBasedList = (props: Props) => {
         handleModal={() => toggleModal()}
         handleConfirmClick={() => deleteTariffRate()}
       />
+
+      <GeneralModal
+        title={"Unit Range"}
+        size="xl"
+        open={open}
+        toggle={() => {
+          setOpen(!open);
+        }}
+      >
+        <div className="data-table">
+          <div className="table-responsive">
+            <table className="table mt-2">
+              <thead>
+                <tr>
+                  <th style={{ borderRadius: "5px 0 0 0" }}>{t("home:sn")}</th>
+                  <th>{t("finance:unitRange")}</th>
+                  <th>{t("home:rate")}</th>
+                  <th>{t("finance:epcs")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tariffData?.map((item, index) => (
+                  <tr>
+                    <td>{getNumberByLanguage(index)}</td>
+                    <td>
+                      {" "}
+                      {getNumberByLanguage(item.unit_from)} - {getNumberByLanguage(item.unit_to)}{" "}
+                      {t("home:units")}
+                    </td>
+                    <td>
+                      {props.scheme?.currency}. {getNumberByLanguage(item.rate) || "-"} |{" "}
+                      {t("home:unit")}
+                    </td>
+                    <td style={{}}>{getNumberByLanguage(item.estimated_paying_connection)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </GeneralModal>
     </div>
   );
 };
@@ -119,7 +156,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = {
   getWaterTarrifsAction,
-  deleteUseBasedWaterTariffAction,
+  deleteUseBasedWaterTariffAction: deleteWaterTariffAction,
   getUseBasedWaterTarrifsAction,
   getUsIncomeEstimateThisYearAction,
 };

@@ -13,7 +13,7 @@ const AssetComponent = (props: IProps) => {
 
   return (
     <div className="container py-3 assets">
-      <GeneralCard title={t('maintainance:assetComponent')}>
+      <GeneralCard title={t('sidebar:assetComponent')}>
         <AssetTable />
       </GeneralCard>
     </div>

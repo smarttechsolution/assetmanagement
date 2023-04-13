@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.edit import UpdateView
 from .models import *
 from django.views.generic import ListView, TemplateView,CreateView,UpdateView, DeleteView
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from users.models import Users
 from django.http import HttpResponseRedirect
 from .forms import WaterSchemeForm, UsersForm
@@ -31,6 +31,11 @@ class SuperuserLogin(TemplateView):
             return render(request, 'login.html', {'error': 'Wrong credintials'})
 
 
+def superuser_logout(request):
+    logout(request)
+    return redirect("main-config:superuser-login")
+
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 class SchemeList(LoginRequiredMixin,ListView):
     template_name = 'water_scheme_list.html'
@@ -41,7 +46,6 @@ class SchemeList(LoginRequiredMixin,ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         """Get the context for this view."""
         from decouple import config
-        print(config('FRONTEND_DOMAIN_URL'),'---------')
         import nepali_datetime
         from finance.api.utils import str_to_datetime
         queryset = object_list if object_list is not None else self.object_list
@@ -103,8 +107,8 @@ class UpdateWaterSchemeView(LoginRequiredMixin,UpdateView):
         """Insert the single object into the context dict."""
         if self.object.system_date_format == 'nep':
             self.object.system_built_date = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_built_date))))
-            self.object.system_operation_from = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_operation_from))))
-            self.object.system_operation_to = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_operation_to))))
+            # self.object.system_operation_from = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_operation_from))))
+            # self.object.system_operation_to = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.system_operation_to))))
             self.object.tool_start_date = str(nepali_datetime.date.from_datetime_date(str_to_datetime(str(self.object.tool_start_date))))
         context = {}
         if self.object:

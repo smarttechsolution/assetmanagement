@@ -10,5 +10,6 @@ urlpatterns = [
     path('water-scheme/user/update/<slug:username>/',UpdateWaterSchemaAdministrativeUser.as_view(), name = 'water-scheme-user-update'),
     path('water-scheme/care-taker/create/', CreateCareTakerView().as_view()),
     path('water-scheme/care-taker/update/<int:pk>/', UpdateCareTakerView().as_view()),
+    path('water-scheme/care-taker/delete/<int:pk>/', DeleteCareTakerView().as_view()),
     path('language/preferance/change/<int:pk>/', UpdateUserLanguagePreferanceView.as_view())
 ]

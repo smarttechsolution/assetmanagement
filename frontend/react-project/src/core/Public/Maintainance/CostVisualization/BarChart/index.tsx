@@ -8,6 +8,7 @@ import { MaintainanceCostSingleType } from "store/modules/report/maintainanceCos
 import { RootState } from "store/root-reducer";
 import { getYearFromDate } from "utils/utilsFunction/date-converter";
 import DataTable from "./DataTable";
+import { useSelector } from 'react-redux';
 
 type SeriesConfig = {
   name: string | undefined;
@@ -55,46 +56,49 @@ const BarChart = (props: Props) => {
 
   const [tableData, setTableData] = useState<any>();
 
+  const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
+
+
   const options = [
     {
       id: "actual_unsegregated",
       name: `${t("home:actual")} ${t("home:unsegregated")}`,
-      color: "rgba(196,196,196,1)",
+      color: "#e69f00",
     },
     {
       id: "actual_material",
-      name: `${t("home:actual")} ${t("home:material")}`,
-      color: "rgba(215,215,215,1)",
+      name: `${t("home:actual")} ${t("home:consumable")}`,
+      color: "#56b4e9",
     },
     {
       id: "actual_labor",
       name: `${t("home:actual")} ${t("home:labour")}`,
-      color: "rgba(229,229,229,1)",
+      color: "#f0e442",
     },
     {
       id: "actual_replacement",
       name: `${t("home:actual")} ${t("home:replacement")}`,
-      color: "rgba(242,242,242,1)",
+      color: "#ea75b6",
     },
     {
       id: "expected_unsegregated",
       name: `${t("home:expected")} ${t("home:unsegregated")}`,
-      color: "rgba(38,128,235,1)",
+      color: "#009e73",
     },
     {
       id: "expected_material",
-      name: `${t("home:expected")} ${t("home:material")}`,
-      color: "rgba(139,173,213,1)",
+      name: `${t("home:expected")} ${t("home:consumable")}`,
+      color: "#000000",
     },
     {
       id: "expected_labor",
       name: `${t("home:expected")} ${t("home:labour")}`,
-      color: "rgba(189,213,242,1)",
+      color: "#d55e00",
     },
     {
       id: "expected_replacement",
       name: `${t("home:expected")} ${t("home:replacement")}`,
-      color: "rgba(204,221,234,1)",
+      color: "#0072b2",
     },
   ];
 
@@ -117,42 +121,41 @@ const BarChart = (props: Props) => {
         actual_unsegregated: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "unsegregated_cost",
-          "rgba(196,196,196,1)"
+          "#e69f00"
         ),
         actual_material: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "material_cost",
-          "rgba(215,215,215,1)"
+          "#56b4e9"
         ),
         actual_labor: sortAndMapArray(
-          props.maintainanceCost.actual_cost,
-          "labour_cost",
-          "rgba(229,229,229,1)"
-        ),
+          props.maintainanceCost.actual_cost, 
+          "labour_cost", 
+          "#f0e442"),
         actual_replacement: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "replacement_cost",
-          "rgba(242,242,242,1)"
+          "#ea75b6"
         ),
         expected_unsegregated: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "unsegregated_cost",
-          "rgba(38,128,235,1)"
+          "#009e73"
         ),
         expected_material: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "material_cost",
-          "rgba(139,173,213,1)"
+          "#000000"
         ),
         expected_labor: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "labour_cost",
-          "rgba(189,213,242,1)"
+          "#d55e00"
         ),
         expected_replacement: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "replacement_cost",
-          "rgba(204,221,234,1)"
+          "#0072b2"
         ),
         expected_total: props.maintainanceCost.expected_cost.map((item) => ({
           date: item.maintenance_date__year,
@@ -162,7 +165,7 @@ const BarChart = (props: Props) => {
         actual_total: props.maintainanceCost.actual_cost.map((item) => ({
           date: item.maintenance_date__year,
           value: item.actual_cost_total || 0,
-        })),
+        }))
       };
 
       setChartData(chartData);
@@ -178,11 +181,26 @@ const BarChart = (props: Props) => {
     }
   };
 
-  useEffect(() => { 
-    const selectedData = selected.map((item, index) => ({
+  const stacked = {
+    actual_material: 'actual',
+    actual_replacement: 'actual',
+    actual_labor: 'actual',
+
+    actual_unsegregated: 'actual_unsegregated',
+
+    expected_material: 'expected',
+    expected_replacement: 'expected',
+    expected_labor: 'expected',
+
+    expected_unsegregated: 'expected_unsegregated',
+  };
+
+  useEffect(() => {
+    
+    const selectedData = selected.map((item, index) => ({      
       name: options.find((opt) => opt.id === item)?.name,
       type: "bar",
-      stack: item?.includes("expec") ? "expected" : "actual",
+      stack: stacked[item],      
       areaStyle: {
         color: options.find((opt) => opt.id === item)?.color,
       },
@@ -190,14 +208,20 @@ const BarChart = (props: Props) => {
     }));
 
     const tableData = selected.map((item) => ({
-      name: options.find((opt) => opt.id === item)?.name || "",
+      name: options.find((opt) => opt.id === item)?.name + ` ( ${currency} )`,
       color: options.find((opt) => opt.id === item)?.color || "",
       data: chartData && chartData[item],
     }));
-
+    console.log(selectedData,"AAYO>>>>>>>>>");
+    
     setSeriesData(selectedData);
     setTableData(tableData);
   }, [chartData, selected]);
+
+
+
+  // const [actual, setActual] = React.useState<any>();
+  // const [expected, setExpected] = React.useState<any>();
 
   const optionData = {
     tooltip: {
@@ -205,7 +229,89 @@ const BarChart = (props: Props) => {
       axisPointer: {
         type: "shadow",
       },
-      // formatter: handleCustomTooltip,
+      // formatter: tooltipColumn,
+      // formatter: (params) => {
+      //   const ExprectedData = seriesData?.filter((item) => item.stack === "expected")
+      //   const ActualData = seriesData?.filter((item) => item.stack === "actual")
+
+      //   console.log(ExprectedData, "SUCCESSSSSSSSSSSSS");
+      //   console.log(ActualData, "ACTUALSUCCESSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+        
+      //   try {
+      //     var params0 = `${params[0].seriesName}: ${params[0].value}`
+
+      //     console.log(params[0], "PARAMS0 -----------");
+      //     if(params[0]?.stack === "actual"){
+      //       console.log("testttttttttttttttt")
+      //     }
+          
+
+      //   }catch{
+      //      params0 = ""
+      //   }
+      //   try {
+      //     var params1 = `${params[1].seriesName}: ${params[1].value}`
+      //     console.log(params1, "PARAMS1");
+      //     if (params[1]?.stack === "expected") {
+      //       var paramExpected = params1
+      //       setExpected(paramExpected)
+      //     }else if (params[1]?.stack === "actual") {
+      //       var paramActual = params1
+      //       setActual(paramActual)
+      //     }
+      //   }catch{
+      //      params1 = ""
+      //   }
+      //   try {
+      //     var params2 = `${params[2].seriesName}: ${params[2].value}`
+      //     console.log(params2, "PARAMS2");
+      //   }catch{
+      //      params2 = ""
+      //   }
+      //   try {
+      //     var params3 = `${params[3].seriesName}: ${params[3].value}`
+      //     console.log(params3, "PARAMS3");
+      //   }catch{
+      //      params3 = ""
+      //   }
+      //   try {
+      //     var params4 = `${params[4].seriesName}: ${params[4].value}`
+      //     console.log(params4, "PARAMS4");
+      //   }catch{
+      //      params4 = ""
+      //   }
+      //   try {
+      //     var params5 = `${params[5].seriesName}: ${params[5].value}`
+      //     console.log(params5, "PARAMS5");
+      //   }catch{
+      //      params5 = ""
+      //   }
+      //   try {
+      //     var params6 = `${params[6].seriesName}: ${params[6].value}`
+      //     console.log(params6, "PARAMS6");
+      //   }catch{
+      //      params6 = ""
+      //   }
+      //   try {
+      //     var params7 = `${params[7].seriesName}: ${params[7].value}`
+      //     console.log(params7, "PARAMS7");
+      //   }catch{
+      //      params7 = ""
+      //   }
+
+      //   return `<div>${actual} </br>
+      //   ${params1}</br>
+      //   ${params2}</br>
+      //   ${params3}</br>
+      //   </div> 
+      //   <hr />
+      //   <div>
+      //   ${expected}</br>
+      //   ${params5}</br>
+      //   ${params6}</br>
+      //   ${params7}
+      //   </div>`;
+      // },
     },
     legend: {
       show: false,

@@ -14,18 +14,23 @@ import formatDate from "utils/utilsFunction/date-converter";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import { getUsIncomeEstimateThisYearAction } from "store/modules/waterTarrifs/getIncomeEstimateThisYear";
+import TooltipLabel from "components/UI/TooltipLabel";
 
 interface Props extends PropsFromRedux {
   editData;
-  setEditData;
+  setEditData: any;
 }
 
 const validationSchema = Yup.object({
   rate_for_institution: Yup.string().required("This field is required"),
   rate_for_household: Yup.string().required("This field is required"),
+  rate_for_public: Yup.string().required("This field is required"),
+  rate_for_commercial: Yup.string().required("This field is required"),
   apply_date: Yup.string().required("This field is required"),
   estimated_paying_connection_household: Yup.string().required("This field is required"),
   estimated_paying_connection_institution: Yup.string().required("This field is required"),
+  estimated_paying_connection_public: Yup.string().required("This field is required"),
+  estimated_paying_connection_commercial: Yup.string().required("This field is required"),
 });
 
 const UseBasedForm = (props: Props) => {
@@ -34,9 +39,13 @@ const UseBasedForm = (props: Props) => {
     terif_type: "Fixed",
     rate_for_institution: "",
     rate_for_household: "",
+    rate_for_public: "",
+    rate_for_commercial: "",
     apply_date: "",
     estimated_paying_connection_household: "",
     estimated_paying_connection_institution: "",
+    estimated_paying_connection_public: "",
+    estimated_paying_connection_commercial: "",
   });
 
   React.useEffect(() => {
@@ -45,14 +54,18 @@ const UseBasedForm = (props: Props) => {
         terif_type: "Fixed",
         rate_for_institution: "",
         rate_for_household: "",
-        apply_date: props.scheme?.tool_start_date || "",
+        rate_for_public: "",
+        rate_for_commercial: "",
+        apply_date: "",
         estimated_paying_connection_household: "",
         estimated_paying_connection_institution: "",
+        estimated_paying_connection_public: "",
+        estimated_paying_connection_commercial: "",
       });
     }
   }, [props.scheme]);
 
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue, handleSubmit } =
+  const { values, errors, touched, handleChange, handleBlur, handleReset, setFieldValue, handleSubmit } =
     useFormik({
       enableReinitialize: true,
       initialValues: initialData,
@@ -64,10 +77,11 @@ const UseBasedForm = (props: Props) => {
           response = await props.updateFixedRateWaterTariffAction(
             props.language,
             props.editData.id,
-            values
+            values,
+            { tariff_type: "fixed" }
           );
         } else {
-          response = await props.postFixedRateWaterTariffAction(props.language, values);
+          response = await props.postFixedRateWaterTariffAction(props.language, values, { tariff_type: "fixed" });
         }
 
         if (response.status === 201 || response.status === 200) {
@@ -81,14 +95,20 @@ const UseBasedForm = (props: Props) => {
               terif_type: "Fixed",
               rate_for_institution: "",
               rate_for_household: "",
+              rate_for_public: "",
+              rate_for_commercial: "",
               apply_date: "",
               estimated_paying_connection_household: "",
               estimated_paying_connection_institution: "",
+              estimated_paying_connection_public: "",
+              estimated_paying_connection_commercial: "",
             });
+            props.setEditData(null);
             // props.getOtherExpensesAction(props.language);
             toast.success(t("home:updateSuccess"));
           }
           props.getWaterTarrifsAction(props.language, props.schemeSlug, "fixed");
+
         } else {
           const errorList = response.data && response.data.error;
           if (errorList instanceof Array) {
@@ -117,38 +137,46 @@ const UseBasedForm = (props: Props) => {
       }}
     >
       <div className="row align-items-end">
-        <div className="col-md-4">
-          <div className="form-group mt-2">
-            <label htmlFor="" className="mr-1 label pl-0">
-              {t("finance:applyDate")}
-            </label>
+        <div className="col-md-12">
+          <div className="row">
+            <div className="col-md-3">
+              <div className="form-group mt-2">
+                <label htmlFor="" className="mr-1 label pl-0">
+                  {t("finance:applyDate")}
+                  <TooltipLabel
+                    id={"apd"}
+                    text={t("home:appdate")}
+                  />
+                </label>
 
-            {props.scheme?.system_date_format === "nep" ? (
-              <>
-                <NepaliDatePicker
-                  value={values.apply_date}
-                  name="apply_date"
-                  onChange={(e) => {
-                    setFieldValue("apply_date", e);
-                  }}
-                />
-              </>
-            ) : (
-              <>
-                <EnglishDatePicker
-                  name="apply_date"
-                  value={values.apply_date}
-                  handleChange={(e) => {
-                    setFieldValue("apply_date", formatDate(e));
-                  }}
-                />
-              </>
-            )}
-            <FormikValidationError name="apply_date" errors={errors} touched={touched} />
+                {props.scheme?.system_date_format === "nep" ? (
+                  <>
+                    <NepaliDatePicker
+                      value={values.apply_date}
+                      name="apply_date"
+                      onChange={(e) => {
+                        setFieldValue("apply_date", e);
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <EnglishDatePicker
+                      name="apply_date"
+                      value={values.apply_date}
+                      handleChange={(e) => {
+                        setFieldValue("apply_date", formatDate(e));
+                      }}
+                    />
+                  </>
+                )}
+                <FormikValidationError name="apply_date" errors={errors} touched={touched} />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:roh")}
@@ -164,7 +192,7 @@ const UseBasedForm = (props: Props) => {
             <FormikValidationError name="rate_for_household" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:roi")}
@@ -180,10 +208,43 @@ const UseBasedForm = (props: Props) => {
             <FormikValidationError name="rate_for_institution" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
+          <div className="form-group ">
+            <label htmlFor="" className="mr-1 label pl-0">
+              {t("finance:rop")}
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="rate_for_public"
+              value={values.rate_for_public}
+              onChange={handleChange}
+            />
+            <FormikValidationError name="rate_for_public" errors={errors} touched={touched} />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group ">
+            <label htmlFor="" className="mr-1 label pl-0">
+              {t("finance:roc")}
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="rate_for_commercial"
+              value={values.rate_for_commercial}
+              onChange={handleChange}
+            />
+            <FormikValidationError name="rate_for_commercial" errors={errors} touched={touched} />
+          </div>
+        </div>
+        <div className="col-md-3">
           <div className="form-group">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:epch")}
+              <TooltipLabel id={"roh"} text={t("home:EPChouse")} />
             </label>
 
             <input
@@ -200,10 +261,11 @@ const UseBasedForm = (props: Props) => {
             />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group">
             <label htmlFor="" className="mr-1 label pl-0">
               {t("finance:epci")}
+              <TooltipLabel id={"epci"} text={t("home:EPCinstitute")} />
             </label>
 
             <input
@@ -220,13 +282,78 @@ const UseBasedForm = (props: Props) => {
             />
           </div>
         </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label htmlFor="" className="mr-1 label pl-0">
+              {t("finance:epcp")}
+              <TooltipLabel id={"epcp"} text={t("home:EPCpublic")} />
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="estimated_paying_connection_public"
+              value={values.estimated_paying_connection_public}
+              onChange={handleChange}
+            />
+            <FormikValidationError
+              name="estimated_paying_connection_public"
+              errors={errors}
+              touched={touched}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label htmlFor="" className="mr-1 label pl-0">
+              {t("finance:epcc")}
+              <TooltipLabel id={"epcc"} text={t("home:EPCcommercial")} />
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="estimated_paying_connection_commercial"
+              value={values.estimated_paying_connection_commercial}
+              onChange={handleChange}
+            />
+            <FormikValidationError
+              name="estimated_paying_connection_commercial"
+              errors={errors}
+              touched={touched}
+            />
+          </div>
+        </div>
         <div className="col-md-12 mt-2 text-right">
           <Button
-            className="btn custom-btn"
+            className="btn custom-btn mr-2"
             text={t("home:save")}
             type="submit"
             disabled={props.postLoading || props.updateLoading}
             loading={props.postLoading || props.updateLoading}
+          />
+          <Button
+            className="btn custom-btn-outlined"
+            text={t("home:cancel")}
+            type='reset'
+            onClick={() => {
+              const resetKeys: any = Object.keys(initialData).reduce((acc, curr) => {
+                if(['terif_type'].indexOf(curr) === -1) {
+                  acc[curr] = "";
+                } else {
+                  acc[curr] = initialData[curr];
+                  console.log(acc[curr], initialData[curr], curr, 'yahi ho');
+                  
+                }
+                return acc;
+              }, {});
+
+              setInitialData(resetKeys)
+              props.setEditData(null);
+              handleReset({
+                initialData
+              })
+            }}
           />
         </div>
       </div>

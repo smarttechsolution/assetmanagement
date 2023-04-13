@@ -11,7 +11,8 @@ export type YearaIntervalType = {
     "id": number,
     "start_date": string,
     "is_present_year": boolean,
-    "end_date": string
+    "end_date": string,
+    "year_num": number,
 }[]
 
 const apiDetails = Object.freeze(apiList.waterScheme.getYearIntervals);

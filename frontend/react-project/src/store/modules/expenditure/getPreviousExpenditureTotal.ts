@@ -1,4 +1,5 @@
 import { Dispatch } from "redux";
+import { string } from "yup";
 import { AppThunk } from "../..";
 
 import { apiList } from "../../actionNames";
@@ -31,17 +32,11 @@ export default function getPreviousExpenditureTotalReducer(
   return initDefaultReducer(actionName, action, stateCopy);
 }
 
-export const getPreviousExpenditureTotalAction =
-  (
-    lang,
-    water_scheme_slug,
-    year,
-    month
-  ): AppThunk<APIResponseDetail<PreviousExpenditureTotal>> =>
+export const getPreviousExpenditureTotalAction =(lang, water_scheme_slug,year, month): AppThunk<APIResponseDetail<PreviousExpenditureTotal>> =>
   async (dispatch: Dispatch) => {
     return await initDefaultAction(apiDetails, dispatch, {
       disableSuccessToast: true,
       pathVariables: { lang, water_scheme_slug },
-      params: { year, month },
+      params: { year, month},
     });
   };

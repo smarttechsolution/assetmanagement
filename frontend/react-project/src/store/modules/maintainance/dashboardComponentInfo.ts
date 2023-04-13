@@ -9,29 +9,29 @@ import initialState from "../../helper/default-state";
 
 export type DashboardComponentInfoType = {
     component: {
-        id:number
+        id: number
         name: string
         category: {
-            id:number
+            id: number
             name: string
         }
     },
     id: string
     possible_failure: string
-    description:string
+    description: string
     maintenance_cost: number
-    replacement_cost: number
-    labour_cost: number
     maintenance_action: string
     next_action: string
-    mitigation:string
-    componant_picture:string
+    mitigation: string
+    componant_picture: string
     resulting_risk_score: number
-    maintenance_interval:number
+    maintenance_interval: number
     log_entry: number
     responsible: string
     impact_of_failure: string
-    possibility_of_failure:string
+    possibility_of_failure: string
+    seggregated_or_unseggregated_cost: string
+    interval_unit: string
 
 }
 

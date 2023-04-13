@@ -204,11 +204,11 @@
 .income-expend {
     .income-title {
         padding-bottom: 4px;
-        border-bottom: 5px solid rgb(0, 256, 136);
+        border-bottom: 5px solid #4DFFFF;
     }
     .expend-title {
         padding-bottom: 4px;
-        border-bottom: 5px solid rgb(255, 77, 77);
+        border-bottom: 5px solid #ff4D4D;
     }
     .table-02 {
         tbody {
@@ -259,30 +259,30 @@
         }
         .actual {
             .unseg {
-                background-color: rgba(196, 196, 196, 1);
+                background-color: #e69f00;
             }
             .material {
-                background-color: rgba(215, 215, 215, 1);
+                background-color: #56b4e9;
             }
             .labour {
-                background-color: rgba(229, 229, 229, 1);
+                background-color: #f0e442;
             }
             .replacement {
-                background-color: rgba(242, 242, 242, 1);
+                background-color: #ea75b6;
             }
         }
         .expected {
             .unseg {
-                background-color: rgba(38, 128, 235, 1);
+                background-color: #009e73;
             }
             .material {
-                background-color: rgba(139, 173, 213, 1);
+                background-color: #000000;
             }
             .labour {
-                background-color: rgba(189, 213, 242, 1);
+                background-color: #d55e00;
             }
             .replacement {
-                background-color: rgba(204, 221, 234, 1);
+                background-color: #0072b2;
             }
         }
     }

@@ -6,13 +6,13 @@ import FormikValidationError, {
 } from "components/React/FormikValidationError/FormikValidationError";
 import toast from "components/React/ToastNotifier/ToastNotifier";
 import Button from "components/UI/Forms/Buttons";
+import TooltipLabel from "components/UI/TooltipLabel";
 import { FieldArray, Form, Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect, ConnectedProps } from "react-redux";
 import { getUsIncomeEstimateThisYearAction } from "store/modules/waterTarrifs/getIncomeEstimateThisYear";
 import { getUseBasedWaterTarrifsAction } from "store/modules/waterTarrifs/getUseBasedWaterTarrifs";
-import { getWaterTarrifsAction } from "store/modules/waterTarrifs/getWaterTarrifs";
 import { postUseBasedWaterTariffAction } from "store/modules/waterTarrifs/postUseBasedWaterTariff";
 import { updateUseBasedWaterTariffAction } from "store/modules/waterTarrifs/updateUseBasedWaterTariff";
 import { RootState } from "store/root-reducer";
@@ -35,8 +35,8 @@ const validationSchema = Yup.object({
   apply_date: Yup.mixed().required("This field is required"),
   used_based_units: Yup.array().of(
     Yup.object().shape({
-      unit_from: Yup.string().required("This field is required"),
-      unit_to: Yup.string().required("This field is required"),
+      unit_from: Yup.number().required("This field accept only number"),
+      unit_to: Yup.number().required("This field accept only number"),
       rate: Yup.string().required("This field is required"),
       estimated_paying_connection: Yup.string().required("This field is required"),
     })
@@ -45,9 +45,7 @@ const validationSchema = Yup.object({
 
 const UseBasedForm = (props: Props) => {
   const { t } = useTranslation();
-  const { editData, postUseBasedWaterTariffAction } = props;
-
-  console.log(editData, "editDataeditData");
+  const { editData } = props;
 
   const [initialData, setInitialData] = React.useState({
     apply_date: "",
@@ -61,44 +59,35 @@ const UseBasedForm = (props: Props) => {
     ] as useBasedType[],
   });
 
-  React.useEffect(() => {
-    if (props.scheme) {
-      setInitialData({
-        apply_date: props.scheme?.tool_start_date || "",
-        used_based_units: [
-          {
-            unit_from: "",
-            unit_to: "",
-            rate: "",
-            estimated_paying_connection: "",
-          },
-        ],
-      });
-    }
-  }, [props.scheme]);
+  const [startFrom, setStartFrom] = React.useState("");
+  const [startTo, setStartTo] = React.useState("");
+
+
+  // React.useEffect(() => {
+  //   var from = new RegExp(/^\d*\.?\d*$/);
+  //   if (unit_from === ".") {
+
+  //   }
+  // },[])
 
   const handleTariffSubmit = async (values, resetForm) => {
     let response;
 
     if (props.editData) {
-      const updateValues = {
-        apply_date: values.apply_date,
-        ...values.used_based_units[0],
-        tariff: props.editData?.tariff?.tariff,
-      };
-
-      console.log(updateValues, "updateValues");
       response = await props.updateUseBasedWaterTariffAction(
         props.language,
-        props.editData.tariff?.id,
-        updateValues
+        props.editData?.id,
+        { ...values, terif_type: "Use Based", tariff: props.editData?.tariff?.tariff },
+        { tariff_type: "use" }
       );
     } else {
       response = await props.postUseBasedWaterTariffAction(props.language, {
         ...values,
         apply_date: formatDate(values.apply_date),
-      });
+        terif_type: "Use Based",
+      }, { tariff_type: "use" });
     }
+
 
     if (response && (response.status === 201 || response.status === 200)) {
       if (response.status === 201) {
@@ -116,9 +105,10 @@ const UseBasedForm = (props: Props) => {
             },
           ],
         });
-
+        props.setEditData(null);
         toast.success(t("home:updateSuccess"));
       }
+
       props.getUseBasedWaterTarrifsAction(props.language, props.schemeSlug);
       props.getUsIncomeEstimateThisYearAction(props.schemeSlug);
     } else {
@@ -126,27 +116,75 @@ const UseBasedForm = (props: Props) => {
       if (errorList instanceof Array) {
         errorList.forEach((item) => {
           toast.error(item);
+          console.log(item, "ITEMmmmmmmmmmmmmm");
+
         });
       }
-      console.log(response, "errrr");
+      toast.error(response.data["used_based_units"][0]["unit_from"][0])
+      toast.error(response.data["used_based_units"][0]["unit_to"][0])
+
     }
   };
 
   React.useEffect(() => {
     if (props.editData) {
+      console.log(props.editData, "props.editData");
       setInitialData({
-        apply_date: props.editData?.item?.apply_date,
+        apply_date: props.editData?.apply_date,
+        used_based_units: props.editData?.used_based_units,
+      });
+    } else {
+      setInitialData({
+        apply_date: props.scheme?.tool_start_date || "",
         used_based_units: [
           {
-            unit_from: props.editData?.tariff?.unit_from,
-            unit_to: props.editData?.tariff?.unit_to,
-            rate: props.editData?.tariff?.rate,
-            estimated_paying_connection: props.editData?.tariff?.estimated_paying_connection,
+            unit_from: "",
+            unit_to: "",
+            rate: "",
+            estimated_paying_connection: "",
           },
         ],
       });
     }
-  }, [props.editData]);
+  }, [props.editData, props.scheme]);
+
+  // const [startFrom, setStartFrom] = useState<any>("");
+  // const [startTo, setStartTo] = useState<any>("");
+
+
+  // const rx_live = /^[+-]?\d*(?:[.,]\d*)?$/;
+
+  // const setFieldValue = (e) => {
+  //   if (rx_live.test(e.target.value))
+  //       setStartFrom({ startFrom : e.target.value });
+  //       console.log(setStartFrom, "__________________--");
+
+  // }
+
+
+
+
+  // const [addUnit, setAddUnit] = React.useState<any>();
+
+  // React.useEffect(() => {
+  //   var arrayHelpers;
+  //   let perUnits = <label htmlFor="" className="mr-1 pl-0 ">
+  //     {t("home:rate")} {t("finance:permnth")} ({props.scheme?.currency}) :
+  //     <TooltipLabel id={"rate"} text={t("finance:rateperunit")} />
+  //   </label>
+  //   let perMnth = <label htmlFor="" className="mr-1 pl-0 ">
+  //     {t("home:rate")} {t("finance:permnth")} ({props.scheme?.currency}) :
+  //     <TooltipLabel id={"rate"} text={t("finance:rateperunit")} />
+  //   </label>
+  //   if (arrayHelpers.push) {
+  //     setAddUnit(perUnits)
+  //   }
+  //   else {
+  //     setAddUnit(perMnth)
+  //   }
+  // })
+
+
 
   return (
     <Formik
@@ -160,33 +198,38 @@ const UseBasedForm = (props: Props) => {
       {({ values, errors, touched, handleChange, setFieldValue }) => (
         <Form>
           <div className="row tarrif_form ">
-            <div className="col-md-4 ">
+            <div className="col-md-2 ">
               <div className="form-group top  mt-2">
                 <label htmlFor="" className="mr-1 pl-0 ">
-                  {t("home:applyDate")}
+                  {t("home:applyDate")}{" "} :
+                  <TooltipLabel
+                    id={"apd"}
+                    text={t("home:appdate")}
+                  />
                 </label>
-
-                {props.scheme?.system_date_format === "nep" ? (
-                  <>
-                    <NepaliDatePicker
-                      value={values.apply_date}
-                      name="apply_date"
-                      onChange={(e) => {
-                        setFieldValue("apply_date", e);
-                      }}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <EnglishDatePicker
-                      name="apply_date"
-                      value={values.apply_date}
-                      handleChange={(e) => {
-                        setFieldValue("apply_date", formatDate(e));
-                      }}
-                    />
-                  </>
-                )}
+                <div style={{ width: "121%" }}>
+                  {props.scheme?.system_date_format === "nep" ? (
+                    <>
+                      <NepaliDatePicker
+                        value={values.apply_date}
+                        name="apply_date"
+                        onChange={(e) => {
+                          setFieldValue("apply_date", e);
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <EnglishDatePicker
+                        name="apply_date"
+                        value={values.apply_date}
+                        handleChange={(e) => {
+                          setFieldValue("apply_date", formatDate(e));
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
                 <FormikValidationError name="apply_date" errors={errors} touched={touched} />
               </div>
             </div>
@@ -201,17 +244,20 @@ const UseBasedForm = (props: Props) => {
                           <div className="col-md-2">
                             <div className="form-group ">
                               <label htmlFor="" className="mr-1 pl-0 ">
-                                {t("home:units")}:
+                                {t("finance:unit")} {t("finance:starting")} {t("finance:from")} :
+                                <TooltipLabel id={"unstrt"} text={t("finance:unitstartfrom")} />
                               </label>
 
                               <input
                                 type="number"
                                 className="form-control"
+                                pattern="[+-]?\d+(?:[.,]\d+)?"
                                 name={`used_based_units[${index}][unit_from]`}
                                 value={values.used_based_units[index]["unit_from"]}
                                 onChange={(e) => {
                                   setFieldValue(e.target.name, e.target.value);
-                                }}
+                                }
+                                }
                               />
                               <FormikFieldArrayValidationError
                                 keyName="used_based_units"
@@ -222,10 +268,11 @@ const UseBasedForm = (props: Props) => {
                               />
                             </div>
                           </div>
-                          <div className="col-md-2">
+                          <div className="col-md-3">
                             <div className="form-group ">
                               <label htmlFor="" className="mr-1 pl-0 ">
-                                {t("finance:to")}:
+                                {t("finance:unit")} {t("finance:upto")} {t("finance:and")} {t("finance:including")}:
+                                <TooltipLabel id={"unitup"} text={t("finance:unitupto")} />
                               </label>
 
                               <input
@@ -248,9 +295,21 @@ const UseBasedForm = (props: Props) => {
                           </div>
                           <div className="col-md-3">
                             <div className="form-group ">
-                              <label htmlFor="" className="mr-1 pl-0 ">
-                                {t("home:rate")} ({props.scheme?.currency}):
+                              {index === 0 ? (
+                                <label htmlFor="" className="mr-1 pl-0 ">
+                                {t("home:rate")} {t("finance:permnth")} ({props.scheme?.currency}) :
+                                <TooltipLabel id={"rate"} text={t("finance:rateperunit")} />
                               </label>
+                              ):(
+                                <label htmlFor="" className="mr-1 pl-0 ">
+                                {t("home:rate")} {t("finance:perunit")} ({props.scheme?.currency}) :
+                                <TooltipLabel id={"rate"} text={t("finance:rateperunit")} />
+                              </label>
+                              )}
+                              {/* <label htmlFor="" className="mr-1 pl-0 ">
+                                {t("home:rate")} {t("finance:permnth")} ({props.scheme?.currency}) :
+                                <TooltipLabel id={"rate"} text={t("finance:rateperunit")} />
+                              </label> */}
                               <input
                                 type="number"
                                 className="form-control"
@@ -269,10 +328,11 @@ const UseBasedForm = (props: Props) => {
                               />
                             </div>
                           </div>
-                          <div className="col-md-4">
+                          <div className="col-md-3">
                             <div className="form-group ">
                               <label htmlFor="" className="mr-1 pl-0 ">
-                                {t("finance:epc")}:
+                                {t("finance:epcs")}:
+                                <TooltipLabel id={"epcs"} text={t("finance:EPConnection")} />
                               </label>
 
                               <input
@@ -295,32 +355,46 @@ const UseBasedForm = (props: Props) => {
                               />
                             </div>
                           </div>
-                          {!props.editData && (
-                            <div className="col-1 text-right">
-                              <img
-                                src={DeleteIcon}
-                                className="mb-3"
-                                role="button"
-                                onClick={() => arrayHelpers.remove(index)}
-                              />
-                            </div>
-                          )}
+
+                          <div className="col-1 text-right">
+                            <img
+                              src={DeleteIcon}
+                              className="mt-2"
+                              role="button"
+                              onClick={() => arrayHelpers.remove(index)}
+                            />
+                          </div>
                         </div>
                         {index === values.used_based_units?.length - 1 && (
                           <div className="col-12 mt-3">
                             <div className="text-right">
-                              {!props.editData && (
-                                <Button
-                                  className="btn custom-btn  mr-3"
-                                  text={t("finance:add")}
-                                  onClick={() => arrayHelpers.push("")}
-                                />
-                              )}
                               <Button
-                                className="btn custom-btn "
+                                className="btn custom-btn  mr-2"
+                                text={t("finance:add")}
+                                onClick={() => arrayHelpers.push("")}
+                              />
+
+                              <Button
+                                className="btn custom-btn mr-2"
                                 text={t("home:save")}
                                 disabled={props.postLoading || props.updateLoading}
                                 loading={props.postLoading || props.updateLoading}
+                              />
+
+                              <Button
+                                className="btn custom-btn-outlined"
+                                text={t("home:cancel")}
+                                type='reset'
+                                onClick={() => {
+                                  // const resetKeys: any = Object.keys(initialData).reduce((acc, curr) => {
+                                  //   acc[curr] = "";
+                                  //   return acc;
+                                  // }, {});
+
+                                  //if we need resetKeys then remove initialData from below setInitialData() 
+                                  setInitialData(initialData)
+                                  props.setEditData(null);
+                                }}
                               />
                             </div>
                           </div>

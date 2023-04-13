@@ -131,7 +131,7 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
-                      {t("home:inp")}:
+                      {t("home:inp")} {t("home:inday")}:
                     </label>
 
                     <input
@@ -151,7 +151,7 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
-                      {t("home:enp")}:
+                      {t("home:enp")} {t("home:inday")}:
                     </label>
 
                     <input
@@ -171,7 +171,7 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
-                      {t("home:trnp")}:
+                      {t("home:trnp")} {t("home:inday")}:
                     </label>
 
                     <input
@@ -191,7 +191,7 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
-                      {t("home:srnp")}:
+                      {t("home:srnp")} {t("home:inday")}:
                     </label>
 
                     <input
@@ -203,6 +203,46 @@ const GeneralInfo = (props: Props) => {
                     />
                     <FormikValidationError
                       name="supply_record_notification_period"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="form-group ">
+                    <label htmlFor="" className="mr-1 ">
+                      {t("home:mnb")} {t("home:inday")}:
+                    </label>
+
+                    <input
+                      className="form-control"
+                      name="maintenance_notify_before"
+                      value={values.maintenance_notify_before}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    <FormikValidationError
+                      name="maintenance_notify_before"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="form-group ">
+                    <label htmlFor="" className="mr-1 ">
+                      {t("home:mna")} {t("home:inday")}:
+                    </label>
+
+                    <input
+                      className="form-control"
+                      name="maintenance_notify_after"
+                      value={values.maintenance_notify_after}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    <FormikValidationError
+                      name="maintenance_notify_after"
                       errors={errors}
                       touched={touched}
                     />

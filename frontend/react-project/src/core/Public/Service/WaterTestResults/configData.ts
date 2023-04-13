@@ -4,6 +4,7 @@ const chartConfig = {
         axisPointer: {
             type: "shadow",
         },
+        // formatter: '{b}<br />{a}: {c}'
     },
     legend: {
         show: true,
@@ -27,6 +28,7 @@ const chartConfig = {
     },
     yAxis: {
         type: "value",
+        axisLabel: "demo"
     },
     series: [],
 };

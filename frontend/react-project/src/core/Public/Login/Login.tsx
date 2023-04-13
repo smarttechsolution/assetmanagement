@@ -149,6 +149,12 @@ const LoginForm = ({ authorizing, handleLogin }: LoginFormProps) => {
           </div>
         </div>
       </form>
+      <div className="contact_info">
+        <div className="contact">
+          <h6>Contact Us:</h6>
+          <a href="mailto:info@smarttech.com.np">info@smarttech.com.np</a>
+        </div>
+      </div>
     </div>
   );
 };

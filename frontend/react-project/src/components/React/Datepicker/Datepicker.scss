@@ -26,11 +26,12 @@ $text-disabled: #d8d8d8;
         height: auto;
         letter-spacing: 0.2px;
         line-height: 1.25em;
-        padding: 10px;
+        padding: 10px 0px;
         position: absolute;
         text-align: right;
         user-select: none;
-        left: 0;
+        // left: 0;
+        right:0;
         z-index: 9999;
         .calendar-controller {
             align-items: center;

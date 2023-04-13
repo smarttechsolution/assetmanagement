@@ -1,3 +1,4 @@
+from xml.dom import ValidationErr
 from rest_framework import serializers
 from config_pannel.models import *
 from django.shortcuts import get_object_or_404
@@ -7,15 +8,15 @@ import nepali_datetime
 import datetime
 from .utils import *
 from django.db.models import Sum, Q, fields
-class WaterSourceSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = WaterSource
-		fields = ['id','name',]
+
+# class WaterSourceSerializer(serializers.ModelSerializer):
+# 	class Meta:
+# 		model = WaterSource
+# 		fields = ['id','name',]
+
 class WaterSchemeSerializer(serializers.ModelSerializer):
-	water_source = WaterSourceSerializer(many=True)
+	# water_source = WaterSourceSerializer(many=True)
 	system_built_date = serializers.CharField()
-	system_operation_to = serializers.CharField()
-	system_operation_from = serializers.CharField()
 	tool_start_date = serializers.CharField()
 	class Meta:
 		model = WaterScheme
@@ -24,8 +25,8 @@ class WaterSchemeSerializer(serializers.ModelSerializer):
 			'location',
 			'water_source',
 			'system_built_date',
-			'system_operation_from',
-			'system_operation_to',
+			'longitude',
+			'latitude',
 			'daily_target',
 			'tool_start_date',
 			'period',
@@ -34,6 +35,20 @@ class WaterSchemeSerializer(serializers.ModelSerializer):
 			]
 
 	def validate(self, attrs):
+		daily_target = attrs['daily_target']
+		period = attrs['period']
+		latitude = attrs['latitude']
+		longitude = attrs['longitude']
+
+		if daily_target<0 or period<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
+
+		if len(str(daily_target).split('.')[-1])>2 or len(str(period).split('.')[-1])>2:
+			raise serializers.ValidationError("Only Accept 2 digits after decimal point.") 
+
+		if len(str(longitude).split('.')[-1])>5 or len(str(latitude).split('.')[-1])>5:
+			raise serializers.ValidationError("Only Accept 5 digits after decimal point.")
+
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language suhould be either en or nep')
@@ -42,41 +57,35 @@ class WaterSchemeSerializer(serializers.ModelSerializer):
 			date_en = convert_nep_date_to_english(str(attrs.get('system_built_date')))
 			attrs['system_built_date']=date_en
 
-			date_en = convert_nep_date_to_english(str(attrs.get('system_operation_from')))
-			attrs['system_operation_from']=date_en
-
-			date_en = convert_nep_date_to_english(str(attrs.get('system_operation_to')))
-			attrs['system_operation_to']=date_en
-
 			date_en = convert_nep_date_to_english(str(attrs.get('tool_start_date')))
 			attrs['tool_start_date']=date_en
 		return attrs
 
 
-	def create(self, validated_data):
-		water_source = validated_data.pop('water_source')
-		scheme = WaterScheme.objects.create(**validated_data)
-		for i in water_source:
-			WaterSource.objects.create(water_scheme_id = scheme.id, name = i.get('name'))
-		return scheme
+	# def create(self, validated_data):
+	# 	# water_source = validated_data.pop('water_source')
+	# 	scheme = WaterScheme.objects.create(**validated_data)
+	# 	# for i in water_source:
+	# 	# 	WaterSource.objects.create(water_scheme_id = scheme.id, name = i.get('name'))
+	# 	return scheme
 
-	def update(self, instance, validated_data):
-		water_source = validated_data.pop('water_source')
-		instance.scheme_name = validated_data.get('scheme_name')
-		instance.location = validated_data.get('location')
-		instance.system_built_date = validated_data.get('system_built_date')
-		instance.system_operation_from =validated_data.get('system_operation_from')
-		instance.system_operation_to =validated_data.get('system_operation_to')
-		instance.daily_target =validated_data.get('daily_target')
-		instance.tool_start_date =validated_data.get('tool_start_date')
-		instance.period =validated_data.get('period')
-		instance.system_date_format = validated_data.get('system_date_format')
-		instance.currency = validated_data.get('currency')
-		instance.save()
-		WaterSource.objects.filter(water_scheme_id=instance.id).delete()
-		for i in water_source:
-			WaterSource.objects.create(water_scheme_id = instance.id, name = i.get('name'))
-		return WaterScheme.objects.get(id=instance.id)
+	# def update(self, instance, validated_data):
+	# 	water_source = validated_data.pop('water_source')
+	# 	instance.scheme_name = validated_data.get('scheme_name')
+	# 	instance.location = validated_data.get('location')
+	# 	instance.system_built_date = validated_data.get('system_built_date')
+	# 	instance.longitude =validated_data.get('longitude')
+	# 	instance.latitude =validated_data.get('latitude')
+	# 	instance.daily_target =validated_data.get('daily_target')
+	# 	instance.tool_start_date =validated_data.get('tool_start_date')
+	# 	instance.period =validated_data.get('period')
+	# 	instance.system_date_format = validated_data.get('system_date_format')
+	# 	instance.currency = validated_data.get('currency')
+	# 	instance.save()
+	# 	WaterSource.objects.filter(water_scheme_id=instance.id).delete()
+	# 	for i in water_source:
+	# 		WaterSource.objects.create(water_scheme_id = instance.id, name = i.get('name'))
+	# 	return WaterScheme.objects.get(id=instance.id)
 
 	def to_representation(self, data):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
@@ -84,44 +93,53 @@ class WaterSchemeSerializer(serializers.ModelSerializer):
 		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
 		if scheme.system_date_format == 'nep':
 			data['system_built_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('system_built_date'))))
-			data['system_operation_from'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('system_operation_from'))))
-			data['system_operation_to'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('system_operation_to'))))
 			data['tool_start_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('tool_start_date'))))
 		if lang == 'nep':
 			data['system_built_date'] = english_to_nepali_converter(data['system_built_date'])
-			data['system_operation_from'] = english_to_nepali_converter(data['system_operation_from'])
-			data['system_operation_to'] = english_to_nepali_converter(data['system_operation_to'])
+			data['longitude'] = english_to_nepali_converter(data['longitude'])
+			data['latitude'] = english_to_nepali_converter(data['latitude'])
 		return data
+
 class WaterSchemeListSerializer(serializers.ModelSerializer):
-	water_source = WaterSourceSerializer(many=True)
+	# water_source = WaterSourceSerializer(many=True)
 	class Meta:
 		model = WaterScheme
 		fields = '__all__'
 
 	def to_representation(self, data):
+		from decouple import config
 		data = super(WaterSchemeListSerializer, self).to_representation(data)
+		domain_url = self.context['request'].build_absolute_uri('/')[:-1]
+		full_url = domain_url+"/help/"
+		data["web_dashboard_link"] = f"{config('FRONTEND_DOMAIN_URL')}/#/scheme/{data['slug']}/home"
+		data["help_url"] = full_url
 		if data['system_date_format'] == 'nep':
 			data['system_built_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('system_built_date'))))
-			data['system_operation_from'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('system_operation_from'))))
-			data['system_operation_to'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('system_operation_to'))))
 			data['tool_start_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('tool_start_date'))))
 		return data
 
 class WaterSchemeDataSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = WaterSchemeData
-		fields = ['id','beneficiary_household', 'beneficiary_population', 'public_taps', 'institutional_connection', 'apply_date']
+		fields = ['id','household_connection', 'public_connection','commercial_connection', 'institutional_connection', 'apply_date']
 
 	def validate(self, attrs):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language suhould be either en or nep')
+		hc = attrs['household_connection']
+		pc = attrs['public_connection']
+		cc = attrs['commercial_connection']
+		ic = attrs['institutional_connection']
+
+		if hc<0 or pc<0 or cc<0 or ic<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
 
 		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
 		data = WaterSchemeData.objects.filter(water_scheme=scheme).last()
 
 		if data and not self.instance:
-			if data.apply_date >= str_to_datetime(attrs['apply_date']):
+			if data.apply_date == str_to_datetime(attrs['apply_date']):
 				raise serializers.ValidationError('Data for this date is already applied. Choose another date.')
 			WaterSchemeData.objects.filter(id=data.id).update(apply_upto=attrs['apply_date'])
 
@@ -165,30 +183,7 @@ class WaterSchemeDataSerializer(serializers.ModelSerializer):
 		return data
 
 
-class SupplyBeltsSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = SupplyBelts
-		exclude = ['water_scheme']
 
-	def validate(self, attrs):
-		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
-		if not lang in ('en', 'nep'):
-			raise serializers.ValidationError('Language suhould be either en or nep')
-		attrs['water_scheme']=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
-		return attrs
-
-	def create(self, validated_data):
-		return SupplyBelts.objects.create(**validated_data)
-
-	def to_representation(self, data):
-		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
-		data = super(SupplyBeltsSerializer, self).to_representation(data)
-		if lang == 'nep':
-			data['public_taps'] = english_to_nepali_converter(str(data.get('public_taps')))
-			data['institutional_connection']=english_to_nepali_converter(data.get('institutional_connection'))
-			data['beneficiary_household']=english_to_nepali_converter(data.get('beneficiary_household'))
-			data['beneficiary_population']=english_to_nepali_converter(data.get('beneficiary_population'))
-		return data
 class WaterTariffFixedSerializers(serializers.ModelSerializer):
 	apply_date = serializers.CharField()
 	class Meta:
@@ -197,13 +192,37 @@ class WaterTariffFixedSerializers(serializers.ModelSerializer):
 		'terif_type',
 		'rate_for_institution',
 		'rate_for_household',
+		'rate_for_public',
+		'rate_for_commercial',
 		'apply_date',
 		'estimated_paying_connection_household',
 		'estimated_paying_connection_institution',
+		'estimated_paying_connection_public',
+		'estimated_paying_connection_commercial',
 		]
 
 	def validate(self, attrs):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
+
+		if attrs['estimated_paying_connection_household']>100 or attrs['estimated_paying_connection_institution']>100 \
+			or attrs['estimated_paying_connection_public']>100 or attrs['estimated_paying_connection_commercial']>100:
+			raise serializers.ValidationError("Value should not exceed 100%")
+
+		epch = attrs['estimated_paying_connection_household']
+		epci = attrs['estimated_paying_connection_institution']
+		epcp = attrs['estimated_paying_connection_public']
+		epcc = attrs['estimated_paying_connection_commercial']
+		rfi = attrs['rate_for_institution']
+		rfh = attrs['rate_for_household']
+		rfp = attrs['rate_for_public']
+		rfc = attrs['rate_for_commercial'] 
+		if epcc<0 or epch<0 or epci<0 or epcp<0 or rfi<0 or rfh<0 or rfp<0 or rfc<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
+
+		if len(str(epch).split('.')[-1])>2 or len(str(epci).split('.')[-1])>2 or len(str(epcp).split('.')[-1])>2 or len(str(epcc).split('.')[-1])>2 \
+			or len(str(rfi).split('.')[-1])>2 or len(str(rfh).split('.')[-1])>2 or len(str(rfp).split('.')[-1])>2 or len(str(rfc).split('.')[-1])>2:
+			raise serializers.ValidationError("Only Accept 2 digits after decimal point") 
+
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language suhould be either en or nep')
 		try:
@@ -215,11 +234,11 @@ class WaterTariffFixedSerializers(serializers.ModelSerializer):
 			date_en = convert_nep_date_to_english(str(attrs.get('apply_date')))
 			attrs['apply_date']=date_en
 
-		existing_tariff = WaterTeriff.objects.filter(water_scheme=water_scheme).last()
-		if existing_tariff and not self.instance:
-			if existing_tariff.apply_date >= str_to_datetime(attrs['apply_date']):#datetime.strptime(, '%Y-%m-%d').date():
-				raise serializers.ValidationError('Tariff for this date is already applied. Choose another date.')
-			WaterTeriff.objects.filter(id=existing_tariff.id).update(apply_upto=attrs['apply_date'])
+		# existing_tariff = WaterTeriff.objects.filter(water_scheme=water_scheme).last()
+		# if existing_tariff and not self.instance:
+		# 	if existing_tariff.apply_date >= str_to_datetime(attrs['apply_date']):#datetime.strptime(, '%Y-%m-%d').date():
+		# 		raise serializers.ValidationError('Tariff for this date is already applied. Choose another date.')
+		# 	WaterTeriff.objects.filter(id=existing_tariff.id).update(apply_upto=attrs['apply_date'])
 
 		if self.instance:
 			qs=WaterTeriff.objects.filter(water_scheme=water_scheme)
@@ -232,7 +251,8 @@ class WaterTariffFixedSerializers(serializers.ModelSerializer):
 			    self.instance.apply_upto=next_qs.apply_date
 			    self.instance.save()
 			elif next_qs and not previous:
-				self.instance.apply_upto=next_qs.apply_date
+				a = qs.filter(apply_date__gt=attrs.get('apply_date')).order_by('-pk')[1]
+				self.instance.apply_upto=a.apply_date#next_qs.apply_date
 				self.instance.save()
 			elif previous and not next_qs :
 			    previous.apply_upto = attrs.get('apply_date')
@@ -240,7 +260,7 @@ class WaterTariffFixedSerializers(serializers.ModelSerializer):
 			else:
 				self.instance.apply_upto=None
 				self.instance.save()
-
+		# import pdb; pdb.set_trace()
 		attrs['water_scheme']=water_scheme
 		attrs['terif_type']='Fixed'
 		return attrs
@@ -280,25 +300,52 @@ class UseBasedUnitRangeSerializer(serializers.ModelSerializer):
 					total += i.estimated_paying_connection
 		total = total + attrs['estimated_paying_connection']
 		if total > 100:
-			raise serializers.ValidationError('Total estimated paying connection should exceed 100 in total.')
+			raise serializers.ValidationError('Total estimated paying connection should not exceed 100 in total.')
 		return attrs
+
 class UseBasedUnitRangeSerializer2(serializers.ModelSerializer):
 	class Meta:
 		model = UseBasedUnitRange
-		exclude = ['tariff']
+		exclude = ['id','tariff']
 
 class CreateWaterTariffUsedBasedSerializers(serializers.ModelSerializer):
 	used_based_units = UseBasedUnitRangeSerializer2(many=True)
 	apply_date = serializers.CharField()
 	class Meta:
 		model = WaterTeriff
-		fields = ['apply_date','used_based_units']
-	
+		fields = ['id','apply_date','used_based_units']
+
 	def validate(self, attrs):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
 		if not lang in ('en', 'nep'):
-			raise serializers.ValidationError('Language suhould be either en or nep')
+			raise serializers.ValidationError('Language should be either en or nep')
 		water_scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		for i in attrs['used_based_units']:
+			unit_from = i['unit_from']
+			unit_to = i['unit_to']
+			rate = i['rate']
+			estimated_paying_connection = i['estimated_paying_connection']
+			if unit_from<0 or unit_to<0 or rate<0 or estimated_paying_connection<0:
+				raise serializers.ValidationError("Negative value can't be entered.")
+			
+			if len(str(rate).split('.')[-1])>2 or len(str(estimated_paying_connection).split('.')[-1])>2:
+				raise serializers.ValidationError(" Only Accept 2 digits after decimal point")
+
+		previous_unit = []
+		if len(attrs['used_based_units'])>1:
+			for j in attrs['used_based_units']:
+				unit_from = j['unit_from']
+				unit_to = j['unit_to']
+				try:
+					previous_unit_to= previous_unit[-1]
+				except:
+					previous_unit_to = 0
+				if previous_unit_to>unit_from or unit_from>=unit_to:
+					raise serializers.ValidationError("The Unit up to and including: should always be higher than unit starting from.")
+				previous_unit.append(unit_to)
+				for k in previous_unit:
+					if unit_from == k:
+						raise serializers.ValidationError("should not repeat the first number of a range with the last number of the previous range.")
 
 		if water_scheme.system_date_format == 'nep':
 			date_en = convert_nep_date_to_english(str(attrs.get('apply_date')))
@@ -306,17 +353,21 @@ class CreateWaterTariffUsedBasedSerializers(serializers.ModelSerializer):
 
 		existing_tariff = WaterTeriff.objects.filter(water_scheme=water_scheme).last()
 		if existing_tariff and not self.instance:
-			if existing_tariff.apply_date > str_to_datetime(attrs['apply_date']):#datetime.strptime(, '%Y-%m-%d').date():
+			if existing_tariff.apply_date >= str_to_datetime(attrs['apply_date']):#datetime.strptime(, '%Y-%m-%d').date():
 				raise serializers.ValidationError('Tariff for this date is already applied. Choose another date.')
-			if existing_tariff.apply_date == str_to_datetime(attrs['apply_date']):
-				data=UseBasedUnitRange.objects.filter(tariff_id = existing_tariff.id)
-				total = 0
-				for j in data:
-					total += j.estimated_paying_connection 
-				total = total + attrs.get('estimated_paying_connection')
-				if total > 100:
-					raise serializers.ValidationError('Estimated paying connection exceed 100.')
-			WaterTeriff.objects.filter(id=existing_tariff.id).update(apply_upto=attrs['apply_date'])
+			# if existing_tariff.apply_date == str_to_datetime(attrs['apply_date']):
+				# data=UseBasedUnitRange.objects.filter(tariff_id = existing_tariff.id)
+				# total = 0
+				# for j in data:
+				# 	total += j.estimated_paying_connection 
+		new_epc = 0
+		for k in attrs.get('used_based_units'):
+			new_epc += k.get('estimated_paying_connection')
+
+		# total = total + new_epc
+		if new_epc > 100:
+			raise serializers.ValidationError('Estimated paying connection exceed 100.')
+			# WaterTeriff.objects.filter(id=existing_tariff.id).update(apply_upto=attrs['apply_date'])
 
 		attrs['water_scheme']=water_scheme
 		attrs['terif_type']='Use Based'
@@ -332,55 +383,86 @@ class CreateWaterTariffUsedBasedSerializers(serializers.ModelSerializer):
 	def create(self, validated_data):
 		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
 		used_based_units = validated_data.pop('used_based_units')
-		existing_tariff = WaterTeriff.objects.filter(water_scheme=scheme).last()
+		existing_tariff = WaterTeriff.objects.filter(water_scheme=scheme).update(apply_upto=validated_data['apply_date'])
+		# apply_date = validated_data.get('apply_date')
+		# try:
+		# 	if existing_tariff.apply_date == apply_date:
+		# 		for i in used_based_units:
+		# 			data = UseBasedUnitRange.objects.filter(tariff_id = existing_tariff.id)
+		# 			total = 0
+		# 			for j in data:
+		# 				total += j.estimated_paying_connection + i.get('estimated_paying_connection')
+
+		# 			if not total > 100:
+		# 				UseBasedUnitRange.objects.create(tariff_id = existing_tariff.id, unit_from = i.get('unit_from'),
+		# 				unit_to=i.get('unit_to'),
+		# 				rate=i.get('rate'),
+		# 				estimated_paying_connection=i.get('estimated_paying_connection'))
+		# 		return existing_tariff
+		# 	else:
+		# 		teriff = WaterTeriff.objects.create(**validated_data)
+		# 		for i in used_based_units:
+		# 			data = UseBasedUnitRange.objects.filter(tariff_id = teriff.id)
+		# 			total = 0
+		# 			for j in data:
+		# 				total += j.estimated_paying_connection + i.get('estimated_paying_connection')
+
+		# 			if not total > 100:
+		# 				UseBasedUnitRange.objects.create(tariff_id = teriff.id, unit_from = i.get('unit_from'),
+		# 				unit_to=i.get('unit_to'),
+		# 				rate=i.get('rate'),
+		# 				estimated_paying_connection=i.get('estimated_paying_connection'))
+		# 		return teriff
+		# except:
+		teriff = WaterTeriff.objects.create(**validated_data)
+		for i in used_based_units:
+			# data = UseBasedUnitRange.objects.filter(tariff_id = teriff.id)
+			# total = 0
+			# for j in data:
+			# 	total += j.estimated_paying_connection + i.get('estimated_paying_connection')
+
+			# if not total > 100:
+			UseBasedUnitRange.objects.create(tariff_id = teriff.id, unit_from = i.get('unit_from'),
+			unit_to=i.get('unit_to'),
+			rate=i.get('rate'),
+			estimated_paying_connection=i.get('estimated_paying_connection'))
+		return teriff
+
+	def update(self, instance, validated_data):
+		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		used_based_units = validated_data.pop('used_based_units')
+		# tariff = WaterTeriff.objects.filter(water_scheme=scheme, id=instance.id)
 		apply_date = validated_data.get('apply_date')
-		try:
-			if existing_tariff.apply_date == apply_date:
-				for i in used_based_units:
-					data = UseBasedUnitRange.objects.filter(tariff_id = existing_tariff.id)
-					total = 0
-					for j in data:
-						total += j.estimated_paying_connection + i.get('estimated_paying_connection')
+		instance.apply_date = apply_date
+		instance.save()
 
-					if not total > 100:
-						UseBasedUnitRange.objects.create(tariff_id = existing_tariff.id, unit_from = i.get('unit_from'),
-						unit_to=i.get('unit_to'),
-						rate=i.get('rate'),
-						estimated_paying_connection=i.get('estimated_paying_connection'))
-				return existing_tariff
-			else:
-				teriff = WaterTeriff.objects.create(**validated_data)
-				for i in used_based_units:
-					data = UseBasedUnitRange.objects.filter(tariff_id = teriff.id)
-					total = 0
-					for j in data:
-						total += j.estimated_paying_connection + i.get('estimated_paying_connection')
+		# next_qs = WaterTeriff.objects.filter(pk__gt=instance.pk).order_by('pk').first()
+		previous = WaterTeriff.objects.filter(pk__lt=instance.pk).order_by('-pk').first()
+        
+		if previous:
+			previous.apply_upto = instance.apply_date
+			previous.save()
 
-					if not total > 100:
-						UseBasedUnitRange.objects.create(tariff_id = teriff.id, unit_from = i.get('unit_from'),
-						unit_to=i.get('unit_to'),
-						rate=i.get('rate'),
-						estimated_paying_connection=i.get('estimated_paying_connection'))
-				return teriff
-		except:
-			teriff = WaterTeriff.objects.create(**validated_data)
-			for i in used_based_units:
-				data = UseBasedUnitRange.objects.filter(tariff_id = teriff.id)
-				total = 0
-				for j in data:
-					total += j.estimated_paying_connection + i.get('estimated_paying_connection')
+		data = UseBasedUnitRange.objects.filter(tariff_id = instance.id).delete()
+		for i in used_based_units:
+			# total = 0
+			# for j in data:
+			# 	total += j.estimated_paying_connection + i.get('estimated_paying_connection')
 
-				if not total > 100:
-					UseBasedUnitRange.objects.create(tariff_id = teriff.id, unit_from = i.get('unit_from'),
-					unit_to=i.get('unit_to'),
-					rate=i.get('rate'),
-					estimated_paying_connection=i.get('estimated_paying_connection'))
-			return teriff
+			# if not total > 100:
+			UseBasedUnitRange.objects.create(tariff_id = instance.id, unit_from = i.get('unit_from'),
+			unit_to=i.get('unit_to'),
+			rate=i.get('rate'),
+			estimated_paying_connection=i.get('estimated_paying_connection'))
+		return instance
+
+
 class WaterTariffUsedSerializers(serializers.ModelSerializer):
 	used_based_units = UseBasedUnitRangeSerializer(required=True,many=True)
 	class Meta:
 		model = WaterTeriff
-		fields = ['terif_type',
+		fields = ['id',
+		'terif_type',
 		'apply_date',
 		'used_based_units',
 		]
@@ -391,68 +473,70 @@ class WaterTariffUsedSerializers(serializers.ModelSerializer):
 		if water_scheme.system_date_format == 'nep':
 			data['apply_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('apply_date'))))
 		return data
-class WaterTariffUsedCreateSerializers(serializers.ModelSerializer):
-	used_based_units = UseBasedUnitRangeSerializer(read_only=True,many=True)
-	apply_date = serializers.CharField()
-	class Meta:
-		model = WaterTeriff
-		fields = [
-		'id',
-		'terif_type',
-		'apply_date',
-		'used_based_units',
-		]
 
-	def validate(self, attrs):
-		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
-		if not lang in ('en', 'nep'):
-			raise serializers.ValidationError('Language suhould be either en or nep')
-		water_scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+# class WaterTariffUsedCreateSerializers(serializers.ModelSerializer):
+# 	used_based_units = UseBasedUnitRangeSerializer(read_only=True,many=True)
+# 	apply_date = serializers.CharField()
+# 	class Meta:
+# 		model = WaterTeriff
+# 		fields = [
+# 		'id',
+# 		'terif_type',
+# 		'apply_date',
+# 		'used_based_units',
+# 		]
 
-		if water_scheme.system_date_format == 'nep':
-			date_en = convert_nep_date_to_english(str(attrs.get('apply_date')))
-			attrs['apply_date']=date_en
+# 	def validate(self, attrs):
+# 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
+# 		if not lang in ('en', 'nep'):
+# 			raise serializers.ValidationError('Language suhould be either en or nep')
+# 		water_scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
 
-		# existing_tariff = WaterTeriff.objects.filter(water_scheme=water_scheme).last()
-		# if existing_tariff and not self.instance:
-		# 	if existing_tariff.apply_date >= attrs['apply_date']:
-		# 		raise serializers.ValidationError('Tariff for this date is already applied. Choose another date.')
-		# 	WaterTeriff.objects.filter(id=existing_tariff.id).update(apply_upto=attrs['apply_date'])
+# 		if water_scheme.system_date_format == 'nep':
+# 			date_en = convert_nep_date_to_english(str(attrs.get('apply_date')))
+# 			attrs['apply_date']=date_en
 
-		if self.instance:
-			qs=WaterTeriff.objects.filter(water_scheme=scheme)
-			next_qs = qs.filter(apply_date__gt=attrs.get('apply_date')).order_by('pk').first()
-			previous = qs.filter(apply_date__lt=attrs.get('apply_date')).order_by('-pk').first()
+# 		# existing_tariff = WaterTeriff.objects.filter(water_scheme=water_scheme).last()
+# 		# if existing_tariff and not self.instance:
+# 		# 	if existing_tariff.apply_date >= attrs['apply_date']:
+# 		# 		raise serializers.ValidationError('Tariff for this date is already applied. Choose another date.')
+# 		# 	WaterTeriff.objects.filter(id=existing_tariff.id).update(apply_upto=attrs['apply_date'])
+
+# 		if self.instance:
+# 			qs=WaterTeriff.objects.filter(water_scheme=scheme)
+# 			next_qs = qs.filter(apply_date__gt=attrs.get('apply_date')).order_by('pk').first()
+# 			previous = qs.filter(apply_date__lt=attrs.get('apply_date')).order_by('-pk').first()
 	        
-			if next_qs and previous:
-			    previous.apply_upto = attrs.get('apply_date')
-			    previous.save()
-			    self.instance.apply_upto=next_qs.apply_date
-			    self.instance.save()
-			elif next_qs and not previous:
-				self.instance.apply_upto=next_qs.apply_date
-				self.instance.save()
-			elif previous and not next_qs :
-			    previous.apply_upto = attrs.get('apply_date')
-			    previous.save()
-			else:
-				self.instance.apply_upto=None
-				self.instance.save()
-		# 	tariff = WaterTeriff.objects.order_by('id')
-		# 	if tariff.count() >= 2:
-		# 		if tariff[1].apply_date >= attrs['apply_date']:
-		# 			raise serializers.ValidationError('Tariff for this date is already applied. Choose another date.')
-		# 		WaterTeriff.objects.filter(id=tariff[1].id).update(apply_upto = attrs['apply_date'])
-		attrs['water_scheme']=water_scheme
-		attrs['terif_type']='Use Based'
-		return attrs
+# 			if next_qs and previous:
+# 			    previous.apply_upto = attrs.get('apply_date')
+# 			    previous.save()
+# 			    self.instance.apply_upto=next_qs.apply_date
+# 			    self.instance.save()
+# 			elif next_qs and not previous:
+# 				self.instance.apply_upto=next_qs.apply_date
+# 				self.instance.save()
+# 			elif previous and not next_qs :
+# 			    previous.apply_upto = attrs.get('apply_date')
+# 			    previous.save()
+# 			else:
+# 				self.instance.apply_upto=None
+# 				self.instance.save()
+# 		# 	tariff = WaterTeriff.objects.order_by('id')
+# 		# 	if tariff.count() >= 2:
+# 		# 		if tariff[1].apply_date >= attrs['apply_date']:
+# 		# 			raise serializers.ValidationError('Tariff for this date is already applied. Choose another date.')
+# 		# 		WaterTeriff.objects.filter(id=tariff[1].id).update(apply_upto = attrs['apply_date'])
+# 		attrs['water_scheme']=water_scheme
+# 		attrs['terif_type']='Use Based'
+# 		return attrs
 
-	def to_representation(self, data):
-		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
-		data = super(WaterTariffUsedCreateSerializers, self).to_representation(data)
-		if scheme.system_date_format == 'nep':
-			data['apply_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('apply_date'))))
-		return data
+# 	def to_representation(self, data):
+# 		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+# 		data = super(WaterTariffUsedCreateSerializers, self).to_representation(data)
+# 		if scheme.system_date_format == 'nep':
+# 			data['apply_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data.get('apply_date'))))
+# 		return data
+
 class WaterSupplyScheduleSerializers(serializers.ModelSerializer):
 	class Meta:
 		model = WaterSupplySchedule
@@ -473,18 +557,53 @@ class WaterSupplyScheduleSerializers(serializers.ModelSerializer):
 
 	def create(self, validated_data):
 		return WaterSupplySchedule.objects.create(**validated_data)
+
+
 class QualityTestParameterSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = QualityTestParameter
 		exclude = ['water_scheme']
 
 	def validate(self, attrs):
+		val_check = str(attrs['NDWQS_standard'])
+		split_value = val_check.split('-')
+		if len(split_value) <= 2:
+			for i in split_value:
+				try:
+					float(i)
+				except:
+					raise serializers.ValidationError("Numeric Value required!")
+		else:
+			raise serializers.ValidationError("Enter Value in range eg. (0-5)")
+		try:
+			if float(val_check)<0:
+				raise serializers.ValidationError("Negative value can't be entered.")
+		except:
+			pass
 		attrs['water_scheme']=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		
 		return attrs
 
 	def create(self, validated_data):
 		return QualityTestParameter.objects.create(**validated_data)
 
+	def to_representation(self, instance):
+		
+		data =  super().to_representation(instance)
+		ndwqs = data.get("NDWQS_standard")
+		split_val = ndwqs.split('-')
+		try:
+			if len(split_val) == 2:
+				data["ndwqs1"] = float(split_val[0])
+				data["ndwqs2"] = float(split_val[1])
+			else:
+				data["ndwqs1"] = float(ndwqs)
+		except:
+			data["ndwqs1"] = None
+			data["ndwqs2"] = None
+
+		return data
+		
 
 from datetime import datetime, timedelta
 def date_range(start, end):
@@ -495,7 +614,7 @@ def date_range(start, end):
 class GetWaterSupplyRecordSerializers(serializers.ModelSerializer):
 	class Meta:
 		model = WaterSupplyRecord
-		fields = ['id', 'total_supply', 'estimated_household', 'estimated_beneficiaries', 'supply_belts', 'is_daily']
+		fields = ['id', 'total_supply', 'is_daily']
 
 
 class CreateWaterSupplyRecordSerializers(serializers.ModelSerializer):
@@ -503,10 +622,15 @@ class CreateWaterSupplyRecordSerializers(serializers.ModelSerializer):
 	date_to = serializers.CharField(required=False, write_only=True)
 	class Meta:
 		model = WaterSupplyRecord
-		fields = ['id', 'date_from', 'date_to', 'total_supply', 'estimated_household', 'estimated_beneficiaries', 'supply_belts', 'is_daily']
+		fields = ['id', 'date_from', 'date_to', 'total_supply', 'is_daily']
 	
 	def validate(self, attrs):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
+		total_supply = attrs['total_supply']
+		if len(str(total_supply).split('.')[-1])>2:
+			raise serializers.ValidationError(" Only Accept 2 digits after decimal point")
+		if total_supply<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language suhould be either en or nep')
 		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
@@ -542,7 +666,10 @@ class CreateWaterSupplyRecordSerializers(serializers.ModelSerializer):
 			else:
 				date_from_np = nepali_datetime.date.from_datetime_date(date_from)
 				WaterSupplyRecord.objects.create(supply_date=date_from, supply_date_np = date_from_np, **validated_data)
-		return WaterSupplyRecord.objects.get(supply_date=date_from)
+		try:
+			return WaterSupplyRecord.objects.get(supply_date=date_from)
+		except:
+			raise serializers.ValidationError(f"Record already exist on {date_from} Date")
 
 class TestParameterSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -552,32 +679,36 @@ class TestParameterSerializer(serializers.ModelSerializer):
 class WaterTestResultParamtersSerializers(serializers.ModelSerializer):
 	name = serializers.SerializerMethodField()
 	unit = serializers.SerializerMethodField()
+	NDWQS = serializers.SerializerMethodField()
 
 	class Meta:
 		model = WaterTestResultParamters
-		fields = ['parameter', 'value', 'name', 'unit']
-	
+		fields = ['parameter', 'value', 'name', 'unit', 'NDWQS']
+		
 	def get_name(self,obj):
 		return obj.parameter.parameter_name
 
 	def get_unit(self,obj):
 		return obj.parameter.unit
 
+	def get_NDWQS(self,obj):
+		return obj.parameter.NDWQS_standard
+
 class GetWaterTestResultsSerializers(serializers.ModelSerializer):
 	test_result_parameter = WaterTestResultParamtersSerializers(read_only=True, many=True)
 
 	class Meta:
 		model = WaterTestResults
-		fields = ['id', 'supply_belts', 'test_result_parameter']
+		fields = ['id','test_result_parameter']
 
 
 class CreateWaterTestResultsSerializers(serializers.ModelSerializer):
 	test_result_parameter = WaterTestResultParamtersSerializers(required=True, many=True)
 	date_from = serializers.CharField(write_only=True)
-	date_to = serializers.CharField(required=False, write_only=True)
+	date_to = serializers.CharField(required=False, write_only=True, allow_blank=True, allow_null=True)
 	class Meta:
 		model = WaterTestResults
-		fields = ['id', 'date_from', 'date_to', 'supply_belts','test_result_parameter']
+		fields = ['id', 'date_from', 'date_to','test_result_parameter']
 
 	def validate(self, attrs):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
@@ -618,6 +749,7 @@ class CreateWaterTestResultsSerializers(serializers.ModelSerializer):
 			if WaterTestResults.objects.filter(date=date_from).exists():
 				WaterTestResults.objects.filter(date=date_from).delete()
 			date_np = nepali_datetime.date.from_datetime_date(date_from)
+			validated_data.pop('date_to')
 			result = WaterTestResults.objects.create(date=date_from, date_np = date_np, **validated_data)
 			for i in test_result_parameter:
 				WaterTestResultParamters.objects.create(test_result = result,
@@ -648,13 +780,15 @@ class OtherExpenseSerializers(serializers.ModelSerializer):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language suhould be either en or nep')
-
+		val_check = str(attrs['yearly_expense'])
+		if len(val_check.split('.')[-1])>2:
+			raise serializers.ValidationError(" Only Accept 2 digits after decimal point")
+		if attrs['yearly_expense']<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
 		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
-		
 		if scheme.system_date_format == 'nep':
 			date_en = convert_nep_date_to_english(str(attrs.get('apply_date')))
 			attrs['apply_date'] = date_en
-
 		attrs['water_scheme'] = scheme
 		return attrs
 
@@ -666,7 +800,6 @@ class InflationRateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = OtherExpenseInflationRate
 		exclude = ['water_scheme']
-
 
 	def to_representation(self, data):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
@@ -680,10 +813,21 @@ class InflationRateSerializer(serializers.ModelSerializer):
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language suhould be either en or nep')
 
+		val_check = str(attrs['rate'])
+		if len(val_check.split('.')[-1])>1:
+			raise serializers.ValidationError(" Only Accept 1 digits after decimal point")
+
+		if attrs['rate']<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
 		attrs['water_scheme']=get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
 		return attrs
 
 	def create(self, validated_data):
+		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		if OtherExpenseInflationRate.objects.filter(water_scheme =scheme).exists():
+			OtherExpenseInflationRate.objects.filter(water_scheme =scheme).update(rate=validated_data.get('rate'),
+				dis_allow_edit = validated_data.get('dis_allow_edit'))
+			return OtherExpenseInflationRate.objects.filter(water_scheme =scheme).last()
 		return OtherExpenseInflationRate.objects.create(**validated_data)
 
 
@@ -713,7 +857,7 @@ class NotificationPeriodSerializer(serializers.ModelSerializer):
 	scheme = None
 	class Meta:
 		model = NotificationPeriod
-		fields = ['id','initial_date', 'income_notification_period', 'expenditure_notification_period', 'test_result_notification_period','supply_record_notification_period']
+		fields = ['id','initial_date', 'income_notification_period', 'expenditure_notification_period', 'test_result_notification_period','supply_record_notification_period','maintenance_notify_before','maintenance_notify_after']
 	
 	def validate(self, attrs):
 		try:
@@ -738,7 +882,10 @@ class NotificationPeriodSerializer(serializers.ModelSerializer):
 				income_notification_period=validated_data.get('income_notification_period'),
 				expenditure_notification_period = validated_data.get('supply_record_notification_period'),
 				test_result_notification_period= validated_data.get('supply_record_notification_period') ,
-				supply_record_notification_period = validated_data.get('supply_record_notification_period'))
+				supply_record_notification_period = validated_data.get('supply_record_notification_period'),
+				maintenance_notify_before = validated_data.get('maintenance_notify_before'),
+				maintenance_notify_after = validated_data.get('maintenance_notify_after'),
+				)
 			return NotificationPeriod.objects.filter(water_scheme =self.scheme).last()
 		return NotificationPeriod.objects.create(**validated_data)
 	
@@ -753,7 +900,130 @@ class NotificationPeriodSerializer(serializers.ModelSerializer):
 			data['initial_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data['initial_date'])))
 
 		return data
+
 class NotificationStoreSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = NotificationStore
 		fields = '__all__'
+
+
+class ConfigWaterSupplyRecordSerializers(serializers.ModelSerializer):
+	class Meta:
+		model = WaterSupplyRecord
+		fields = ['id','supply_date', 'total_supply']
+
+	def validate(self, attrs):
+		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		val_check = str(attrs['total_supply'])
+		if len(val_check.split('.')[-1])>2:
+			raise serializers.ValidationError(" Only Accept 2 digits after decimal point")
+		if attrs['total_supply']<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
+		if scheme.system_date_format == 'nep':
+			attrs['supply_date_np'] = attrs.get('supply_date')
+			supply_date_en = convert_nep_date_to_english(str(attrs.get('supply_date')))
+			attrs['supply_date']=supply_date_en
+		else:
+			supply_date = str_to_datetime(attrs.get('supply_date'))
+			attrs['supply_date_np'] = nepali_datetime.date.from_datetime_date(supply_date)
+		attrs['water_scheme']=scheme
+		return attrs
+
+	def to_representation(self, data):
+		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
+		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		data = super(ConfigWaterSupplyRecordSerializers, self).to_representation(data)
+		if scheme.system_date_format == 'nep':
+			data['supply_date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data['supply_date'])))
+			if lang == 'nep':
+				data['total_supply'] = english_to_nepali_converter(data['total_supply'])
+				data['supply_date'] = english_to_nepali_converter(data['supply_date'])
+		return data
+
+
+
+class ConfigWaterResultsSerializers(serializers.ModelSerializer):
+	test_result_parameter = WaterTestResultParamtersSerializers(required=True, many=True)
+	class Meta:
+		model = WaterTestResults
+		fields = ['id','date','test_result_parameter']
+
+	def validate(self, attrs):
+		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
+		if not lang in ('en', 'nep'):
+			raise serializers.ValidationError('Language suhould be either en or nep')
+		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		for i in attrs['test_result_parameter']:
+			if i['value']:
+				if len(str(i['value']).split('.')[-1])>2:
+					raise serializers.ValidationError("Only Accept 2 digits after decimal point") 
+				if i['value']<0:
+					raise serializers.ValidationError("Negative value can't be entered.")
+		if scheme.system_date_format == 'nep':
+			attrs['date_np'] = attrs.get('date',None)
+			date_en = convert_nep_date_to_english(str(attrs.get('date')))
+			attrs['date']=date_en
+		else:
+			date = str_to_datetime(attrs.get('date'))
+			attrs['date_np'] = nepali_datetime.date.from_datetime_date(date)
+		attrs['water_scheme_id']=scheme.id
+		return attrs
+
+	def create(self, validated_data):
+		test_result_parameter = validated_data.pop('test_result_parameter')
+
+		result = WaterTestResults.objects.create(**validated_data)
+
+		for i in test_result_parameter:
+			WaterTestResultParamters.objects.create(test_result_id = result.id,parameter = i.get('parameter'), value = i.get('value'))
+		return WaterTestResults.objects.get(id=result.id)
+
+	def update(self, instance, validated_data):
+		test_result_parameter = validated_data.pop('test_result_parameter')
+
+		WaterTestResults.objects.filter(id=instance.id).update(**validated_data)
+		instance.test_result_parameter.all().delete()
+		
+		for i in test_result_parameter:
+			WaterTestResultParamters.objects.create(test_result_id = instance.id,parameter = i.get('parameter'), value = i.get('value'))
+		return WaterTestResults.objects.get(id=instance.id)
+
+
+
+
+
+	def to_representation(self, data):
+		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
+		scheme = get_object_or_404(Users, id = self.context['request'].user.id).water_scheme
+		data = super(ConfigWaterResultsSerializers, self).to_representation(data)
+		if scheme.system_date_format == 'nep':
+			data['date'] = str(nepali_datetime.date.from_datetime_date(str_to_datetime(data['date'])))
+			# if lang == 'nep':
+			# 	data['date'] = english_to_nepali_converter(data['date'])
+		return data
+
+
+		# if validated_data.get('date_to'):
+		# 	date_to = validated_data.pop('date_to')
+		# 	total_days = date_range(date_from,date_to)
+
+		# 	for i in range(len(total_days)):
+		# 		date = date_from + timedelta(days=i)
+		# 		if WaterTestResults.objects.filter(date=date).exists():
+		# 			WaterTestResults.objects.filter(date=date).delete()
+		# 		date_np = nepali_datetime.date.from_datetime_date(date)
+		# 		result = WaterTestResults.objects.create(date = date, date_np = date_np, **validated_data)
+		# 		for i in test_result_parameter:
+		# 			WaterTestResultParamters.objects.create(test_result = result,
+		# 				parameter = i.get('parameter'),
+		# 				value = i.get('value'))
+		# else:
+		# 	if WaterTestResults.objects.filter(date=date_from).exists():
+		# 		WaterTestResults.objects.filter(date=date_from).delete()
+		# 	date_np = nepali_datetime.date.from_datetime_date(date_from)
+		# 	result = WaterTestResults.objects.create(date=date_from, date_np = date_np, **validated_data)
+		# 	for i in test_result_parameter:
+		# 		WaterTestResultParamters.objects.create(test_result = result,
+		# 				parameter = i.get('parameter'),
+		# 				value = i.get('value'))
+		# return WaterTestResults.objects.get(date=date_from)

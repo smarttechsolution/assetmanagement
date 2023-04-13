@@ -1,6 +1,7 @@
 import FormikValidationError from "components/React/FormikValidationError/FormikValidationError";
 import toast from "components/React/ToastNotifier/ToastNotifier";
 import Button from "components/UI/Forms/Buttons";
+import TooltipLabel from "components/UI/TooltipLabel";
 import { useFormik } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -10,25 +11,47 @@ import { getSchemeUserAction } from "store/modules/waterScheme/getWaterSchemeUse
 import { postWaterSchemeUserAction } from "store/modules/waterScheme/postWaterSchemeUser";
 import { updateWaterSchemeUserAction } from "store/modules/waterScheme/updateWaterSchemeUser";
 import { RootState } from "store/root-reducer";
-import { mobileUserInitialValues, mobileUserValidationSchema } from "./schema";
+import {
+  mobileUserInitialValues,
+  mobileUserValidationSchema,
+  mobileUserValidationSchemaWithoutPhone,
+  // role__OptionType,
+} from "./schema";
+import StyledSelect from "components/React/StyledSelect/StyledSelect";
+import * as Yup from "yup";
+
 
 interface Props extends PropsFromRedux {
   editData: any;
   toggle: any;
+  setEditData: any;
 }
+
+const role__OptionType = [
+  {
+      label: "Caretaker",
+      value: "is_care_taker"
+  },
+  {
+      label: "General Manager",
+      value: "general_manager"
+  },
+  {
+      label: "Other",
+      value: "other"
+  },
+  {
+    label: "Administrative Staff",
+    value: "is_administrative_staff"
+  }
+]
+
 
 const Form = (props: Props) => {
   const { t } = useTranslation(["home"]);
 
   const [initialData, setInitialData] = React.useState(mobileUserInitialValues);
 
-  React.useEffect(() => {
-    if (props.editData) {
-      setInitialData({
-        ...props.editData,
-      });
-    }
-  }, [props.editData]);
 
   const {
     values,
@@ -42,10 +65,15 @@ const Form = (props: Props) => {
   } = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
-    validationSchema: mobileUserValidationSchema,
+    validationSchema: props.editData
+      ? mobileUserValidationSchemaWithoutPhone
+      : mobileUserValidationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
-      const requestData = submitValue;
-
+      const requestData = {
+      ...submitValue,
+      role: submitValue?.role?.value,
+      // is_care_taker: submitValue?.is_care_taker?.value
+    }
       let res;
       if (props.editData) {
         res = await props.updateWaterSchemeUserAction(props.editData.id, requestData);
@@ -62,8 +90,10 @@ const Form = (props: Props) => {
         } else {
           setInitialData(mobileUserInitialValues);
           toast.success(t("home:updateSuccess"));
+          console.log(setInitialData, "update successfull");
+          
         }
-
+        props.setEditData(null);
         props.getSchemeUserAction();
       } else {
         const errors = Object.values(res.data)?.map((item: any) => {
@@ -72,6 +102,40 @@ const Form = (props: Props) => {
       }
     },
   });
+
+
+
+  React.useEffect(() => {
+    if (props.editData) {
+        console.log(props.editData);
+
+        const role_name = props.editData.general_manager ? 'general_manager'
+            : (props.editData.is_care_taker ? 'is_care_taker' : (props.editData.Other ? 'other' : (props.editData.is_administrative_staff ? 'is_administrative_staff' : '')));
+        const role = props.editData.general_manager ? 'General Manager'
+            : (props.editData.is_care_taker ? 'Caretaker' : (props.editData.Other ? 'Other' : (props.editData.is_administrative_staff ? 'Administrative Staff' : '')));
+
+        setInitialData({
+            ...props.editData,
+            role: { label: role, value: role_name }
+        });
+    }
+  }, [props.editData]);
+
+  // React.useEffect(() => {
+  //   if (props.editData) {
+  //     console.log(props.editData);
+
+  //     const role_name = props.editData.general_manager ? 'general_manager' 
+  //     : (props.editData.is_care_taker ? 'is_care_taker' :  (props.editData.Other ? 'other' : ''));
+  //     const role = props.editData.general_manager ? 'General Manager' 
+  //     : (props.editData.is_care_taker ? 'Caretaker' : (props.editData.Other ? 'Other' : ''));
+      
+  //     setInitialData({
+  //       ...props.editData,
+  //       role: {label: role, value: role_name}
+  //     });
+  //   }
+  // }, [props.editData]);
 
   return (
     <form
@@ -104,11 +168,19 @@ const Form = (props: Props) => {
             </label>
 
             <input
+              type={"text"}
               className="form-control"
               name="phone_number"
               value={values.phone_number}
-              onChange={handleChange}
+              onChange={(event) => {
+                if (Number(event.target.value) || Number(event.target.value) === 0) {
+                  setFieldValue(event.target.name, event.target.value);
+                }
+                if (event.target.value) {
+                }
+              }}
               onBlur={handleBlur}
+              maxLength={10}
             />
             <FormikValidationError name="phone_number" errors={errors} touched={touched} />
           </div>
@@ -117,24 +189,12 @@ const Form = (props: Props) => {
         <div className="col-md-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
-              {t("home:username")}:
-            </label>
-
-            <input
-              className="form-control"
-              name="username"
-              value={values.username}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              disabled={props.editData ? true : false}
-            />
-            <FormikValidationError name="username" errors={errors} touched={touched} />
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1">
-              {t("home:password")} ({t("home:pin")}):
+              {t("home:password")} ({t("home:pin")}){" "}
+              <TooltipLabel
+                id={"psba4"}
+                text={t("home:pwd")}
+              />
+              :
             </label>
 
             <input
@@ -161,6 +221,28 @@ const Form = (props: Props) => {
               onChange={handleChange}
             />
             <FormikValidationError name="password2" errors={errors} touched={touched} />
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="form-group">
+            <label htmlFor="" className="mr-1 ">
+              {t("home:role")}
+            </label>
+
+            <StyledSelect
+              name="role"
+              value={values.role}
+              options={role__OptionType}
+              onChange={({name, value}) => {
+                setFieldValue(name, value)
+                console.log(value, "vall");
+              }}
+              onBlur={() => {
+                setFieldTouched("role", true);
+              }}
+            />
+
+            <FormikValidationError name="role" errors={errors} touched={touched} />
           </div>
         </div>
 

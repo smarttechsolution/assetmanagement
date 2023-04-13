@@ -13,6 +13,7 @@ from django.conf import settings
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from . views import home_page, return_help_page
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -37,4 +38,7 @@ urlpatterns = [
     path('api/v1/', include('maintenance.api.urls', namespace='maintenance')),
    
    path('main-config/', include('config_pannel.urls', namespace='main-config')),
+   path('', home_page, name="home"),
+   path('help/',return_help_page, name="help-page")
+
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

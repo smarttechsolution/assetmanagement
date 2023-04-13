@@ -34,6 +34,11 @@ const ComponentList = (props: Props) => {
       toast.error(t("home:deleteError"));
       resetDeleteData();
     }
+
+    if(response.status === 403){
+      toast.success(t("home:deleteSuccess"));
+      resetDeleteData();
+    }
   };
 
   return (

@@ -8,6 +8,11 @@ import { getWaterSupplyScheduleAction } from "store/modules/waterSupplySchedule/
 import { RootState } from "store/root-reducer";
 import ManageSupply from "./ManageSupply";
 
+export const formatTime = (time) => {
+  const splitTime = time?.split(":");
+  return splitTime[0] + ":" + splitTime[1];
+};
+
 interface Props extends PropsFromRedux {}
 
 const SupplySchedule = (props: Props) => {
@@ -39,23 +44,15 @@ const SupplySchedule = (props: Props) => {
             <h6>{item.day?.toUpperCase()}</h6>
             <span>
               <p>
-                {getNumberByLanguage(item.morning_from_time)?.split(":")[0]} :
-                {getNumberByLanguage(item.morning_from_time)?.split(":")[1]} {t("home:am")} -{" "}
-                {getNumberByLanguage(item.morning_to_time)?.split(":")[0]}:
-                {getNumberByLanguage(item.morning_to_time)?.split(":")[1]} {t("home:am")}
-              </p>
-              <p>
-                {getNumberByLanguage(item.evening_from_time)?.split(":")[0]} :
-                {getNumberByLanguage(item.evening_from_time)?.split(":")[1]} {t("home:pm")} -{" "}
-                {getNumberByLanguage(item.evening_to_time)?.split(":")[0]}:
-                {getNumberByLanguage(item.evening_to_time)?.split(":")[1]} {t("home:pm")}
+                {getNumberByLanguage(formatTime(item.time_from))} :
+                {getNumberByLanguage(formatTime(item.time_to))}
               </p>
             </span>
           </div>
         ))}
 
       <GeneralModal
-        title={t("home:addEdit") + " " + t("home:supplySchedule")}
+        title={t("home:supplyschd")}
         open={open}
         toggle={toggle}
       >

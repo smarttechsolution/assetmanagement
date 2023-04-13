@@ -11,7 +11,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Link, NavLink, useHistory } from "react-router-dom";
-import { UncontrolledCollapse } from "reactstrap";
+import { NavItem, UncontrolledCollapse } from "reactstrap";
 import useAuthentication from "services/authentication/AuthenticationService";
 import { RootState } from "store/root-reducer";
 
@@ -45,19 +45,25 @@ const Sidebar = (props: Props) => {
       children: [
         {
           name: "tarrifrate",
-          title: t("home:tariffRates"),
+          title: t("sidebar:tariffRates"),
           link: "/auth/tarrif-rates",
           icon: VisualizationIcon,
         },
         {
           name: "otherexpense",
-          title: `${t("finance:other")} ${t("finance:parameters")}`,
+          title: `${t("sidebar:otherParam")}`,
           link: "/auth/other-expense",
           icon: CashbookIcon,
         },
         {
+          name: "inflationParams",
+          title: `${t("sidebar:inflationParam")}`,
+          link: "/auth/inflation-parameters",
+          icon: CashbookIcon,
+        },
+        {
           name: "cashbook",
-          title: t("cashbook:cashbook"),
+          title: t("sidebar:cashbook"),
           link: "/auth/cash-book",
           icon: CashbookIcon,
         },
@@ -71,19 +77,19 @@ const Sidebar = (props: Props) => {
       children: [
         {
           name: "manageComponent",
-          title: `${t("maintainance:component") + " " + t("maintainance:categories")}`,
+          title: `${t("sidebar:componentCategories")}`,
           link: "/auth/manage-categories",
           icon: MaintainIcon,
         },
         {
           name: "assetcomponents",
-          title: t("maintainance:assetComponent"),
+          title: t("sidebar:assetComponent"),
           link: "/auth/asset-components",
           icon: MaintainIcon,
         },
         {
           name: "componentLogs",
-          title: t("maintainance:componentLogs"),
+          title: t("sidebar:componentLogs"),
           link: "/auth/component-logs",
           icon: MaintainIcon,
         },
@@ -96,33 +102,68 @@ const Sidebar = (props: Props) => {
       link: "",
       children: [
         {
-          name: "qualityTestParameters",
-          title: t("home:qtp"),
-          link: "/auth/quality-test-parameters",
+          name: "waterSupplyRecord",
+          title: `${t("sidebar:waterSupplyRecord")}`,
+          link: "/auth/water-supply-record",
+          icon: ServiceIcon,
+        },
+        // {
+        //   name: "waterTestResult",
+        //   title: `${t("sidebar:waterTestResult")}`,
+        //   link: "/auth/water-test-result",
+        //   icon: ServiceIcon,
+        // },
+        {
+          name: "service",
+          title: t("sidebar:quality"),
+          link: "/auth/water-quality-test",
           icon: ServiceIcon,
         },
       ],
     },
+
     {
       name: "notification",
       title: t("home:notifications"),
+      link: "/auth/update-notification",
       icon: Notifications,
-      link: "",
-      children: [
-        {
-          name: "createNotifications",
-          title: t("home:updateNotifications"),
-          link: "/auth/update-notification",
-          icon: Notifications,
-        },
-        // {
-        //   name: "updateNotifications",
-        //   title: t("home:updateNotifications"),
-        //   link: "/update-notification",
-        //   icon: Notifications,
-        // },
-      ],
     },
+
+    // {
+    //   name: "service",
+    //   title: t("sidebar:service"),
+    //   icon: ServiceIcon,
+    //   link: "",
+    //   children: [
+    //     {
+    //       name: "qualityTestParameters",
+    //       title: t("home:qtp"),
+    //       link: "/auth/water-quality-test",
+    //       icon: ServiceIcon,
+    //     },
+    //   ],
+    // },
+
+    // {
+    //   name: "notification",
+    //   title: t("home:notifications"),
+    //   icon: Notifications,
+    //   link: "",
+    //   children: [
+    //     {
+    //       name: "createNotifications",
+    //       title: t("home:updateNotifications"),
+    //       link: "/auth/update-notification",
+    //       icon: Notifications,
+    //     },
+    //     // {
+    //     //   name: "updateNotifications",
+    //     //   title: t("home:updateNotifications"),
+    //     //   link: "/update-notification",
+    //     //   icon: Notifications,
+    //     // },
+    //   ],
+    // },
   ];
 
   const sidebarItems = [
@@ -145,8 +186,8 @@ const Sidebar = (props: Props) => {
           icon: VisualizationIcon,
         },
         {
-          name: "cashBook",
-          title: t("sidebar:cashBook"),
+          name: "cashbook",
+          title: t("sidebar:cashbook"),
           link: "/scheme/" + slug + "/cash-book",
           icon: CashbookIcon,
         },
@@ -160,13 +201,13 @@ const Sidebar = (props: Props) => {
       children: [
         {
           name: "costvisualization",
-          title: t("sidebar:costVisualization"),
+          title: t("sidebar:dataVisualization"),
           link: "/scheme/" + slug + "/cost-visualization",
           icon: MaintainIcon,
         },
         {
-          name: "assetComponents",
-          title: t("sidebar:assetComponents"),
+          name: "assetcomponents",
+          title: t("sidebar:assetComponent"),
           link: "/scheme/" + slug + "/asset-components",
           icon: MaintainIcon,
         },
@@ -251,9 +292,8 @@ const Sidebar = (props: Props) => {
                     {item.children.map((subitem) => (
                       <Link
                         to={subitem.link}
-                        className={`${
-                          window.location.href?.includes(subitem.link) ? "active" : ""
-                        }`}
+                        className={`${window.location.href?.includes(subitem.link) ? "active" : ""
+                          }`}
                       >
                         <img src={subitem.icon} alt="" className="menu_icon" /> {subitem.title}
                       </Link>
@@ -276,6 +316,19 @@ const Sidebar = (props: Props) => {
           }
         })}
       </ul>
+      <div className="side-footer">
+        {/* <p> Design & Develop by smarttech </p> */}
+        <div className="footer-link">
+          <NavItem>
+            <div>
+              Developed by :<a href="http://smarttech.com.np/" target="_blank" style={{fontSize:"0.77rem"}}> Smart Tech</a>
+            </div>
+            <div>
+              Contact: <a href="mailto:info@smarttech.com.np" style={{fontSize: "0.77rem"}}>info@smarttech.com.np</a>
+            </div>
+          </NavItem>
+        </div>
+      </div>
     </aside>
   );
 };

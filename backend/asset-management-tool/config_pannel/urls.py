@@ -4,6 +4,7 @@ app_name = "main-config"
 
 urlpatterns = [
      path('login/', SuperuserLogin.as_view(), name='superuser-login'),
+     path('logout/', superuser_logout, name="superuser-logout"),
      path('scheme/list/', SchemeList.as_view(), name = 'scheme-list'),
      path('scheme/user/list/', SchemeUserList.as_view(), name = 'user-scheme-list'),
      path('scheme/create/', CreateWaterSchemeView.as_view(), name='scheme-create'),

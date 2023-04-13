@@ -15,15 +15,33 @@ type UneBasedType = {
     unit_to: any
 }
 
+interface RootObject {
+    id: number;
+    terif_type: string;
+    rate_for_institution: number;
+    rate_for_household: number;
+    rate_for_public: number;
+    rate_for_commercial: number;
+    apply_date: string;
+    estimated_paying_connection_household: number;
+    estimated_paying_connection_institution: number;
+    estimated_paying_connection_public: number;
+    estimated_paying_connection_commercial: number;
+}
+
 
 export type WaterTarrifsType = {
-    id: number
-    apply_date: string
+    id: number;
     terif_type: "Use Based" | "Fixed"
-    estimated_paying_connection_household: number
-    estimated_paying_connection_institution: number
-    rate_for_household: number
-    rate_for_institution: number
+    rate_for_institution: number;
+    rate_for_household: number;
+    rate_for_public: number;
+    rate_for_commercial: number;
+    apply_date: string;
+    estimated_paying_connection_household: number;
+    estimated_paying_connection_institution: number;
+    estimated_paying_connection_public: number;
+    estimated_paying_connection_commercial: number;
     used_based_units: UneBasedType[]
 }[]
 

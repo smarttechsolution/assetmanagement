@@ -1,14 +1,6 @@
 import { GeneralCard } from "components/UI/GeneralCard";
 import React from "react";
-import {
-  Col,
-  Nav,
-  NavItem,
-  NavLink,
-  Row,
-  TabContent,
-  TabPane,
-} from "reactstrap";
+import { Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import classnames from "classnames";
 import BarChart from "./BarChart";
 import BarChartThisYear from "./BarChart/ChartThisYear";
@@ -31,14 +23,13 @@ const CostVisualization = (props: Props) => {
     "expected_material",
   ]);
 
-
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
   React.useEffect(() => {
     if (props.schemeSlug) {
-      if (activeTab === "1") { 
+      if (activeTab === "1") {
         props.getMaintainanceCostAction(props.schemeSlug);
         props.getMaintainanceCostByYearAction(props.schemeSlug);
       } else {
@@ -51,8 +42,9 @@ const CostVisualization = (props: Props) => {
   return (
     <div className="container py-3 cash-book">
       <GeneralCard
-        title={t("finance:FinancialDataVisualization")}
+        title={t("sidebar:maintainance") + " " + t("sidebar:dataVisualization")}
         className="my-0 mt-3"
+        print={true}
       >
         <div className="cash-content">
           <div className="flex-between">
@@ -83,12 +75,18 @@ const CostVisualization = (props: Props) => {
           <TabContent activeTab={activeTab} className="mt-2">
             <TabPane tabId="1">
               <Row>
-                <Col sm="12">{activeTab === "1" && <BarChart selected={selected} setSelected={setSelected} />}</Col>
+                <Col sm="12">
+                  {activeTab === "1" && <BarChart selected={selected} setSelected={setSelected} />}
+                </Col>
               </Row>
             </TabPane>
             <TabPane tabId="2">
               <Row>
-                <Col sm="12">{activeTab === "2" && <BarChartThisYear selected={selected} setSelected={setSelected} />}</Col>
+                <Col sm="12">
+                  {activeTab === "2" && (
+                    <BarChartThisYear selected={selected} setSelected={setSelected} />
+                  )}
+                </Col>
               </Row>
             </TabPane>
           </TabContent>

@@ -1,14 +1,12 @@
 import NepaliDatePicker from "components/React/Datepicker/Datepicker";
 import EnglishDatePicker from "components/React/EnglishDatepicker/EnglishDatepicker";
 import FormikValidationError from "components/React/FormikValidationError/FormikValidationError";
-import {
-  default as CreatableSelect,
-  default as StyledSelect,
-} from "components/React/StyledSelect/CreatableSelect";
+import { default as StyledSelect } from "components/React/StyledSelect/CreatableSelect";
 import toast from "components/React/ToastNotifier/ToastNotifier";
 import Button from "components/UI/Forms/Buttons";
 import { GeneralCard } from "components/UI/GeneralCard";
 import GeneralModal from "components/UI/GeneralModal";
+import TooltipLabel from "components/UI/TooltipLabel";
 import { SYSTEM_DATE_FORMAT_OPTIONS } from "constants/constants";
 import { useFormik } from "formik";
 import { getNumberByLanguage } from "i18n/i18n";
@@ -21,10 +19,11 @@ import { RootState } from "store/root-reducer";
 import formatDate from "utils/utilsFunction/date-converter";
 import { generalInfoInitialValues, generalInfoValidationSchema } from "./scheme";
 
-interface Props extends PropsFromRedux {}
+interface Props extends PropsFromRedux { }
 
 const GeneralInfo = (props: Props) => {
-  const { t } = useTranslation("home");
+  const { t } = useTranslation("");
+
 
   const dispatch = useDispatch();
   const [edit, setEdit] = useState(false);
@@ -55,8 +54,16 @@ const GeneralInfo = (props: Props) => {
       const requestData = {
         ...values,
         system_date_format: values?.system_date_format?.value,
-        water_source: values?.water_source?.map((item) => ({ name: item.label })),
       };
+
+      for (const key in requestData) {
+        if (requestData[key]) {
+          requestData[key] = requestData[key];
+        } else {
+          requestData[key] = null;
+        }
+      }
+
       let res: any = await props.updateWaterSchemeDetailsAction(
         waterSchemeDetails?.system_date_format,
         waterSchemeDetails?.slug,
@@ -89,13 +96,9 @@ const GeneralInfo = (props: Props) => {
         location: waterSchemeDetails?.location,
         scheme_name: waterSchemeDetails?.scheme_name,
         system_built_date: formatDate(waterSchemeDetails?.system_built_date),
-        system_operation_from: formatDate(waterSchemeDetails?.system_operation_from),
-        system_operation_to: formatDate(waterSchemeDetails?.system_operation_to),
-        water_source:
-          waterSchemeDetails?.water_source?.map((item) => ({
-            label: item.name,
-            value: item.value,
-          })) || [],
+        longitude: waterSchemeDetails?.longitude,
+        latitude: waterSchemeDetails?.latitude,
+        water_source: waterSchemeDetails?.water_source,
         daily_target: "" + waterSchemeDetails?.daily_target,
         period: "" + waterSchemeDetails?.period || "",
         system_date_format:
@@ -113,6 +116,8 @@ const GeneralInfo = (props: Props) => {
     setFieldValue("water_source", waterDource);
   };
 
+  console.log(errors, "<<<<<<");
+
   return (
     <GeneralCard title={t("home:generalInformation")} className="text-left" action={toggleModal}>
       <div className="data-info">
@@ -127,21 +132,18 @@ const GeneralInfo = (props: Props) => {
       </div>
       <div className="data-info">
         <h6 className="title">{t("home:waterSource")}: </h6>
-        <p className="desc">
-          {waterSchemeDetails?.water_source &&
-            waterSchemeDetails?.water_source instanceof Array &&
-            waterSchemeDetails?.water_source?.map((item, index) => (
-              <React.Fragment key={index}>
-                {" "}
-                {item?.name}
-                {index !== waterSchemeDetails?.water_source?.length - 1 ? "," : ""}{" "}
-              </React.Fragment>
-            ))}
-        </p>
+        <p className="desc">{waterSchemeDetails?.water_source}</p>
       </div>
 
       <div className="data-info">
-        <h6 className="title">{t("home:systemBuiltDate")}</h6>
+        <h6 className="title">
+          {t("home:systemBuiltDate")}{" "}
+          {/* <TooltipLabel
+            id={"sbdate"}
+            text={`Calendar date on which a Water System was built.It does not affect the book 
+keeping or in any financial projection.`}
+          /> */}
+        </h6>
         <p className="desc">
           {getNumberByLanguage(
             new Date(waterSchemeDetails?.system_built_date)?.toLocaleDateString()
@@ -149,19 +151,10 @@ const GeneralInfo = (props: Props) => {
         </p>
       </div>
 
-      <div className="data-info">
-        <h6 className="title">{t("home:systemOperationalFrom")}: </h6>
-        <p className="desc">
-          {getNumberByLanguage(
-            new Date(waterSchemeDetails?.system_operation_from)?.toLocaleDateString()
-          )}
-        </p>
-      </div>
-
       <GeneralModal
         open={edit}
         toggle={toggleModal}
-        title={t("home:edit") + " " + t("home:generalInformation")}
+        title={t("home:editGeninfo")}
         size="xl"
       >
         <form
@@ -207,26 +200,34 @@ const GeneralInfo = (props: Props) => {
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:waterSource")}:
+                  {t("home:waterSource")}{" "}
+                  <TooltipLabel
+                    id={"sowsas"}
+                    text={t("home:waterTool")}
+                  />
+                  :
                 </label>
 
-                <CreatableSelect
-                  multi={true}
+                <input
+                  className="form-control"
                   name="water_source"
                   value={values.water_source}
-                  onChange={({ name, value }) => {
-                    setFieldValue(name, value);
-                  }}
-                  onCreateOption={handleCreateOption}
-                  placeholder="Water Source"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                {/* <FormikValidationError name="username" errors={errors} touched={touched} /> */}
+
+                <FormikValidationError name="water_source" errors={errors} touched={touched} />
               </div>
             </div>
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:dailyTarget")}:
+                  {t("home:dailytarget")} {t("home:liter")} {" "}
+                  <TooltipLabel
+                    id={"twspd"}
+                    text={t("home:dailyTrgt")}
+                  />
+                  :
                 </label>
 
                 <input
@@ -243,7 +244,12 @@ const GeneralInfo = (props: Props) => {
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:period")}:
+                  {t("home:vsf")} {" "}
+                  <TooltipLabel
+                    id={"sbdates"}
+                    text={t("home:visualizeData")}
+                  />
+                  :
                 </label>
 
                 <input
@@ -260,7 +266,8 @@ const GeneralInfo = (props: Props) => {
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:currency")}:
+                  {t("home:currency")}{" "}
+                  <TooltipLabel id={"curr"} text={t("home:curren")} />:
                 </label>
 
                 <input
@@ -278,7 +285,12 @@ const GeneralInfo = (props: Props) => {
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:systemDateFormat")}:
+                  {t("home:systemDateFormat")}{" "}
+                  <TooltipLabel
+                    id={"systemDateFormat"}
+                    text={t("home:sdf")}
+                  />
+                  :
                 </label>
 
                 <StyledSelect
@@ -298,7 +310,12 @@ const GeneralInfo = (props: Props) => {
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:systemBuiltDate")}:
+                  {t("home:systemBuiltDate")}{" "}
+                  <TooltipLabel
+                    id={"sbdate"}
+                    text={t("home:sbd")}
+                  />
+                  :
                 </label>
 
                 {values.system_date_format?.value === "nep" ? (
@@ -328,75 +345,48 @@ const GeneralInfo = (props: Props) => {
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:systemOperationalFrom")}:
+                  {t("home:longitude")}:
                 </label>
 
-                {values.system_date_format?.value === "nep" ? (
-                  <>
-                    <NepaliDatePicker
-                      value={values.system_operation_from}
-                      name="system_operation_from"
-                      onChange={(e) => {
-                        setFieldValue("system_operation_from", e);
-                      }}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <EnglishDatePicker
-                      name="system_operation_from"
-                      value={values.system_operation_from}
-                      handleChange={(e) => {
-                        setFieldValue("system_operation_from", formatDate(e));
-                      }}
-                    />
-                  </>
-                )}
-                <FormikValidationError
-                  name="system_operation_from"
-                  errors={errors}
-                  touched={touched}
+                <input
+                  className="form-control"
+                  name="longitude"
+                  type="text"
+                  value={values.longitude}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+
+                <FormikValidationError name="longitude" errors={errors} touched={touched} />
               </div>
             </div>
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:systemOperationalTo")}:
+                  {t("home:latitude")}:
                 </label>
 
-                {values.system_date_format?.value === "nep" ? (
-                  <>
-                    <NepaliDatePicker
-                      value={values.system_operation_to}
-                      name="system_operation_to"
-                      onChange={(e) => {
-                        setFieldValue("system_operation_to", e);
-                      }}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <EnglishDatePicker
-                      name="system_operation_to"
-                      value={values.system_operation_to}
-                      handleChange={(e) => {
-                        setFieldValue("system_operation_to", formatDate(e));
-                      }}
-                    />
-                  </>
-                )}
-                <FormikValidationError
-                  name="system_operation_to"
-                  errors={errors}
-                  touched={touched}
+                <input
+                  className="form-control"
+                  name="latitude"
+                  type="text"
+                  value={values.latitude}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+
+                <FormikValidationError name="latitude" errors={errors} touched={touched} />
               </div>
             </div>
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
-                  {t("home:toolStartDate")}:
+                  {t("home:toolStartDate")}{" "}
+                  <TooltipLabel
+                    id={"tsdate"}
+                    text={t("home:tsd")}
+                  />
+                  :
                 </label>
 
                 {values.system_date_format?.value === "nep" ? (

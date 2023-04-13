@@ -62,22 +62,22 @@ const MaintainanceCostChart = (props: Props) => {
         unsegregated: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "unsegregated_cost",
-          "rgba(196,196,196,1)"
+          "#e69f00"
         ),
         material: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "material_cost",
-          "rgba(215,215,215,1)"
+          "#56b4e9"
         ),
         labor: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "labour_cost",
-          "rgba(229,229,229,1)"
+          "#f0e442"
         ),
         replacement: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "replacement_cost",
-          "rgba(242,242,242,1)"
+          "#ea75b6"
         ),
 
         total: props.maintainanceCost.actual_cost.map((item) => ({
@@ -90,22 +90,22 @@ const MaintainanceCostChart = (props: Props) => {
         unsegregated: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "unsegregated_cost",
-          "rgba(38,128,235,1)"
+          "#009e73"
         ),
         material: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "material_cost",
-          "rgba(139,173,213,1)"
+          "#000000"
         ),
         labor: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "labour_cost",
-          "rgba(189,213,242,1)"
+          "#d55e00"
         ),
         replacement: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "replacement_cost",
-          "rgba(204,221,234,1)"
+          "#0072b2"
         ),
         total: props.maintainanceCost.expected_cost.map((item) => ({
           date: item.maintenance_date__year,
@@ -169,7 +169,7 @@ const MaintainanceCostChart = (props: Props) => {
               data: expectedCost?.unsegregated,
             },
             {
-              name: `${t("home:expected")} ${t("home:material")}`,
+              name: `${t("home:expected")} ${t("home:consumable")}`,
               type: "bar",
               stack: "bar",
               data: expectedCost?.material,
@@ -184,7 +184,7 @@ const MaintainanceCostChart = (props: Props) => {
               name: `${t("home:expected")} ${t("home:replacement")}`,
               type: "bar",
               stack: "bar",
-              data: expectedCost?.labor,
+              data: expectedCost?.replacement,
             },
             {
               name: `${t("home:actual")}  ${t("home:unsegregated")}`,
@@ -193,7 +193,7 @@ const MaintainanceCostChart = (props: Props) => {
               data: actualCost?.unsegregated,
             },
             {
-              name: `${t("home:actual")} ${t("home:material")}`,
+              name: `${t("home:actual")} ${t("home:consumable")}`,
               type: "bar",
               stack: "bar2",
               data: actualCost?.material,

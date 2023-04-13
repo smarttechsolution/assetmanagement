@@ -11,7 +11,6 @@ import { getSchemeDataAction } from "store/modules/waterScheme/getWaterSchemeDat
 import { getWaterSupplyScheduleAction } from "store/modules/waterSupplySchedule/getWaterSupplySchedule";
 import { RootState } from "store/root-reducer";
 
-
 interface Props extends PropsFromRedux {
   setEditData: any;
   toggle: any;
@@ -20,18 +19,19 @@ interface Props extends PropsFromRedux {
 const List = (props: Props) => {
   const { t } = useTranslation(["home"]);
 
-  const { editId, modal, handleDeleteClick, resetDeleteData, toggleModal } = useDeleteConfirmation();
+  const { editId, modal, handleDeleteClick, resetDeleteData, toggleModal } =
+    useDeleteConfirmation();
 
   const deleteWaterSchedule = async () => {
     try {
       const response = await props.deleteWaterSchemeDataAction(props.language, editId);
       console.log(response, "response");
       if (response.status === 204) {
-        toast.success(t('home:deleteSuccess'));
+        toast.success(t("home:deleteSuccess"));
         props.getSchemeDataAction(props.language);
         resetDeleteData();
       } else {
-        toast.error(t('home:deleteError'));;
+        toast.error(t("home:deleteError"));
         resetDeleteData();
       }
     } catch (error) {
@@ -47,15 +47,10 @@ const List = (props: Props) => {
             <tr>
               <th>{t("home:sn")}</th>
               <th> {t("home:applyDate")}</th>
-              <th>
-                {" "}
-                {t("home:beneficiary")} {t("home:households")}
-              </th>
-              <th>
-                {t("home:beneficiary")} {t("home:population")}
-              </th>
-              <th>{t("home:publicTaps")}</th>
+              <th>{t("home:houseConn")}</th>
               <th>{t("home:instConn")}</th>
+              <th>{t("home:publicConn")}</th>
+              <th>{t("home:commercialConn")}</th>
               <th>{t("home:action")}</th>
             </tr>
           </thead>
@@ -64,10 +59,10 @@ const List = (props: Props) => {
               <tr key={item.id}>
                 <td>{getNumberByLanguage(index + 1)}</td>
                 <td> {getNumberByLanguage(item.apply_date)}</td>
-                <td> {getNumberByLanguage(item.beneficiary_household) || "-"}</td>
-                <td> {getNumberByLanguage(item.beneficiary_population) || "-"}</td>
-                <td> {getNumberByLanguage(item.public_taps) || "-"}</td>
+                <td> {getNumberByLanguage(item.household_connection) || "-"}</td>
                 <td> {getNumberByLanguage(item.institutional_connection) || "-"}</td>
+                <td> {getNumberByLanguage(item.public_connection) || "-"}</td>
+                <td> {getNumberByLanguage(item.commercial_connection) || "-"}</td>
 
                 <td className="action">
                   <div role="button" onClick={() => props.setEditData(item)}>

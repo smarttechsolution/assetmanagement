@@ -11,6 +11,7 @@ import enCashbook from './locale/cashbook/en.json';
 import enFinance from './locale/Finance/en.json';
 import enMaintain from './locale/maintainance/en.json';
 
+
 // Nepali translation files
 import neCommmon from './locale/common/ne.json';
 import neLogin from './locale/login/ne.json';

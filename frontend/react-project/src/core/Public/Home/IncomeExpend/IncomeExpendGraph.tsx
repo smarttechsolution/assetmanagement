@@ -80,14 +80,14 @@ const IncomeExpendGraph = (props: Props) => {
               type: "line",
               smooth: true,
               data: income,
-              lineStyle: { color: "rgb(0,256,136)" },
+              lineStyle: { color: "#4DFFFF" },
             },
             {
               name: `${t("home:total")} ${t("home:expense")} `,
               type: "line",
               smooth: true,
               data: expense,
-              lineStyle: { color: "rgb(255,77,77)" },
+              lineStyle: { color: "#ff4D4D" },
             },
           ],
         }}

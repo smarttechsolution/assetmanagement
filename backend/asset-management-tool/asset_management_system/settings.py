@@ -203,3 +203,5 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 LOGIN_URL ='/main-config/login/'
 LOGIN_REDIRECTED_URL = '/main-config/scheme/list/'
+LOGOUT_REDIRECT_URL = '/main-config/login/'
+DATE_INPUT_FORMATS = ['%d-%m-%Y']

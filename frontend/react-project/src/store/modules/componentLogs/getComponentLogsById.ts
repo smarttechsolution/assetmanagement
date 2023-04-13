@@ -33,6 +33,7 @@ export type componentLogsById = {
     "estimated_cost": number
     "apply_date": string
     "main_component": string
+    "log_status": boolean
 }
 
 const apiDetails = Object.freeze(apiList.componentLogs.getComponentLogById);

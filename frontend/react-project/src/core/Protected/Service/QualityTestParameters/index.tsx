@@ -13,13 +13,7 @@ const QualityTestParameters = (props: Props) => {
 
   return (
     <div className="container py-3 ">
-      <div className="row">
-        <div className="col-lg-12">
-          <GeneralCard title={t("home:qtp")}>
-            <ManageQTParameters />
-          </GeneralCard>
-        </div>
-      </div>
+      <ManageQTParameters />
     </div>
   );
 };

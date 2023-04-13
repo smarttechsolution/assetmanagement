@@ -2,18 +2,18 @@ import * as yup from 'yup'
 
 
 
-export const supplyBeltInitialValues = {
-    beneficiary_household: "",
-    beneficiary_population: "",
-    public_taps: "",
-    institutional_connection: "",
+export const supplyBeltInitialValues = {  
+    institutional_connection: "0",
+    commercial_connection: "0",
+    public_connection: "0",
+    household_connection: "0",
     apply_date: ""
 };
 
-export const supplyBeltValidationSchema = yup.object({
-    beneficiary_household: yup.string().required("This field is required"),
-    beneficiary_population: yup.string().required("This field is required"),
-    public_taps: yup.string().required("This field is required"),
+export const supplyBeltValidationSchema = yup.object({  
     institutional_connection: yup.string().required("This field is required"),
-    apply_date: yup.string().required("This field is required"), 
+    commercial_connection: yup.string().required("This field is required"),
+    public_connection: yup.string().required("This field is required"),
+    household_connection: yup.string().required("This field is required"),
+    apply_date: yup.string(),
 })

@@ -26,7 +26,15 @@ const CategoriesForm = (props: Props) => {
     name: "",
   });
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } = useFormik({
+  const { 
+    values, 
+    errors, 
+    touched,
+    handleReset, 
+    handleChange, 
+    handleBlur, 
+    handleSubmit } 
+    = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
     validationSchema: validationSchema,
@@ -52,6 +60,10 @@ const CategoriesForm = (props: Props) => {
           toast.success(t("home:updateSuccess"));
         }
         props.setEditData(null);
+      } else {
+        Object.values(response.data)?.map((item: any) => {
+          toast.error(item[0]);
+        });
       }
     },
   });
@@ -91,11 +103,27 @@ const CategoriesForm = (props: Props) => {
 
         <div className="col-md-12 mt-2 text-right">
           <Button
-            className="btn custom-btn"
+            className="btn custom-btn mr-2"
             text={t("home:save")}
             type="submit"
             disabled={props.postLoading || props.updateLoading}
             loading={props.postLoading || props.updateLoading}
+          />
+          <Button
+            className="btn custom-btn-outlined mr-2"
+            text={t("home:cancel")}
+            type="reset"
+            onClick={() => {
+              const resetKeys: any = Object.keys(initialData).reduce((acc, curr) => {
+                acc[curr] = '';
+                return acc;
+              }, {});
+              setInitialData(resetKeys)
+              props.setEditData(null);
+              // handleReset({
+              //   initialData
+              // })
+            }}
           />
         </div>
       </div>

@@ -5,4 +5,5 @@ admin.site.register([Components,
 	AssetComponentCategory,
 	ComponentInfo,
 	ComponentInfoLog,
+	ComponentInfoImage
 	])

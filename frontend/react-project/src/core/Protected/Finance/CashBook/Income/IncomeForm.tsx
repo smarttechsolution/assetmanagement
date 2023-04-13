@@ -16,13 +16,16 @@ import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import formatDate, { getDefaultDate } from "utils/utilsFunction/date-converter";
 import { getPreviousIncomeTotalAction } from "store/modules/income/getPreviousIncomeTotal";
+import { geAllIncomeAction } from "store/modules/income/getAllIncome";
+import { getIncomeTotalAction } from "store/modules/income/getIncomeTotal";
+
 
 const validationScheme = Yup.object({
   category: Yup.mixed().required("This field is required"),
   date: Yup.string().required("This field is required"),
   title: Yup.string().required("This field is required"),
   income_amount: Yup.string().required("This field is required"),
-  water_supplied: Yup.string(),
+  water_supplied: Yup.string().nullable(),
 });
 
 interface Props extends PropsFromRedux {
@@ -35,11 +38,12 @@ interface Props extends PropsFromRedux {
 const IncomeForm = (props: Props) => {
   const { t } = useTranslation();
   const [initialData, setInitialData] = React.useState({
-    category: null as OptionType | null,
+    category: null as any,
     date: "",
     title: "",
     income_amount: "",
-    water_supplied: 0,
+    water_supplied: "",
+    remarks: "",
   });
   const [categoryOption, setCategoryOptions] = React.useState<OptionType[]>();
 
@@ -51,9 +55,10 @@ const IncomeForm = (props: Props) => {
 
   React.useEffect(() => {
     if (props.incomeCategories) {
-      const options = props.incomeCategories?.map((item) => ({
+      const options = props.incomeCategories?.map((item: any) => ({
         label: item.name,
         value: item.id,
+        e_name: item.e_name,
       }));
       setCategoryOptions(options);
     }
@@ -61,10 +66,11 @@ const IncomeForm = (props: Props) => {
 
   React.useEffect(() => {
     if (props.editData) {
+
+      console.log(props.editData, "editDataeditData")
       setInitialData({
         ...props.editData,
-        category: { label: props.editData?.category?.name, value: props.editData?.category?.id },
-        water_supplied: props.editData.water_supplied || 0,
+        category: { label: props.editData?.category?.name, value: props.editData?.category?.id, e_name: props.editData?.category?.e_name },
       });
     } else if (props.activeDate) {
       setInitialData({
@@ -88,12 +94,11 @@ const IncomeForm = (props: Props) => {
     initialValues: initialData,
     validationSchema: validationScheme,
     onSubmit: async (submitValue, { resetForm }) => {
-      const requestData = {
+      let requestData: any = {
         ...submitValue,
         category: submitValue?.category?.value,
-        water_supplied: values.water_supplied || 0,
       };
-
+      if (!values.water_supplied) delete requestData.water_supplied;
       let res;
       if (props.editData) {
         res = await props.updateIncomeAction(props.language, props.editData.id, requestData);
@@ -111,14 +116,26 @@ const IncomeForm = (props: Props) => {
             date: "",
             title: "",
             income_amount: "",
-            water_supplied: 0,
+            water_supplied: "",
+            remarks: "",
           });
           toast.success(t("home:updateSuccess"));
         }
         props.toggle(false);
         props.setEditData(null);
+        props.geAllIncomeAction(props.language, props.schemeSlug)
+        props.getIncomeAction(props.language, props.schemeSlug);
+        props.getIncomeTotalAction(props.language, props.schemeSlug)
 
-        fetchCashbookDetails();
+        props.getIncomeCategoryAction(props.schemeSlug);
+        props.getPreviousIncomeTotalAction(
+          props.language,
+          props.schemeSlug,
+          props.activeDate?.split("-")[0] ||
+            getDefaultDate(props.scheme?.system_date_format)?.split("-")[0],
+          props.activeDate?.split("-")[1] ||
+            getDefaultDate(props.scheme?.system_date_format)?.split("-")[1]
+        );
       } else {
         const errors = Object.values(res.data)?.map((item: any) => {
           toast.error(item[0]);
@@ -127,25 +144,7 @@ const IncomeForm = (props: Props) => {
     },
   });
 
-  const fetchCashbookDetails = () => {
-    props.getIncomeAction(
-      props.language,
-      props.schemeSlug,
-      props.activeDate?.split("-")[0] ||
-        getDefaultDate(props.scheme?.system_date_format)?.split("-")[0],
-      props.activeDate?.split("-")[1] ||
-        getDefaultDate(props.scheme?.system_date_format)?.split("-")[1]
-    );
-    props.getIncomeCategoryAction(props.schemeSlug);
-    props.getPreviousIncomeTotalAction(
-      props.language,
-      props.schemeSlug,
-      props.activeDate?.split("-")[0] ||
-        getDefaultDate(props.scheme?.system_date_format)?.split("-")[0],
-      props.activeDate?.split("-")[1] ||
-        getDefaultDate(props.scheme?.system_date_format)?.split("-")[1]
-    );
-  };
+  console.log(values, "errors")
 
   return (
     <form
@@ -223,10 +222,30 @@ const IncomeForm = (props: Props) => {
               <FormikValidationError name="title" errors={errors} touched={touched} />
             </div>
           </div>
+          {values?.category?.e_name === "Water Sales" && (
+            <div className="form-group ">
+              <div className="form-group">
+                <label htmlFor="" className="mr-1">
+                  {t("finance:waterSupplied")} :
+                </label>
+
+                <input
+                  type="number"
+                  className="form-control"
+                  name="water_supplied"
+                  value={values.water_supplied}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <FormikValidationError name="water_supplied" errors={errors} touched={touched} />
+              </div>
+            </div>
+          )}
+
           <div className="form-group ">
             <div className="form-group">
               <label htmlFor="" className="mr-1">
-                {t("finance:amount")}:
+                {t("finance:amount")} ({props.currency}):
               </label>
 
               <input
@@ -240,29 +259,29 @@ const IncomeForm = (props: Props) => {
               <FormikValidationError name="income_amount" errors={errors} touched={touched} />
             </div>
           </div>
+
           <div className="form-group ">
             <div className="form-group">
               <label htmlFor="" className="mr-1">
-                {t("finance:waterSupplied")} :
+                {t("home:remarks")}:
               </label>
 
               <input
-                type="number"
                 className="form-control"
-                name="water_supplied"
-                value={values.water_supplied}
+                name="remarks"
+                value={values.remarks}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              <FormikValidationError name="water_supplied" errors={errors} touched={touched} />
+              <FormikValidationError name="remarks" errors={errors} touched={touched} />
             </div>
           </div>
         </div>
 
         <div className="col-md-12 text-right">
           <Button
-            className="btn custom-btn  mr-3"
-            text={"Save"}
+            className="btn custom-btn mt-2"
+            text={t("home:save")}
             type="submit"
             disabled={props.postLoading || props.updateLoading}
             loading={props.postLoading || props.updateLoading}
@@ -275,6 +294,7 @@ const IncomeForm = (props: Props) => {
 
 const mapStateToProps = (state: RootState) => ({
   language: state.i18nextData.languageType,
+  currency: state.waterSchemeData.waterSchemeDetailsData.data?.currency,
   schemeSlug: state.waterSchemeData.waterSchemeDetailsData.data?.slug,
   scheme: state.waterSchemeData.waterSchemeDetailsData.data,
   incomeCategories: state.incomeData.getIncomeCategory.data,
@@ -288,6 +308,9 @@ const mapDispatchToProps = {
   postIncomeAction,
   getIncomeCategoryAction,
   getPreviousIncomeTotalAction,
+  geAllIncomeAction,
+  getIncomeTotalAction,
+
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

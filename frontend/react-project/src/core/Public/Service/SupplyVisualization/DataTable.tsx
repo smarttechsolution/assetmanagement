@@ -9,11 +9,15 @@ interface Props {
   years: any;
   tableData: any;
   type: string;
+  key: string;
 }
 
 const DataTable = (props: Props) => {
   const { t } = useTranslation(["home"]);
- 
+
+  const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
+
+
   return (
     <div className="mt-3 income-expend">
       <div className="table-responsive">
@@ -21,9 +25,13 @@ const DataTable = (props: Props) => {
           <tbody>
             <tr>
               <td>{props.type === "month" ? t("home:month") : t("home:year")} </td>
-              {props.years?.map((year, index) => (
-                <td key={index}>{year?.toString()?.split("-")[0]?.replace("Year", "")}</td>
-              ))}
+              {props.years?.map((year, index) => {
+                // console.log(props.key, 'props key', props)
+                return props.type === 'Year' ?
+                <td key={index}>{year?.toString()?.split("-")[0]?.replace("Year", "")}</td> :
+                <td key={index}>{year?.toString()?.replace("Year", "")}</td>
+
+              })}
             </tr>
             {props.tableData?.map((item, index) => (
               <tr key={index}>
@@ -32,11 +40,12 @@ const DataTable = (props: Props) => {
                     className="income-title"
                     style={{ borderBottom: `5px solid ${item.color}` }}
                   >
-                    {item.name}
+                    {item.name}&nbsp;&nbsp;( Litres )
                   </span>
                 </td>
                 {item.data?.map((data, index) => (
-                  <td key={index}> {getNumberByLanguage(data) || 0}</td>
+                  // <td key={index}> {getNumberByLanguage(data) || 0} Litres</td> //Old Data
+                  <td key={index}> {getNumberByLanguage(data) || 0}</td>    //New Data
                 ))}
               </tr>
             ))}

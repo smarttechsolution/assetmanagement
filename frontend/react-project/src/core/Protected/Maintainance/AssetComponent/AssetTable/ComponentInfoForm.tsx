@@ -23,25 +23,48 @@ import { RootState } from "store/root-reducer";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import formatDate from "utils/utilsFunction/date-converter";
+import TooltipLabel from "components/UI/TooltipLabel";
+import CustomCheckBox from "components/UI/CustomCheckbox";
+
+const initialFormValues = {
+  possible_failure: "",
+  component_numbers: "",
+  description: "",
+  maintenance_cost: 0,
+  labour_cost: 0.0,
+  material_cost: 0.0,
+  replacement_cost: 0.0,
+  maintenance_action: "",
+  maintenance_interval: "",
+  next_action: "",
+  apply_date: "",
+  componant_picture: null as any,
+  component: null as OptionType | null,
+  impact_of_failure: null as OptionType | null,
+  possibility_of_failure: null as OptionType | null,
+  mitigation: null as OptionType | null,
+  responsible: "",
+  interval_unit: "Year",
+  is_cost_seggregated: false,
+};
 
 const validationScheme = Yup.object({
   component: Yup.mixed().required("This field is required"),
   possible_failure: Yup.string().required("This field is required"),
   component_numbers: Yup.string().required("This field is required"),
-  //   description: Yup.string().required("This field is required"),
   maintenance_cost: Yup.number().required("This field is required"),
   labour_cost: Yup.string().nullable(),
   material_cost: Yup.string().nullable(),
   replacement_cost: Yup.string().nullable(),
   maintenance_action: Yup.string().required("This field is required"),
-  supply_belt: Yup.mixed(),
   maintenance_interval: Yup.string().required("This field is required"),
   impact_of_failure: Yup.mixed().required("This field is required"),
   possibility_of_failure: Yup.mixed().required("This field is required"),
   mitigation: Yup.mixed().required("This field is required"),
-  responsible: Yup.mixed().required("This field is required"),
-  next_action: Yup.string().required("This field is required"),
+  responsible: Yup.string().required("This field is required"),
+  // next_action: Yup.string().required("This field is required"),
   apply_date: Yup.string().required("This field is required"),
+  interval_unit: Yup.string().required("This field is required"),
 });
 
 interface Props extends PropsFromRedux {
@@ -53,35 +76,25 @@ interface Props extends PropsFromRedux {
 const ExpenseForm = (props: Props) => {
   const { t } = useTranslation();
 
-  const [initialData, setInitialData] = React.useState({
-    possible_failure: "",
-    component_numbers: "",
-    description: "",
-    maintenance_cost: 0,
-    labour_cost: 0.0,
-    material_cost: 0.0,
-    replacement_cost: 0.0,
-    maintenance_action: "",
-    maintenance_interval: "",
-    next_action: "",
-    apply_date: "",
-    componant_picture: null as any,
-    component: null as OptionType | null,
-    supply_belt: null as OptionType | null,
-    impact_of_failure: null as OptionType | null,
-    possibility_of_failure: null as OptionType | null,
-    mitigation: null as OptionType | null,
-    responsible: null as OptionType | null,
-  });
+  
+  const [initialData, setInitialData] = React.useState(initialFormValues);
   const [categoryOption, setCategoryOptions] = React.useState<OptionType[]>();
-  const [supplyBeltOption, setSupplyBeltOptions] = React.useState<OptionType[]>();
   const [imagePreview, setImagePreview] = React.useState<any>("");
+  const [ mitigate, setMitigate ] = React.useState();
+
+  // React.useEffect(() => {
+  //   // var reactive = "Reactive";
+  //   if (MITIGATION_OPTIONS === "Reactive") {
+      
+  //   } else {
+      
+  //   }
+  // },[])
 
   React.useEffect(() => {
     if (props.schemeSlug) {
       getIncomeCategoryAction(props.schemeSlug);
       props.getComponentAction();
-      props.getSupplyBeltsAction(props.language, props.schemeSlug);
     }
   }, [props.schemeSlug]);
 
@@ -96,16 +109,6 @@ const ExpenseForm = (props: Props) => {
   }, [props.components]);
 
   React.useEffect(() => {
-    if (props.supplyBelts) {
-      const options = props.supplyBelts?.map((item) => ({
-        label: "" + item.name,
-        value: "" + item.id,
-      }));
-      setSupplyBeltOptions(options);
-    }
-  }, [props.supplyBelts]);
-
-  React.useEffect(() => {
     if (props.editData) {
       setInitialData({
         ...props.editData,
@@ -117,30 +120,17 @@ const ExpenseForm = (props: Props) => {
           (item) => item.value === props.editData?.impact_of_failure
         ),
         mitigation: MITIGATION_OPTIONS.find((item) => item.value === props.editData?.mitigation),
-        responsible: RESPONSIBLE_OPTIONS.find((item) => item.value === props.editData?.responsible),
+        responsible: props.editData?.responsible,
         apply_date: props.editData.apply_date || "",
       });
+
+      if (props.editData?.componant_picture) {
+        setImagePreview(props.editData?.componant_picture);
+      }
     } else {
       setInitialData({
-        possible_failure: "",
-        component_numbers: "",
-        description: "",
-        maintenance_cost: 0,
-        labour_cost: 0.0,
-        material_cost: 0.0,
-        replacement_cost: 0.0,
-        maintenance_action: "",
-        maintenance_interval: "",
-        componant_picture: null as any,
-        next_action:
-          props.yearIntervals?.find((date) => date.is_present_year === true)?.start_date || "",
-        apply_date: props.scheme?.tool_start_date || "",
-        component: null as OptionType | null,
-        supply_belt: null as OptionType | null,
-        impact_of_failure: null as OptionType | null,
-        possibility_of_failure: null as OptionType | null,
-        mitigation: null as OptionType | null,
-        responsible: null as OptionType | null,
+        ...initialFormValues,
+        apply_date: props.scheme?.tool_start_date,
       });
     }
   }, [props.editData, props.scheme, props.yearIntervals]);
@@ -162,18 +152,17 @@ const ExpenseForm = (props: Props) => {
       let requestData = {
         ...submitValue,
         component: submitValue?.component?.value,
-        supply_belt: submitValue?.supply_belt?.value || "",
         impact_of_failure: submitValue?.impact_of_failure?.value,
         possibility_of_failure: submitValue?.possibility_of_failure?.value,
         mitigation: submitValue?.mitigation?.value,
-        responsible: submitValue?.responsible?.value,
+        responsible: submitValue?.responsible,
         maintenance_cost: +values.maintenance_cost,
         labour_cost: +values.labour_cost,
         material_cost: +values.material_cost,
         replacement_cost: +values.replacement_cost,
       };
 
-      if (values.componant_picture instanceof File) {
+      if (values.componant_picture && values.componant_picture instanceof File) {
         requestData.componant_picture = values.componant_picture;
       } else {
         delete requestData.componant_picture;
@@ -186,36 +175,22 @@ const ExpenseForm = (props: Props) => {
         res = await props.postComponentInfoAction(props.language, requestData);
       }
 
+
       if (res.status === 201 || res.status === 200) {
         if (res.status === 201) {
           toast.success(t("home:postSuccess"));
         } else {
           toast.success(t("home:updateSuccess"));
         }
-        setInitialData({
-          component: null as OptionType | null,
-          possible_failure: "",
-          component_numbers: "",
-          description: "",
-          maintenance_cost: 0.0,
-          labour_cost: 0.0,
-          material_cost: 0.0,
-          replacement_cost: 0.0,
-          maintenance_action: "",
-          componant_picture: null as any,
-          supply_belt: null as OptionType | null,
-          maintenance_interval: "",
-          impact_of_failure: null as OptionType | null,
-          possibility_of_failure: null as OptionType | null,
-          mitigation: null as OptionType | null,
-          responsible: null as OptionType | null,
-          next_action: "",
-          apply_date: "",
-        });
+        setInitialData(initialFormValues);
         props.toggle(false);
         props.setEditData(null);
         props.getDashboardComponentInfoAction(props.language, props.schemeSlug);
-      } else {
+      } 
+      // else {
+      //   toast.error("Server Error");
+      // }
+       else {
         const errors = Object.values(res.data)?.map((item: any) => {
           toast.error(item[0]);
         });
@@ -234,7 +209,14 @@ const ExpenseForm = (props: Props) => {
     };
   };
 
-  console.log(values, "resss");
+  // const handleMaintenanceIntervalChange = (value, unit) => {
+  //   if (unit === "Year") {
+  //     const nextActionDate =
+  //       props.yearIntervals?.find((date) => String(value).split(".")[0] === String(date.year_num))
+  //         ?.start_date || "";
+  //     setFieldValue("next_action", nextActionDate);
+  //   }
+  // };
 
   return (
     <form
@@ -243,11 +225,11 @@ const ExpenseForm = (props: Props) => {
         handleSubmit(e);
       }}
     >
-      <div className="row align-items-start">
+      <div className="row align-items-center">
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
-              {t("maintainance:component")} {t("maintainance:category")}:
+              {t("maintainance:compone")} {t("home:name")} :
             </label>
 
             <StyledSelect
@@ -268,7 +250,8 @@ const ExpenseForm = (props: Props) => {
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
-              {t("maintainance:component")} {t("finance:number")}:
+              {t("maintainance:nofcomponents")}{" "}
+              <TooltipLabel id={"nocints"} text={t("home:noc")} />
             </label>
 
             <input
@@ -319,107 +302,131 @@ const ExpenseForm = (props: Props) => {
               {t("finance:maintainanceInterval")}:
             </label>
 
-            <input
-              type="number"
-              className="form-control"
-              name="maintenance_interval"
-              value={values.maintenance_interval}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              step="0.1"
-            />
+            <div className="input-group component-info">
+              <input
+                type="number"
+                id="border-right"
+                className="form-control "
+                name="maintenance_interval"
+                value={values.maintenance_interval}
+                onChange={(e) => {
+                  handleChange(e);
+                  // handleMaintenanceIntervalChange(e.target.value, values?.interval_unit); comment ho
+                }}
+                onBlur={handleBlur}
+                step="0.1"
+              />
+              <select
+                id="border-left"
+                className="form-control"
+                name="interval_unit"
+                value={values.interval_unit}
+                onChange={(e) => {
+                  handleChange(e);
+                  // if (e.target.value !== "Year")
+                  //   setFieldValue("next_action", props.scheme?.tool_start_date);
+                }}
+                onBlur={handleBlur}
+              >
+                <option value="Year">Year</option>
+                <option value="Month">Month</option>
+                <option value="Day">Day</option>
+              </select>
+            </div>
+
             <FormikValidationError name="maintenance_interval" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-lg-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1">
-              {t("finance:MaintenanceCost")} ({props.scheme?.currency}.):
-            </label>
 
-            <input
-              type="number"
-              className="form-control"
-              name="maintenance_cost"
-              value={values.maintenance_cost}
-              onChange={handleChange}
-              onBlur={handleBlur}
+        <div className="col-lg-12">
+          <div className="form-group d-flex">
+            <CustomCheckBox
+              id={"is_cost_seggregated"}
+              label={t("finance:icCostSegregated")}
+              checked={values.is_cost_seggregated}
+              onChange={(e) => setFieldValue("is_cost_seggregated", e.target.checked)}
             />
-            <FormikValidationError name="maintenance_cost" errors={errors} touched={touched} />
+            <TooltipLabel id="cost_seperately" text={t("finance:costseperate")}/>
+
+            <FormikValidationError name="is_cost_seggregated" errors={errors} touched={touched} />
           </div>
         </div>
-        <div className="col-lg-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1">
-              {t("finance:LabourCost")} ({props.scheme?.currency}.):
-            </label>
+        {!values.is_cost_seggregated && (
+          <div className="col-lg-4">
+            <div className="form-group ">
+              <label htmlFor="" className="mr-1">
+              {t("home:compexpected")} {t("home:maintenance")} {t("home:cost")} ({props.scheme?.currency}):
+              </label>
 
-            <input
-              type="number"
-              className="form-control"
-              name="labour_cost"
-              value={values.labour_cost}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            <FormikValidationError name="labour_cost" errors={errors} touched={touched} />
+              <input
+                type="number"
+                className="form-control"
+                name="maintenance_cost"
+                value={values.maintenance_cost}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FormikValidationError name="maintenance_cost" errors={errors} touched={touched} />
+            </div>
           </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1">
-              {t("finance:MaterialCost")} ({props.scheme?.currency}.):
-            </label>
+        )}
 
-            <input
-              type="number"
-              className="form-control"
-              name="material_cost"
-              value={values.material_cost}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            <FormikValidationError name="material_cost" errors={errors} touched={touched} />
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1">
-              {t("finance:ReplacementCost")} ({props.scheme?.currency}.):
-            </label>
+        {values.is_cost_seggregated && (
+          <>
+            <div className="col-lg-4">
+              <div className="form-group ">
+                <label htmlFor="" className="mr-1">
+                  {t("finance:LabourCost")} ({props.scheme?.currency}): <TooltipLabel id="lc" text={t("finance:LC")} />
+                </label>
 
-            <input
-              type="number"
-              className="form-control"
-              name="replacement_cost"
-              value={values.replacement_cost}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            <FormikValidationError name="replacement_cost" errors={errors} touched={touched} />
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="form-group ">
-            <label htmlFor="" className="mr-1">
-              {t("home:supplyBelt")} :
-            </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="labour_cost"
+                  value={values.labour_cost}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <FormikValidationError name="labour_cost" errors={errors} touched={touched} />
+              </div>
+            </div>
+            <div className="col-lg-4">
+              <div className="form-group ">
+                <label htmlFor="" className="mr-1">
+                  {t("finance:MaterialCost")} ({props.scheme?.currency}): <TooltipLabel id="cc" text={t("finance:CC")} />
+                </label>
 
-            <StyledSelect
-              name="supply_belt"
-              value={values.supply_belt}
-              options={supplyBeltOption}
-              onChange={({ name, value }) => {
-                setFieldValue(name, value);
-              }}
-              onBlur={() => {
-                setFieldTouched("supply_belt", true);
-              }}
-            />
+                <input
+                  type="number"
+                  className="form-control"
+                  name="material_cost"
+                  value={values.material_cost}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <FormikValidationError name="material_cost" errors={errors} touched={touched} />
+              </div>
+            </div>
+            <div className="col-lg-4">
+              <div className="form-group ">
+                <label htmlFor="" className="mr-1">
+                  {t("finance:ReplacementCost")} ({props.scheme?.currency}): <TooltipLabel id="rc" text={t("finance:RC")} />
+                </label>
 
-            <FormikValidationError name="supply_belt" errors={errors} touched={touched} />
-          </div>
-        </div>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="replacement_cost"
+                  value={values.replacement_cost}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <FormikValidationError name="replacement_cost" errors={errors} touched={touched} />
+              </div>
+            </div>
+          </>
+        )}
+
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
@@ -470,6 +477,7 @@ const ExpenseForm = (props: Props) => {
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
               {t("finance:mitigation")}:
+              <TooltipLabel id="miti" text={t("finance:miti")}/>
             </label>
 
             <StyledSelect
@@ -493,16 +501,13 @@ const ExpenseForm = (props: Props) => {
               {t("finance:person")}:
             </label>
 
-            <StyledSelect
+            <input
+              type="text"
+              className="form-control"
               name="responsible"
               value={values.responsible}
-              options={RESPONSIBLE_OPTIONS}
-              onChange={({ name, value }) => {
-                setFieldValue(name, value);
-              }}
-              onBlur={() => {
-                setFieldTouched("responsible", true);
-              }}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
 
             <FormikValidationError name="responsible" errors={errors} touched={touched} />
@@ -511,7 +516,12 @@ const ExpenseForm = (props: Props) => {
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
-              {t("finance:applyDate")}:
+              {t("finance:applyDate")}{" "}
+              <TooltipLabel
+                id={"apd"}
+                text={t("home:appdate")}
+              />
+              :
             </label>
 
             {props.scheme?.system_date_format === "nep" ? (
@@ -541,7 +551,12 @@ const ExpenseForm = (props: Props) => {
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
-              {t("finance:nextActionDate")}:
+              {t("finance:nextActionDate")}{" "}
+              <TooltipLabel
+                id={"mada"}
+                text={t("home:nad")}
+              />
+              :
             </label>
 
             {props.scheme?.system_date_format === "nep" ? (
@@ -576,6 +591,7 @@ const ExpenseForm = (props: Props) => {
 
             <input
               type="file"
+              multiple
               accept="image/png, image/jpeg"
               className="form-control"
               name="componant_picture"
@@ -589,20 +605,14 @@ const ExpenseForm = (props: Props) => {
             />
             <FormikValidationError name="next_action" errors={errors} touched={touched} />
           </div>
-
-          {imagePreview || props.editData?.componant_picture ? (
+        </div>
+        <div className="col-lg-4">
+          {imagePreview && (
             <div className="form-group ">
               <div className="align-vertical justify-content-end">
-                <img
-                  src={imagePreview || props.editData?.componant_picture}
-                  alt=""
-                  width={150}
-                  height={100}
-                />
+                <img src={imagePreview} alt="" width={150} height={100} />
               </div>
             </div>
-          ) : (
-            <></>
           )}
         </div>
       </div>
@@ -612,10 +622,10 @@ const ExpenseForm = (props: Props) => {
           className="btn custom-btn  mr-3"
           text={t("home:save")}
           type="submit"
-          // disabled={authorizing}
-          // loading={authorizing}
-          disabled={props.postLoading || props.updateLoading}
           loading={props.postLoading || props.updateLoading}
+          disabled={props.postLoading || props.updateLoading}
+        // disabled={authorizing}
+        // loading={authorizing}
         />
         <Button
           className="btn custom-btn-outlined  mr-3"

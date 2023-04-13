@@ -14,7 +14,7 @@ interface Props {
 const DataTable = (props: Props) => {
   const { t } = useTranslation();
 
-  const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
+  // const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
 
 
   return (
@@ -39,7 +39,7 @@ const DataTable = (props: Props) => {
                   </span>
                 </td>
                 {item.data?.map((data, index) => (
-                  <td key={index}>{currency} {getNumberByLanguage(data.value) || 0}</td>
+                  <td key={index}> {getNumberByLanguage(data.value) || 0}</td> //{currency} behind > && ingront getNumberByLanguage
                 ))}
               </tr>
             ))}

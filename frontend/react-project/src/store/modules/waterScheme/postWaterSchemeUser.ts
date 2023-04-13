@@ -8,12 +8,12 @@ import initialState from "../../helper/default-state";
 
 
 export type UserType = any
-type requestData = {
-    username: string,
+type requestData = { 
     name: string,
     phone_number: string, 
     password1: string,
-    password2: string
+    password2: string,
+    role: string,
 }
 
 

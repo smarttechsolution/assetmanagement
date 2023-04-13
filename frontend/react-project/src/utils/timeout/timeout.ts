@@ -1,4 +1,9 @@
 const noop = () => { };
+declare global {
+    interface Window {
+        webkitRequestAnimationFrame:any;
+    }
+}
 
 const browserSupportsRaf =
     window.requestAnimationFrame ||

@@ -17,11 +17,15 @@ import { RootState } from "store/root-reducer";
 import VisualizationGraph from "./VisualizationGraph";
 import VisualizationGraphThisYear from "./VisualizationGraphThisYear";
 import { useTranslation } from "react-i18next";
+import './style.scss';
+import TooltipLabel from "components/UI/TooltipLabel";
 
 interface Props extends PropsFromRedux {}
 
 const WaterTestResults = (props: Props) => {
   const { t } = useTranslation(["home", "sidebar"]);
+  const [selected, setSelected] = React.useState([]);
+  const [selectedValues, setSelectedValues] = React.useState({});
 
   const [activeTab, setActiveTab] = React.useState("1");
 
@@ -47,7 +51,8 @@ const WaterTestResults = (props: Props) => {
 
   return (
     <div className="container py-3 cash-book">
-      <GeneralCard title={t("sidebar:qualityTestResult")}>
+      <GeneralCard title={t("sidebar:qualityTestResult")} print={true}>
+      <TooltipLabel id={"wtq"} text={t("home:watertestresult")} />
         <div className="cash-content">
           <div className="flex-between">
             <Nav tabs>
@@ -72,7 +77,7 @@ const WaterTestResults = (props: Props) => {
                 </NavLink>
               </NavItem>
             </Nav>
-            <span className="info-text">{t("home:allAmountInRupee")} {props.currency}</span>
+            {/* <span className="info-text">{t("home:allAmountInRupee")} {props.currency}</span> */}
           </div>
 
           <TabContent activeTab={activeTab} className="mt-2">
@@ -82,7 +87,10 @@ const WaterTestResults = (props: Props) => {
                   {activeTab === "1" && (
                     <VisualizationGraph
                       compareKey="year_from"
-                      defaultSelected={['ph']}
+                      defaultSelected={selected}
+                      setSelectedGlobal={setSelected}
+                      selectedValues={selectedValues}
+                      setSelectedValuesGLobal={setSelectedValues}
                       type="Year"
                     />
                   )}
@@ -95,7 +103,10 @@ const WaterTestResults = (props: Props) => {
                   {activeTab === "2" && (
                     <VisualizationGraphThisYear
                       compareKey="month"
-                      defaultSelected={['ph']}
+                      defaultSelected={selected}
+                      setSelectedGlobal={setSelected}
+                      selectedValues={selectedValues}
+                      setSelectedValuesGLobal={setSelectedValues}
                       type="Month"
                     />
                   )}

@@ -12,6 +12,7 @@ type TestResult = {
     parameter__parameter_name: string
     test_result__date__year: number
     test_result__date__month: number
+    // parameter__ndwqs: number
     total_value: number  
 }[]
 

@@ -133,7 +133,7 @@ const apiDetails = {
       requestBodyType: RequestBodyType.NOAUTH
     },
     updateUseBasedTarrifsRate: {
-      controllerName: "api/v1/water-tariff/use-based-data/{id}/{lang}/",
+      controllerName: "api/v1/water-tariff/{lang}/{id}/",
       actionName: "UPDATE_USE_BASED_TARIFF_RATE",
       requestMethod: RequestMethod.PUT,
       requestBodyType: RequestBodyType.NOAUTH
@@ -237,6 +237,12 @@ const apiDetails = {
       requestMethod: RequestMethod.DELETE,
       requestBodyType: RequestBodyType.AUTH
     },
+    deleteMultipleTestParameters: {
+      controllerName: "api/v1/test-parameter/bulk-delete/",
+      actionName: "DELETE_MULTIPLE_TEST_PARAMETERS",
+      requestMethod: RequestMethod.DELETE,
+      requestBodyType: RequestBodyType.AUTH
+    },
   },
   waterScheme: {
     getSchemeDetails: {
@@ -287,6 +293,12 @@ const apiDetails = {
       requestMethod: RequestMethod.GET,
       requestBodyType: RequestBodyType.NOAUTH
     },
+    deleteWaterSchemeUser: {
+      controllerName: "api/v1/water-scheme/care-taker/delete/{id}/",
+      actionName: "DELETE_WATER_SCHEME_CARETAKER",
+      requestMethod: RequestMethod.DELETE,
+      requestBodyType: RequestBodyType.NOAUTH
+    },
     postWaterSchemeUser: {
       controllerName: "api/v1/water-scheme/care-taker/create/",
       actionName: "POST_WATER_SCHEME_CARETAKER",
@@ -306,6 +318,7 @@ const apiDetails = {
     //   requestBodyType: RequestBodyType.AUTH
     // },
   },
+
   waterSupplySchedule: {
     getWaterSupplySchedule: {
       controllerName: "api/v1/water-supply-schedule/list/{lang}/{water_scheme_slug}/",
@@ -365,6 +378,12 @@ const apiDetails = {
       requestMethod: RequestMethod.GET,
       requestBodyType: RequestBodyType.NOAUTH,
     },
+    getIncomeTotal: {
+      controllerName: "api/v1/income-total/{lang}/{water_scheme_slug}/date-range/",
+      actionName: "GET_INCOME_TOTAL",
+      requestMethod: RequestMethod.GET,
+      requestBodyType: RequestBodyType.NOAUTH,
+    },
     getIncomeExpenseImage: {
       controllerName: "api/v1/income-expense/image-by-month/{lang}/{water_scheme_slug}/",
       actionName: "GET_INCOME_EXPENSE_IMAGE",
@@ -393,6 +412,12 @@ const apiDetails = {
       controllerName: "api/v1/income-category/delete/{id}/",
       actionName: "DELETE_INCOME_CATEGORIES",
       requestMethod: RequestMethod.DELETE,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+    getAllIncome: {
+      controllerName: "api/v1/income/{lang}/list-all/{water_scheme_slug}/",
+      actionName: "GETT_ALL_INCOME",
+      requestMethod: RequestMethod.GET,
       requestBodyType: RequestBodyType.AUTH,
     },
   },
@@ -428,6 +453,12 @@ const apiDetails = {
       requestMethod: RequestMethod.GET,
       requestBodyType: RequestBodyType.NOAUTH,
     },
+    getExpenditureTotal: {
+      controllerName: "api/v1/expenditure-total/{lang}/{water_scheme_slug}/date-range/",
+      actionName: "GET_EXPENDITURE_TOTAL",
+      requestMethod: RequestMethod.GET,
+      requestBodyType: RequestBodyType.NOAUTH
+    },
     getExpenditureCategory: {
       controllerName: "api/v1/expense-category/list/{water_scheme_slug}/",
       actionName: "GET_EXPENDITURE_CATEGORY",
@@ -452,7 +483,12 @@ const apiDetails = {
       requestMethod: RequestMethod.DELETE,
       requestBodyType: RequestBodyType.AUTH,
     },
-
+    getAllExpenditure: {
+      controllerName: "api/v1/expenditure/{lang}/list-all/{water_scheme_slug}/",
+      actionName: "GETT_ALL_EXPENDITURE",
+      requestMethod: RequestMethod.GET,
+      requestBodyType: RequestBodyType.AUTH,
+    },
   },
   otherExpenses: {
     getOtherExpenses: {
@@ -670,7 +706,91 @@ const apiDetails = {
       requestMethod: RequestMethod.DELETE,
       requestBodyType: RequestBodyType.AUTH,
     },
-  }
+  },
+  waterSupplyRecord: {
+    // subharaj
+    postWaterSupplyRecordA: {
+      controllerName:
+        "api/v1/water-supply-record/{lang}/create/",
+      actionName: "POST_WATER_SUPPLY_RECORD",
+      requestMethod: RequestMethod.POST,
+      requestBodyType: RequestBodyType.FORMDATA,
+    },
+
+    getWaterSupplyRecord: {
+      controllerName:
+        "api/v1/config/water-supply-record/list/{lang}/",
+      actionName: "GET_WATER_SUPPLY_RECORD",
+      requestMethod: RequestMethod.GET,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+    getWaterSupplyRecordsById: {
+      controllerName:
+        "api/v1/config/water-supply-record/update/{id}/{lang}/",
+      actionName: "GET_WATER_SUPPLY_RECORD_BY_ID",
+      requestMethod: RequestMethod.GET,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+    postWaterSupplyRecord: {
+      controllerName:
+        "api/v1/config/water-supply-record/{lang}/create/",
+      actionName: "POST_WATER_SUPPLY_RECORD",
+      requestMethod: RequestMethod.POST,
+      requestBodyType: RequestBodyType.FORMDATA,
+    },
+    updateWaterSupplyRecord: {
+      controllerName:
+        "api/v1/config/water-supply-record/{lang}/{id}/",
+      actionName: "UPDATE_WATER_SUPPLY_RECORD",
+      requestMethod: RequestMethod.PUT,
+      requestBodyType: RequestBodyType.FORMDATA,
+    },
+    deleteWaterSupplyRecord: {
+      controllerName:
+        "api/v1/config/water-supply-record/{id}/delete/",
+      actionName: "DELETE_WATER_SUPPLY_RECORD",
+      requestMethod: RequestMethod.DELETE,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+  },
+  waterSupplyTest: {
+    getWaterSupplyTest: {
+      controllerName:
+        "api/v1/config/water-test-results/list/{lang}/",
+      actionName: "GET_WATER_SUPPLY_TEST",
+      requestMethod: RequestMethod.GET,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+    postWaterSupplyTest: {
+      controllerName:
+        "api/v1/config/water-test-results/{lang}/create/",
+      actionName: "POST_WATER_SUPPLY_TEST",
+      requestMethod: RequestMethod.POST,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+    postWaterTestResult: {
+      controllerName:
+        "api/v1/water-test-results/{lang}/create/",
+      actionName: "POST_WATER_TEST_RESULTS",
+      requestMethod: RequestMethod.POST,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+    updateWaterSupplyTest: {
+      controllerName:
+        "api/v1/config/water-test-results/{lang}/{id}/",
+      actionName: "UPDATE_WATER_SUPPLY_TEST",
+      requestMethod: RequestMethod.PUT,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+    deleteWaterSupplyTest: {
+      controllerName:
+        "api/v1/config/water-test-results/{id}/delete/",
+      actionName: "DELETE_WATER_SUPPLY_TEST",
+      requestMethod: RequestMethod.DELETE,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+  },
+  
 
 };
 

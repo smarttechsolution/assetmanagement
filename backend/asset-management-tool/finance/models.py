@@ -45,6 +45,9 @@ class Expenditure(m.Model):
 	date_np = m.CharField(null=True, blank=True, max_length=12)
 	title = m.CharField(max_length=150)
 	income_amount = m.FloatField()
+	labour_cost = m.FloatField(blank=True, null=True)
+	consumables_cost = m.FloatField(blank=True, null=True)
+	replacement_cost = m.FloatField(blank=True, null=True)
 	remarks = m.CharField(max_length=250, null=True, blank=True)
 	closed_date = m.DateField(null = True, blank=True)
 	maintenance_expense = m.OneToOneField(ComponentInfoLog, on_delete = m.CASCADE, null=True, blank=True, related_name='maintenance_log_expense')
@@ -55,7 +58,7 @@ class Expenditure(m.Model):
 
 @receiver(post_save, sender=ComponentInfoLog)
 def create_expense(sender, instance, **kwargs):
-    expense_cat = ExpenseCategory.objects.get_or_create(water_scheme = instance.component.component.category.water_scheme, name = 'Maintenance')
+    expense_cat = ExpenseCategory.objects.get_or_create(water_scheme = instance.component1.category.water_scheme, name = 'Maintenance')
     if Expenditure.objects.filter(maintenance_expense_id=instance.id).exists():
     	labour_cost = instance.labour_cost
     	if not labour_cost:

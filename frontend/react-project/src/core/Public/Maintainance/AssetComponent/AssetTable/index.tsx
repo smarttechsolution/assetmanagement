@@ -9,6 +9,8 @@ import { RootState } from "store/root-reducer";
 import CostDataHeader, { CostData } from "./Components/CostData";
 import NormalDataHeader, { NormalData } from "./Components/NormalData";
 import RiskDataHeader, { RiskData } from "./Components/RiskData";
+import Thumbnail from "assets/images/thumbnail.png";
+import { SRLWrapper } from "simple-react-lightbox";
 
 interface IProps extends PropsFromRedux {}
 
@@ -30,7 +32,7 @@ const AssetTable = (props: IProps) => {
     if (props.componentData) {
       const newGroupedData: any = {};
 
-      props.componentData.forEach((data) => {
+      props.componentData?.forEach((data) => {
         if (data.component.category.name in newGroupedData) {
           newGroupedData[data.component.category.name].push(data);
         } else {
@@ -48,7 +50,7 @@ const AssetTable = (props: IProps) => {
         <tbody>
           <>
             <tr className="">
-              <th scope="col" colSpan={4}></th>
+              <th scope="col" colSpan={6}></th>
               <th
                 scope="col"
                 className={showRisk || showCost ? "placeholder" : "top-headers"}
@@ -56,22 +58,28 @@ const AssetTable = (props: IProps) => {
               >
                 {!showRisk && !showCost && t("maintainance:mitigation")}
               </th>
-              <th
+              {/* <th
                 scope="col"
                 className={showRisk || showCost ? "placeholder" : "top-headers"}
                 colSpan={3}
               >
                 {!showRisk && !showCost && t("maintainance:responsible")}
-              </th>
+              </th> */}
             </tr>
           </>
 
           <tr className="header">
-            <th scope="col" className="bg-header" style={{ width: 350 }}>
+            <th scope="col" className="bg-header" style={{ width: 400 }}>
               {t("maintainance:assetComponent")}
             </th>
             <th scope="col" className="bg-header">
               {t("maintainance:dopf")}
+            </th>
+            <th scope="col" className="bg-header">
+              {t("maintainance:interval")}
+            </th>
+            <th scope="col" className="bg-header">
+              {t("maintainance:responsible")}
             </th>
 
             {showCost ? (
@@ -127,16 +135,26 @@ const AssetTable = (props: IProps) => {
               return (
                 <React.Fragment>
                   <tr>
-                    <td colSpan={showCost ? 7 : 2} className="component-title">
+                    <td colSpan={showCost ? 8 : 4} className="component-title">
                       {item[0]}
-                    </td>
-                    <td></td>
+                    </td> 
                   </tr>
                   {item[1] instanceof Array &&
                     item[1].map((data: DashboardComponentInfoType) => (
                       <tr>
-                        <td>{data.component.name}</td>
+                        <td>
+                          <div className="d-flex">
+                            <div className="component-image-wrapper">
+                              <SRLWrapper>
+                                <img src={data.componant_picture || Thumbnail} alt="" />
+                              </SRLWrapper>
+                            </div>
+                            {data.component.name}
+                          </div>
+                        </td>
                         <td>{data.possible_failure}</td>
+                        <td>{data.maintenance_interval} {data.interval_unit}</td>
+                        <td>{data.responsible}</td>
                         {!showRisk && (
                           <td
                             className={`
@@ -160,7 +178,7 @@ const AssetTable = (props: IProps) => {
                           <></>
                         ) : (
                           <td className="text-center">
-                            {props.currency} {data.maintenance_cost}
+                            {props.currency} {data.seggregated_or_unseggregated_cost}
                           </td>
                         )}
                         {showRisk || showCost ? (

@@ -3,7 +3,7 @@ import CustomCheckBox from "components/UI/CustomCheckbox";
 import { getFiscalYearData, getMonthByLanguageAndScheme, getNumberByLanguage } from "i18n/i18n";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { connect, ConnectedProps } from "react-redux";
+import { connect, ConnectedProps, useSelector } from "react-redux";
 import { MaintainanceCostSingleType } from "store/modules/report/maintainanceCost";
 import { RootState } from "store/root-reducer";
 import DataTable from "./DataTable";
@@ -55,46 +55,48 @@ const BarChartThisYear = (props: Props) => {
 
   const [tableData, setTableData] = useState<any>();
 
+  const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
+
   const options = [
     {
       id: "actual_unsegregated",
       name: `${t("home:actual")} ${t("home:unsegregated")}`,
-      color: "rgba(196,196,196,1)",
+      color: "#e69f00",
     },
     {
       id: "actual_material",
-      name: `${t("home:actual")} ${t("home:material")}`,
-      color: "rgba(215,215,215,1)",
+      name: `${t("home:actual")} ${t("home:consumable")}`,
+      color: "#56b4e9",
     },
     {
       id: "actual_labor",
       name: `${t("home:actual")} ${t("home:labour")}`,
-      color: "rgba(229,229,229,1)",
+      color: "#f0e442",
     },
     {
       id: "actual_replacement",
       name: `${t("home:actual")} ${t("home:replacement")}`,
-      color: "rgba(242,242,242,1)",
+      color: "#ea75b6",
     },
     {
       id: "expected_unsegregated",
       name: `${t("home:expected")} ${t("home:unsegregated")}`,
-      color: "rgba(38,128,235,1)",
+      color: "#009e73",
     },
     {
       id: "expected_material",
-      name: `${t("home:expected")} ${t("home:material")}`,
-      color: "rgba(139,173,213,1)",
+      name: `${t("home:expected")} ${t("home:consumable")}`,
+      color: "#000000",
     },
     {
       id: "expected_labor",
       name: `${t("home:expected")} ${t("home:labour")}`,
-      color: "rgba(189,213,242,1)",
+      color: "#d55e00",
     },
     {
       id: "expected_replacement",
       name: `${t("home:expected")} ${t("home:replacement")}`,
-      color: "rgba(204,221,234,1)",
+      color: "#0072b2",
     },
   ];
 
@@ -134,49 +136,49 @@ const BarChartThisYear = (props: Props) => {
           props.maintainanceCost.actual_cost,
           "maintenance_date__month",
           "unsegregated_cost",
-          "rgba(196,196,196,1)"
+          "#e69f00"
         ),
         actual_material: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "maintenance_date__month",
           "material_cost",
-          "rgba(215,215,215,1)"
+          "#56b4e9"
         ),
         actual_labor: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "maintenance_date__month",
           "labour_cost",
-          "rgba(229,229,229,1)"
+          "#f0e442"
         ),
         actual_replacement: sortAndMapArray(
           props.maintainanceCost.actual_cost,
           "maintenance_date__month",
           "replacement_cost",
-          "rgba(242,242,242,1)"
+          "#ea75b6"
         ),
         expected_unsegregated: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "next_action__month",
           "unsegregated_cost",
-          "rgba(38,128,235,1)"
+          "#009e73"
         ),
         expected_material: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "next_action__month",
           "material_cost",
-          "rgba(139,173,213,1)"
+          "#000000"
         ),
         expected_labor: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "next_action__month",
           "labour_cost",
-          "rgba(189,213,242,1)"
+          "#d55e00"
         ),
         expected_replacement: sortAndMapArray(
           props.maintainanceCost.expected_cost,
           "next_action__month",
           "replacement_cost",
-          "rgba(204,221,234,1)"
+          "#0072b2"
         ),
         expected_total: props.maintainanceCost.expected_cost.map((item) => ({
           date: item.next_action__month,
@@ -202,11 +204,26 @@ const BarChartThisYear = (props: Props) => {
     }
   };
 
+  const stacked = {
+    actual_material: 'actual',
+    actual_replacement: 'actual',
+    actual_labor: 'actual',
+
+    actual_unsegregated: 'actual_unsegregated',
+
+    expected_material: 'expected',
+    expected_replacement: 'expected',
+    expected_labor: 'expected',
+
+    expected_unsegregated: 'expected_unsegregated',
+  };
+
   useEffect(() => {
     const selectedData = selected.map((item) => ({
       name: options.find((opt) => opt.id === item)?.name,
       type: "bar",
-      stack: item?.includes("expec") ? "expected" : "actual",
+      // stack: item?.includes("expec") ? "expected" : "actual",
+      stack: stacked[item],
       areaStyle: {
         color: options.find((opt) => opt.id === item)?.color,
       },
@@ -214,7 +231,7 @@ const BarChartThisYear = (props: Props) => {
     }));
 
     const tableData = selected.map((item) => ({
-      name: options.find((opt) => opt.id === item)?.name || "",
+      name: options.find((opt) => opt.id === item)?.name + ` ( ${currency} )`,
       color: options.find((opt) => opt.id === item)?.color || "",
       data: chartData && chartData[item],
     }));

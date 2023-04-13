@@ -18,6 +18,6 @@ export default function updateFixedRateWaterTariffReducer(state = initialState, 
 }
 
 
-export const updateFixedRateWaterTariffAction = (lang, id, requestData): AppThunk<APIResponseDetail<WaterTarrifsType>> => async (dispatch: Dispatch) => {
-    return await initDefaultAction(apiDetails, dispatch, { requestData, disableSuccessToast: true, pathVariables: { id, lang }, });
+export const updateFixedRateWaterTariffAction = (lang, id, requestData, params): AppThunk<APIResponseDetail<WaterTarrifsType>> => async (dispatch: Dispatch) => {
+    return await initDefaultAction(apiDetails, dispatch, { requestData, disableSuccessToast: true, pathVariables: { id, lang }, params});
 };

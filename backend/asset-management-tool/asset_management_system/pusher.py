@@ -22,38 +22,41 @@ firebase_admin.initialize_app(cred)
 
 def sendPushNotification(ids,created_date,title,message,message_np,title_np, scheme_slug,notf_type):
 	"""Send push notification to android app"""
-	message = messaging.Message(
-	notification=messaging.Notification(
-	    title=title,
-	    body=message,
-	),
-	data={
-	'id' : str(ids),
-	'created_date' : str(created_date),
-    'title':title,
-    'title_np':title_np,
-    'message':message,
-    'message_np':message_np,
-    'notf_type':notf_type
+	try:
+		message = messaging.Message(
+		notification=messaging.Notification(
+			title=title,
+			body=message,
+		),
+		data={
+		'id' : str(ids),
+		'created_date' : str(created_date),
+		'title':title,
+		'title_np':title_np,
+		'message':message,
+		'message_np':message_np,
+		'notf_type':notf_type
 
-	},
-	android=messaging.AndroidConfig(
-	    ttl=datetime.timedelta(seconds=3600),
-	    priority='normal',
-	    notification=messaging.AndroidNotification(
-	        icon='stock_ticker_update',
-	        color='#f45342'
-	    ),
-	),
-	apns=messaging.APNSConfig(
-	    payload=messaging.APNSPayload(
-	        aps=messaging.Aps(badge=42),
-	        
-	    ),
-	),
-	topic=scheme_slug,
-	)
-	# Send a message to the devices subscribed to the provided topic.
-	response = messaging.send(message)
-	# Response is a message ID string.
-	print('Successfully sent message:',response)
+		},
+		android=messaging.AndroidConfig(
+			ttl=datetime.timedelta(seconds=3600),
+			priority='normal',
+			notification=messaging.AndroidNotification(
+				icon='stock_ticker_update',
+				color='#f45342'
+			),
+		),
+		apns=messaging.APNSConfig(
+			payload=messaging.APNSPayload(
+				aps=messaging.Aps(badge=42),
+				
+			),
+		),
+		topic=scheme_slug,
+		)
+		# Send a message to the devices subscribed to the provided topic.
+		response = messaging.send(message)
+		# Response is a message ID string.
+		print('Successfully sent message:',response)
+	except:
+		pass

@@ -8,11 +8,15 @@ import deleteExpenseCategory from './deleteExpenseCategory';
 import deleteExpense from './deleteExpense';
 import updateExpense from './updateExpense';
 import postExpense from './postExpense';
+import getAllExpenditureData from './getAllExpenditure';
+import getExpenditureTotal from './getExpenditureTotal';
 
 const outhReducer = combineReducers({
   getExpenditureData,
+  getAllExpenditureData,
   getExpenditureCategory,
   getPreviousExpenditureTotal,
+  getExpenditureTotal,
   postExpenseCategories,
   updateExpenseCategories,
   deleteExpenseCategory,

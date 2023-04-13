@@ -42,7 +42,6 @@ english_devanagari_number = {'1': '१',
 # english number to nepali number unicode_ conversion
 def english_to_nepali_converter(num_string):
     '''
-
     takes english date as input
 
     '''

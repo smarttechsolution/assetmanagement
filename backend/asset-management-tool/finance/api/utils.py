@@ -23,6 +23,7 @@ def get_month_range(year,month):
 	month_end = nepali_datetime.date(year_plus_one, month_plus_one,1).to_datetime_date() - timedelta(days=1)
 	return {'month_start':month_start, 'month_end':month_end}
 
+
 def get_prev_year_month(year,month):
 	'''Return previous month of given month for A.D'''
 	prev_month = month-1
@@ -73,9 +74,12 @@ def get_month_range_in_list(year_interval,date_format):
 	else:
 		date1_np = nepali_datetime.date.from_datetime_date(date1)
 		date2_np = nepali_datetime.date.from_datetime_date(date2)
-		# date1_np = date1_np.replace(day = 1)
-		# date2_np = date2_np.replace(day = 1)
+		if date1_np.day>=30:
+			date1_np = date1_np.replace(day = 29)
+		if date2_np.day>=30:
+			date2_np = date2_np.replace(day = 29)
 		months = []
+		# try:
 		while date1_np < date2_np:
 			month = date1_np.month
 			year  = date1_np.year
@@ -90,7 +94,8 @@ def get_month_range_in_list(year_interval,date_format):
 			month_range = get_month_range(year, month)
 			months.append({'month_start':month_range.get('month_start'),'month_end':month_range.get('month_end'),'month':month, 'year':year})
 		return months
-
+		# except:
+			# return months
 
 
 def convert_nep_date_to_english(date_nep):
@@ -121,3 +126,10 @@ def get_equivalent_date(date, year_interval):
 		year = year_interval.end_date.year
 	date = str(year) +'-' +str(month.month) +'-' +str(month.day)
 	return str_to_datetime(date)
+
+
+def diff_month(d1, d2, d3):
+	from datetime import datetime
+	if d2 >= d1:
+		return 12
+	return (d1.year - d3.year) * 12 + d1.month - d3.month

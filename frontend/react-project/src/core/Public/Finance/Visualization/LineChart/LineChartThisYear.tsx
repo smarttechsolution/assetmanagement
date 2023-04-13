@@ -7,6 +7,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "store/root-reducer";
 import { getYearFromDate } from "utils/utilsFunction/date-converter";
 import DataTable from "./DataTable";
+import { useSelector } from "react-redux";
 
 const config = {
   name: "",
@@ -32,60 +33,63 @@ type ChartDataType = {
   expected_cf?: (string | number)[];
 };
 
+
 interface Props extends PropsFromRedux {
   selected: string[];
   setSelected: any
 }
 
 const LineChartThisYear = (props: Props) => {
-  const { selected , setSelected} = props;
+  const { selected, setSelected } = props;
   
   const { t } = useTranslation();
   const [chartData, setChartData] = useState<ChartDataType>();
-
+  
   const [seriesData, setSeriesData] = useState<SeriesConfig[]>();
 
   const [tableData, setTableData] = useState<any>();
 
+  const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
+
   const options = [
     {
-      key: 1,
+      // key: 1,
       id: "actual_income",
       name: `${t("home:actual")} ${t("home:income")}`,
-      color: "rgb(0,256,136)",
+      color: "#4DFFFF",
     },
     {
-      key: 2,
+      // key: 2,
       id: "actual_expense",
       name: `${t("home:actual")} ${t("home:expense")}`,
-      color: "rgb(255,77,77)",
+      color: "#FF4D4D",
     },
     {
-      key: 3,
+      // key: 3,
       id: "actual_cf",
       name: `${t("home:accf")}`,
-      color: "#193cf4",
+      color: "#c47df7",
     },
     {
-      key: 4,
+      // key: 4,
       id: "expected_income",
       name: `${t("home:expected")} ${t("home:income")}`,
-      color: "#607D8B",
+      color: "#fbc757",
     },
     {
-      key: 5,
+      // key: 5,
       id: "expected_expense",
       name: `${t("home:expected")} ${t("home:expense")}`,
-      color: "#FEEB3B",
+      color: "#041C44",
     },
     {
-      key: 6,
+      // key: 6,
       id: "expected_cf",
       name: `${t("home:eccf")}`,
-      color: "#19BCD4",
+      color: "#1d9a36",
     },
   ];
-
+  
   useEffect(() => {
     if (props.schemeDetails && props.intervalData) {
       const fiscalYearArray = getFiscalYearData(
@@ -101,17 +105,24 @@ const LineChartThisYear = (props: Props) => {
               return +inc[monthKey] < 10
                 ? +inc[monthKey]?.toString()?.replace("0", "") === +item
                 : +inc[monthKey] === +item;
+              });
+              return {
+                value: findValue ? findValue[value] : 0,
+              };
             });
-          return {
-            value: findValue ? findValue[value] : 0,
           };
-        });
-      };
-
-      const newData: ChartDataType = {
-        years: fiscalYearArray?.map((item) => {
-          return getMonthByLanguageAndScheme(item, props.schemeDetails?.system_date_format);
-        }),
+          
+          const newData: ChartDataType = {
+            years: fiscalYearArray?.map((item) => {
+              return getMonthByLanguageAndScheme(item, props.schemeDetails?.system_date_format);
+            }),
+            
+        actual_cf: filterBasedOnkey(
+          props.incomeExpenseData,
+          "date__month",
+          "cf",
+          "cf"
+          ),
         actual_income: filterBasedOnkey(
           props.incomeExpenseData,
           "date__month",
@@ -124,7 +135,7 @@ const LineChartThisYear = (props: Props) => {
           "expense",
           "total_amount"
         ),
-        actual_cf: props.incomeExpenseData?.cf?.map((item) => item.cf),
+        // actual_cf: props.incomeExpenseData?.cf?.map((item) => item.cf),
         expected_income: filterBasedOnkey(props.expenseCF, "month", "monthly_income", "income"),
         expected_expense: filterBasedOnkey(props.expenseCF, "month", "monthly_expense", "expense"),
         expected_cf: filterBasedOnkey(props.expenseCF, "month", "monthly_cf", "cf"),
@@ -157,7 +168,7 @@ const LineChartThisYear = (props: Props) => {
     }));
 
     const tableData = selected.map((item) => ({
-      name: options.find((opt) => opt.id === item)?.name || "",
+      name: options.find((opt) => opt.id === item)?.name + ` ( ${currency} )`,
       color: options.find((opt) => opt.id === item)?.color || "",
       data: chartData && chartData[item],
     }));
@@ -220,7 +231,7 @@ const LineChartThisYear = (props: Props) => {
           {options.map((item) => (
             <li key={item.id}>
               <CustomCheckBox
-                id={"" + item.key}
+                id={"" + item.id}
                 label={item.name}
                 onChange={(e) => handleSelect(item.id)}
                 checked={selected.includes(item.id)}

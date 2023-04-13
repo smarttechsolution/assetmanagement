@@ -1,5 +1,7 @@
 import { HouseIcon, InstitutionIcon, UserGroupIcon } from "assets/images/xd";
 import { InfoCard } from "components/UI/InfoCard";
+import TooltipLabel from "components/UI/TooltipLabel";
+import { formatTime } from "core/Protected/Home/SupplySchedule";
 import { getNumberByLanguage } from "i18n/i18n";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -62,52 +64,71 @@ const HomeMain = (props: Iprops) => {
               </InfoCard>
             </div>
 
-            <div className="col-lg-4 col-md-6 mb-md-0 mb-3">
+            <div className="col-lg-5 col-md-6 mb-md-0 mb-3">
               <InfoCard
                 second
                 title={t("home:beneficiary")}
-                subTitle={t("home:totalPopulation") as any}
+                subTitle={""}
                 value={incomeExpenseData?.total_population}
               >
-                <div className="infoCard-details">
-                  <div className="infoCard-details-item">
-                    <p className="infoCard-sub-title2">{t("home:households")}</p>
-                    <h6 className="infoCard-sub-price">
-                      <img src={HouseIcon} alt="" className="icon" />{" "}
-                      {incomeExpenseData?.house_hold}
-                    </h6>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="infoCard-details-item">
+                      <p className="infoCard-sub-title2">{t("home:households")}</p>
+                      <h6 className="infoCard-sub-price">
+                        <img src={HouseIcon} alt="" className="icon" />{" "}
+                        {incomeExpenseData?.house_hold}
+                      </h6>
+                    </div>
                   </div>
-                  {/* <div className="infoCard-details-item">
-                    <p className="infoCard-sub-title2">Public Taps</p>
-                    <h6 className="infoCard-sub-price">
-                      <img src={UserGroupIcon} alt="" className="icon" />{" "}
-                      {incomeExpenseData?.public_taps}
-                    </h6>
-                  </div> */}
-                  <div className="infoCard-details-item">
-                    <p className="infoCard-sub-title2">{t("home:institutions")}</p>
-                    <h6 className="infoCard-sub-price">
-                      <img src={InstitutionIcon} alt="" className="icon" />{" "}
-                      {incomeExpenseData?.instutions}
-                    </h6>
+                  <div className="col-6">
+                    <div className="infoCard-details-item">
+                      <p className="infoCard-sub-title2">{t("home:public")}</p>
+                      <h6 className="infoCard-sub-price">
+                        <img src={UserGroupIcon} alt="" className="icon" />{" "}
+                        {incomeExpenseData?.public_connection}
+                      </h6>
+                    </div>
+                  </div>
+                  <div className="col-6 mt-4">
+                    <div className="infoCard-details-item">
+                      <p className="infoCard-sub-title2">{t("home:institutions")}</p>
+                      <h6 className="infoCard-sub-price">
+                        <img src={InstitutionIcon} alt="" className="icon" />{" "}
+                        {incomeExpenseData?.instutions}
+                      </h6>
+                    </div>
+                  </div>
+                  <div className="col-6 mt-4">
+                    <div className="infoCard-details-item">
+                      <p className="infoCard-sub-title2">{t("home:commercial")}</p>
+                      <h6 className="infoCard-sub-price">
+                        <img src={InstitutionIcon} alt="" className="icon" />{" "}
+                        {incomeExpenseData?.commercial_connection}
+                      </h6>
+                    </div>
                   </div>
 
-                  <div className="infoCard-details-item">
+                  {/* <div className="infoCard-details-item">
                     <p className="infoCard-sub-title2">{t("home:publicTaps")}</p>
                     <h6 className="infoCard-sub-price">
                       <img src={UserGroupIcon} alt="" className="icon" />{" "}
                       {incomeExpenseData?.public_taps}
                     </h6>
-                  </div>
+                  </div> */}
                 </div>
               </InfoCard>
             </div>
 
-            <div className="col-lg-4 col-md-6 mb-md-0 mb-3">
+            <div className="col-lg-3 col-md-6 mb-md-0 mb-3">
               <InfoCard
                 title={t("home:supply")}
                 subTitle={t("home:dailyAverage") as string}
-                value={incomeExpenseData?.daily_avg_supply + " " + t("home:litre")}
+                value={
+                  incomeExpenseData?.daily_avg_supply
+                    ? incomeExpenseData?.daily_avg_supply + " " + t("home:litre")
+                    : ""
+                }
               >
                 <div className="infoCard-details"></div>
 
@@ -143,16 +164,8 @@ const HomeMain = (props: Iprops) => {
                     <h6>{item.day?.toUpperCase()}</h6>
                     <span>
                       <p>
-                        {getNumberByLanguage(item.morning_from_time)?.split(":")[0]} :
-                        {getNumberByLanguage(item.morning_from_time)?.split(":")[1]} {t("home:am")}{" "}
-                        - {getNumberByLanguage(item.morning_to_time)?.split(":")[0]}:
-                        {getNumberByLanguage(item.morning_to_time)?.split(":")[1]} {t("home:am")}
-                      </p>
-                      <p>
-                        {getNumberByLanguage(item.evening_from_time)?.split(":")[0]} :
-                        {getNumberByLanguage(item.evening_from_time)?.split(":")[1]} {t("home:pm")}{" "}
-                        - {getNumberByLanguage(item.evening_to_time)?.split(":")[0]}:
-                        {getNumberByLanguage(item.evening_to_time)?.split(":")[1]} {t("home:pm")}
+                        {getNumberByLanguage(formatTime(item.time_from))} :
+                        {getNumberByLanguage(formatTime(item.time_to))}
                       </p>
                     </span>
                   </div>
@@ -160,7 +173,7 @@ const HomeMain = (props: Iprops) => {
             </div>
 
             <div className="home-right-card">
-              <h6 className="home-right-title">{t("home:tariffRates")}</h6>
+              <h6 className="home-right-title">{t("home:tariffRates")} </h6>
 
               {/* {props.waterTarrifs?.map((tarrif) => (
                 <div className="home-right-info" key={tarrif.id}>
@@ -193,17 +206,7 @@ const HomeMain = (props: Iprops) => {
               <div className="home-right-info">
                 <h6>{t("home:source")}: </h6>
                 <span>
-                  <p>
-                    {props.schemeDetails?.water_source &&
-                      props.schemeDetails?.water_source instanceof Array &&
-                      props.schemeDetails?.water_source?.map((item, index) => (
-                        <>
-                          {" "}
-                          {item?.name}
-                          {index !== props.schemeDetails?.water_source?.length - 1 ? "," : ""}{" "}
-                        </>
-                      ))}
-                  </p>
+                  <p>{props.schemeDetails?.water_source}</p>
                 </span>
               </div>
               <div className="home-right-info">
@@ -212,19 +215,6 @@ const HomeMain = (props: Iprops) => {
                   <p>
                     {getNumberByLanguage(
                       new Date(props.waterSchemeDetails?.system_built_date)?.toLocaleDateString()
-                    )}
-                  </p>
-                </span>
-              </div>
-
-              <div className="home-right-info">
-                <h6>{t("home:startDate")}: </h6>
-                <span>
-                  <p>
-                    {getNumberByLanguage(
-                      new Date(
-                        props.waterSchemeDetails?.system_operation_from
-                      )?.toLocaleDateString()
                     )}
                   </p>
                 </span>

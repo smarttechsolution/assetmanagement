@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 import { getNumberByLanguage } from "i18n/i18n";
 
 type ActualPlannedDistribution = {
-  this_year: { value: number; name: string }[];
-  all_time: { value: number; name: string }[];
+  this_year: { value: number; name: string; itemStyle?: { color: string } }[];
+  all_time: { value: number; name: string; itemStyle?: { color: string } }[];
 };
 
 interface Props extends PropsFromRedux {}
@@ -29,38 +29,46 @@ const DonoughtChart = (props: Props) => {
     const seriesActualData: ActualPlannedDistribution = {
       this_year: [
         {
-          value: props.maintainanceCostByYear?.this_year_actual_cost.labour_cost__sum || 0,
+          value: props.maintainanceCostByYear?.this_year_actual_cost?.labour_cost__sum || 0,
           name: "Labour Cost",
+          itemStyle: { color: "#2680eb" },
         },
         {
-          value: props.maintainanceCostByYear?.this_year_actual_cost.material_cost__sum || 0,
-          name: "Material Cost",
+          value: props.maintainanceCostByYear?.this_year_actual_cost?.material_cost__sum || 0,
+          name: "Consumable Cost",
+          itemStyle: { color: "#69a7f1" },
         },
         {
-          value: props.maintainanceCostByYear?.this_year_actual_cost.replacement_cost__sum || 0,
+          value: props.maintainanceCostByYear?.this_year_actual_cost?.replacement_cost__sum || 0,
           name: "Replacement Cost",
+          itemStyle: { color: "#accef7" },
         },
         {
-          value: props.maintainanceCostByYear?.this_year_actual_cost.unsegregated_cost || 0,
+          value: props.maintainanceCostByYear?.this_year_actual_cost?.cost_total__sum || 0,
           name: "Unsegregated Cost",
+          itemStyle: { color: "#e5f1ff" },
         },
       ],
       all_time: [
         {
-          value: props.maintainanceCostByYear?.all_time_actual_cost.labour_cost__sum || 0,
+          value: props.maintainanceCostByYear?.all_time_actual_cost?.labour_cost__sum || 0,
           name: "Labour Cost",
+          itemStyle: { color: "#2680eb" },
         },
         {
-          value: props.maintainanceCostByYear?.all_time_actual_cost.material_cost__sum || 0,
-          name: "Material Cost",
+          value: props.maintainanceCostByYear?.all_time_actual_cost?.material_cost__sum || 0,
+          name: "Consumable Cost",
+          itemStyle: { color: "#69a7f1" },
         },
         {
-          value: props.maintainanceCostByYear?.all_time_actual_cost.replacement_cost__sum || 0,
+          value: props.maintainanceCostByYear?.all_time_actual_cost?.replacement_cost__sum || 0,
           name: "Replacement Cost",
+          itemStyle: { color: "#accef7" },
         },
         {
-          value: props.maintainanceCostByYear?.all_time_actual_cost.unsegregated_cost || 0,
+          value: props.maintainanceCostByYear?.all_time_actual_cost?.cost_total__sum || 0,
           name: "Unsegregated Cost",
+          itemStyle: { color: "#e5f1ff" },
         },
       ],
     };
@@ -68,38 +76,46 @@ const DonoughtChart = (props: Props) => {
     const seriesPlannedData: ActualPlannedDistribution = {
       this_year: [
         {
-          value: props.maintainanceCostByYear?.this_year_expected_cost.labour_cost__sum || 0,
+          value: props.maintainanceCostByYear?.this_year_expected_cost?.labour_cost || 0,
           name: "Labour Cost",
+          itemStyle: { color: "#eb9126" },
         },
         {
-          value: props.maintainanceCostByYear?.this_year_expected_cost.material_cost__sum || 0,
-          name: "Material Cost",
+          value: props.maintainanceCostByYear?.this_year_expected_cost?.material_cost || 0,
+          name: "Consumable Cost",
+          itemStyle: { color: "#f1b369" },
         },
         {
-          value: props.maintainanceCostByYear?.this_year_expected_cost.replacement_cost__sum || 0,
+          value: props.maintainanceCostByYear?.this_year_expected_cost?.replacement_cost || 0,
           name: "Replacement Cost",
+          itemStyle: { color: "#f7d5ac" },
         },
         {
-          value: props.maintainanceCostByYear?.this_year_expected_cost.unsegregated_cost || 0,
+          value: props.maintainanceCostByYear?.this_year_expected_cost?.unsegregated_cost || 0,
           name: "Unsegregated Cost",
+          itemStyle: { color: "#ffefdb" },
         },
       ],
       all_time: [
         {
-          value: props.maintainanceCostByYear?.all_time_expected_cost.labour_cost__sum || 0,
+          value: props.maintainanceCostByYear?.all_time_expected_cost?.labour_cost || 0,
           name: "Labour Cost",
+          itemStyle: { color: "#eb9126" },
         },
         {
-          value: props.maintainanceCostByYear?.all_time_expected_cost.material_cost__sum || 0,
-          name: "Material Cost",
+          value: props.maintainanceCostByYear?.all_time_expected_cost?.material_cost || 0,
+          name: "Consumable Cost",
+          itemStyle: { color: "#f1b369" },
         },
         {
-          value: props.maintainanceCostByYear?.all_time_expected_cost.replacement_cost__sum || 0,
+          value: props.maintainanceCostByYear?.all_time_expected_cost?.replacement_cost || 0,
           name: "Replacement Cost",
+          itemStyle: { color: "#f7d5ac" },
         },
         {
-          value: props.maintainanceCostByYear?.all_time_expected_cost.unsegregated_cost || 0,
+          value: props.maintainanceCostByYear?.all_time_expected_cost?.unsegregated_cost || 0,
           name: "Unsegregated Cost",
+          itemStyle: { color: "#ffefdb" },
         },
       ],
     };
@@ -108,29 +124,30 @@ const DonoughtChart = (props: Props) => {
       {
         name: "Labour Cost",
         value: {
-          this_year: props.maintainanceCostByYear?.this_year_actual_cost.labour_cost__sum || 0,
-          all_time: props.maintainanceCostByYear?.all_time_actual_cost.labour_cost__sum || 0,
+          this_year: props.maintainanceCostByYear?.this_year_actual_cost?.labour_cost__sum || 0,
+          all_time: props.maintainanceCostByYear?.all_time_actual_cost?.labour_cost__sum || 0,
         },
       },
       {
-        name: "Material Cost",
+        name: "Consumable Cost",
         value: {
-          this_year: props.maintainanceCostByYear?.this_year_actual_cost.material_cost__sum || 0,
-          all_time: props.maintainanceCostByYear?.all_time_actual_cost.material_cost__sum || 0,
+          this_year: props.maintainanceCostByYear?.this_year_actual_cost?.material_cost__sum || 0,
+          all_time: props.maintainanceCostByYear?.all_time_actual_cost?.material_cost__sum || 0,
         },
       },
       {
         name: "Replacement Cost",
         value: {
-          this_year: props.maintainanceCostByYear?.this_year_actual_cost.replacement_cost__sum || 0,
-          all_time: props.maintainanceCostByYear?.all_time_actual_cost.replacement_cost__sum || 0,
+          this_year:
+            props.maintainanceCostByYear?.this_year_actual_cost?.replacement_cost__sum || 0,
+          all_time: props.maintainanceCostByYear?.all_time_actual_cost?.replacement_cost__sum || 0,
         },
       },
       {
         name: "Unsegregated Cost",
         value: {
-          this_year: props.maintainanceCostByYear?.this_year_actual_cost.unsegregated_cost || 0,
-          all_time: props.maintainanceCostByYear?.all_time_actual_cost.unsegregated_cost || 0,
+          this_year: props.maintainanceCostByYear?.this_year_actual_cost?.cost_total__sum || 0,
+          all_time: props.maintainanceCostByYear?.all_time_actual_cost?.cost_total__sum || 0,
         },
       },
     ];
@@ -139,30 +156,29 @@ const DonoughtChart = (props: Props) => {
       {
         name: "Labour Cost",
         value: {
-          this_year: props.maintainanceCostByYear?.this_year_expected_cost.labour_cost__sum || 0,
-          all_time: props.maintainanceCostByYear?.all_time_expected_cost.labour_cost__sum || 0,
+          this_year: props.maintainanceCostByYear?.this_year_expected_cost?.labour_cost || 0,
+          all_time: props.maintainanceCostByYear?.all_time_expected_cost?.labour_cost || 0,
         },
       },
       {
-        name: "Material Cost",
+        name: "Consumable Cost",
         value: {
-          this_year: props.maintainanceCostByYear?.this_year_expected_cost.material_cost__sum || 0,
-          all_time: props.maintainanceCostByYear?.all_time_expected_cost.material_cost__sum || 0,
+          this_year: props.maintainanceCostByYear?.this_year_expected_cost?.material_cost || 0,
+          all_time: props.maintainanceCostByYear?.all_time_expected_cost?.material_cost || 0,
         },
       },
       {
         name: "Replacement Cost",
         value: {
-          this_year:
-            props.maintainanceCostByYear?.this_year_expected_cost.replacement_cost__sum || 0,
-          all_time: props.maintainanceCostByYear?.all_time_expected_cost.replacement_cost__sum || 0,
+          this_year: props.maintainanceCostByYear?.this_year_expected_cost?.replacement_cost || 0,
+          all_time: props.maintainanceCostByYear?.all_time_expected_cost?.replacement_cost || 0,
         },
       },
       {
         name: "Unsegregated Cost",
         value: {
-          this_year: props.maintainanceCostByYear?.this_year_expected_cost.unsegregated_cost || 0,
-          all_time: props.maintainanceCostByYear?.all_time_expected_cost.unsegregated_cost || 0,
+          this_year: props.maintainanceCostByYear?.this_year_expected_cost?.unsegregated_cost || 0,
+          all_time: props.maintainanceCostByYear?.all_time_expected_cost?.unsegregated_cost || 0,
         },
       },
     ];
@@ -174,14 +190,20 @@ const DonoughtChart = (props: Props) => {
     setPlannedDisttribution(seriesPlannedData);
   }, [props.incomeByCategory, props.expenseByCategory, props.maintainanceCostByYear]);
 
-  var colorPalette = ["#D7D7D7", "#C4C4C4", "#F2F2F2", "#E5E5E5"];
+  var colorPalette = ["#2680eb", "#69a7f1", "#accef7", "#cde2fa"];
 
-  var colorPalette2 = ["#BDD3EA", "#2680EB", "#CCDDEA", "#8BADD5"];
+  var colorPalette2 = ["#eb9126", "#f1b369", "#f7d5ac", "#fae6cd"];
+
+  // console.log(plannedDistriBution, "<<<<<<<<<<<plannedTableData")
 
   return (
     <div className="row">
       <div className="col-lg-6">
-        <GeneralCard title={t("home:maintenanceCostDistributionActual")} className="mr-md-3 mt-2">
+        <GeneralCard
+          title={t("home:maintenanceCostDistributionActual")}
+          className="mr-md-3 mt-2"
+          print={true}
+        >
           <GeneralChart
             minHeight={250}
             options={{
@@ -206,10 +228,12 @@ const DonoughtChart = (props: Props) => {
                     show: true,
                     position: "center",
                     formatter: function () {
-                      return `Rs  ${getNumberByLanguage(
-                        props.maintainanceCostByYear?.all_time_actual_cost
-                          .all_time_actual_cost_total 
-                      ) || 0}`;
+                      return `${props.currency}  ${
+                        getNumberByLanguage(
+                          props.maintainanceCostByYear?.this_year_actual_cost
+                            ?.this_year_actual_cost_total
+                        ) || 0
+                      }`;
                     },
                   },
                   data: actualDistriBution?.this_year,
@@ -224,10 +248,12 @@ const DonoughtChart = (props: Props) => {
                     show: true,
                     position: "center",
                     formatter: function () {
-                      return `Rs  ${getNumberByLanguage(
-                        props.maintainanceCostByYear?.this_year_actual_cost
-                          .this_year_actual_cost_total 
-                      ) || 0}`;
+                      return `${props.currency}  ${
+                        getNumberByLanguage(
+                          props.maintainanceCostByYear?.all_time_actual_cost
+                            ?.all_time_actual_cost_total
+                        ) || 0
+                      }`;
                     },
                   },
                   data: actualDistriBution?.all_time,
@@ -243,7 +269,11 @@ const DonoughtChart = (props: Props) => {
         </GeneralCard>
       </div>
       <div className="col-lg-6">
-        <GeneralCard title={t("home:maintenanceCostDistributionPlanned")} className="ml-md-3  mt-2">
+        <GeneralCard
+          title={t("home:maintenanceCostDistributionExpected")}
+          className="ml-md-3  mt-2"
+          print={true}
+        >
           <GeneralChart
             minHeight={250}
             options={{
@@ -272,10 +302,10 @@ const DonoughtChart = (props: Props) => {
                     show: true,
                     position: "center",
                     formatter: function () {
-                      return `Rs  ${
+                      return `${props.currency}  ${
                         getNumberByLanguage(
-                          props.maintainanceCostByYear?.all_time_expected_cost
-                            .all_time_expected_cost_total
+                          props.maintainanceCostByYear?.this_year_expected_cost
+                            ?.all_time_expected_cost_total
                         ) || 0
                       }`;
                     },
@@ -296,10 +326,10 @@ const DonoughtChart = (props: Props) => {
                     show: true,
                     position: "center",
                     formatter: function () {
-                      return `Rs  ${
+                      return `${props.currency}  ${
                         getNumberByLanguage(
-                          props.maintainanceCostByYear?.this_year_expected_cost
-                            .this_year_expected_cost_total
+                          props.maintainanceCostByYear?.all_time_expected_cost
+                            ?.all_time_expected_cost_total
                         ) || 0
                       }`;
                     },
@@ -326,6 +356,7 @@ const mapStateToProps = (state: RootState) => ({
   expenseByCategory: state.reportData.expenseByCategoryData.data,
   maintainanceCost: state.reportData.maintainanceCostData.data,
   maintainanceCostByYear: state.reportData.maintainanceCostByYearData.data,
+  currency: state.waterSchemeData.waterSchemeDetailsData.data?.currency,
 });
 
 const mapDispatchToProps = {};

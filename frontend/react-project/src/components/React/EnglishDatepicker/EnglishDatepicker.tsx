@@ -22,6 +22,8 @@ interface DateProps {
   dateFormat?: string;
   showYearPicker?: boolean;
   showMonthYearPicker?: boolean;
+  showTimeSelectOnly?: boolean;
+  timeIntervals?: number;
 }
 const EnglishDatePicker: React.SFC<DateProps> = (props) => {
   const {
@@ -39,10 +41,12 @@ const EnglishDatePicker: React.SFC<DateProps> = (props) => {
     minTime,
     maxTime,
     placeholder,
-    showYearPicker=false,
-    showMonthYearPicker=false,
+    showYearPicker = false,
+    showMonthYearPicker = false,
+    showTimeSelectOnly = false,
     handleChange,
     showTimeSelect,
+    timeIntervals = 15,
   } = props;
   const _calendar: any = useRef<DatePicker>();
 
@@ -79,7 +83,7 @@ const EnglishDatePicker: React.SFC<DateProps> = (props) => {
       onChangeRaw={(e) => e.preventDefault()} //Disables input
       showTimeSelect={showTimeSelect}
       timeFormat="HH:mm"
-      timeIntervals={15}
+      timeIntervals={timeIntervals}
       timeCaption="Time"
       popperPlacement={"bottom-start"}
       popperModifiers={popperModifiers}
@@ -87,6 +91,7 @@ const EnglishDatePicker: React.SFC<DateProps> = (props) => {
       showYearDropdown
       showMonthDropdown
       disabled={disabled}
+      showTimeSelectOnly={showTimeSelectOnly}
       placeholderText={placeholder || ""}
       showYearPicker={showYearPicker}
       showMonthYearPicker={showMonthYearPicker}
