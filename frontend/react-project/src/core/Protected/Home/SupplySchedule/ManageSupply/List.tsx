@@ -10,6 +10,11 @@ import { deleteWaterSupplyScheduleAction } from "store/modules/waterSupplySchedu
 import { getWaterSupplyScheduleAction } from "store/modules/waterSupplySchedule/getWaterSupplySchedule";
 import { RootState } from "store/root-reducer";
 import { formatTime } from "../index";
+<<<<<<< HEAD
+=======
+import TooltipLabel from "components/UI/TooltipLabel";
+
+>>>>>>> ams-final
 
 interface Props extends PropsFromRedux {
   setEditData: any;
@@ -37,6 +42,11 @@ const List = (props: Props) => {
     }
   };
 
+  const truncate = (str) => {
+    return str?.length > 18 ? str.substr(0, 18) + "..." : str;
+  }
+
+
   return (
     <div className="data-table mt-4">
       <div className="table-responsive">
@@ -44,9 +54,16 @@ const List = (props: Props) => {
           <thead>
             <tr>
               <th>{t("home:sn")}</th>
+<<<<<<< HEAD
               <th>{t("home:day")}</th>
               <th>{t("home:timeFrom")}</th>
               <th>{t("home:timeTo")}</th>
+=======
+              <th>{t("home:dayoftheweek")}</th>
+              <th>{t("home:timeFrom")}</th>
+              <th>{t("home:timeTo")}</th>
+              <th>{t("home:comment")}</th>
+>>>>>>> ams-final
               <th>{t("home:action")}</th>
             </tr>
           </thead>
@@ -57,6 +74,12 @@ const List = (props: Props) => {
                 <td> {item.day}</td>
                 <td>{getNumberByLanguage(formatTime(item.time_from))} </td>
                 <td>{getNumberByLanguage(formatTime(item.time_to))} </td>
+<<<<<<< HEAD
+=======
+                <td id="comment">{truncate(item.comment)}
+                  {item.comment?.length > 18  && <TooltipLabel id={"apd-" + item.id} text={item.comment} />}
+                </td>
+>>>>>>> ams-final
                 <td className="action">
                   <div role="button" onClick={() => props.setEditData(item)}>
                     <img src={EditActionIcon} alt="" />

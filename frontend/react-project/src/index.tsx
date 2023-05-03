@@ -9,7 +9,11 @@ import App from "./App";
 import SimpleReactLightbox from "simple-react-lightbox";
 
 ReactDOM.render(
+<<<<<<< HEAD
   <React.StrictMode>
+=======
+  <React.Fragment>
+>>>>>>> ams-final
     <SimpleReactLightbox>
       <Provider store={store}>
         <HashRouter>
@@ -17,7 +21,11 @@ ReactDOM.render(
         </HashRouter>
       </Provider>
     </SimpleReactLightbox>
+<<<<<<< HEAD
   </React.StrictMode>,
+=======
+  </React.Fragment>,
+>>>>>>> ams-final
   document.getElementById("root")
 );
 
@@ -25,3 +33,7 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
+
+
+
+// StrictMode

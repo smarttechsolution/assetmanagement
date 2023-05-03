@@ -30,6 +30,12 @@ export default function getWaterSupplyTestReducer(state = initialState, action: 
     return initDefaultReducer(actionName, action, stateCopy);
 }
 
+<<<<<<< HEAD
 export const getWaterSupplyTestAction = (lang): AppThunk<APIResponseDetail<WaterTestResultType>> => async (dispatch: Dispatch) => {
     return await initDefaultAction(apiDetails, dispatch, { disableSuccessToast: true, pathVariables: { lang } });
 };
+=======
+export const getWaterSupplyTestAction = (lang, date_from?:any, date_to?:any): AppThunk<APIResponseDetail<WaterTestResultType>> => async (dispatch: Dispatch) => {
+    return await initDefaultAction(apiDetails, dispatch, { disableSuccessToast: true, pathVariables: { lang }, params: { date_from, date_to } });
+};
+>>>>>>> ams-final

@@ -15,6 +15,10 @@ import CashbookExpenditureTable from "./CashbookExpenditureTable";
 import CashbookIncomeTable from "./CashbookTable";
 import CashbookIncomeTableByDate from "./CashBookByDate/CashbookTable";
 import CashbookExpenseTableByDate from "./CashBookByDate/CashbookExpenditureTable";
+<<<<<<< HEAD
+=======
+import { act } from "react-dom/test-utils";
+>>>>>>> ams-final
 
 interface Props extends PropsFromRedux {}
 
@@ -24,6 +28,27 @@ const CashBook = (props: Props) => {
   const [activeDate, setActiveDate] = useState<any>("");
   const [startDate, setStartDate] = useState<any>("");
   const [endDate, setEndDate] = useState<any>("");
+<<<<<<< HEAD
+=======
+  const [startDay, setStartDay] = useState<any>("");
+  const [endDay, setEndDay] = useState<any>("");
+
+  React.useEffect(() => {
+    var cashbookStartDay = startDate.split("-")[0];
+    if (cashbookStartDay != null) {
+      setStartDay(cashbookStartDay);
+    } else {
+    }
+    console.log(cashbookStartDay,"______________________________-");
+
+    var cashbookEndDay = endDate.split("-")[0];
+    if (cashbookEndDay !=null) {
+      setEndDay(cashbookEndDay);
+    } else {
+    }
+    console.log(cashbookEndDay,"______________________________-");
+  })
+>>>>>>> ams-final
 
   React.useEffect(() => {
     if (props.schemeDetails) {
@@ -34,6 +59,7 @@ const CashBook = (props: Props) => {
       }
     }
   }, [props.schemeDetails]);
+
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -64,14 +90,22 @@ const CashBook = (props: Props) => {
                     props.schemeDetails?.system_date_format
                   )
                 : ""
+<<<<<<< HEAD
             } -  ${
+=======
+            } ${startDay} -  ${
+>>>>>>> ams-final
                 endDate
                   ? getMonthByLanguageAndScheme(
                       endDate.split("-")[1],
                       props.schemeDetails?.system_date_format
                     )
                   : ""
+<<<<<<< HEAD
               } )
+=======
+              } ${endDay} )
+>>>>>>> ams-final
             `
         }
 

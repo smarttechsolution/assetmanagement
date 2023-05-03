@@ -9,7 +9,7 @@ const ManageOtherExpenses = (props: Props) => {
 
   return (
     <div>
-      <Form editData={editData} />
+      <Form editData={editData} setEditData={setEditData}/>
 
       <List setEditData={setEditData} />
     </div>

@@ -12,7 +12,11 @@
     "assetComponents": "Asset Components",
     "supplyVisualization": "Supply Visualization",
     "qualityTestResult": "Quality Test Result",
+<<<<<<< HEAD
     "tariffRates": "Expected Income - Water Tarrifs",
+=======
+    "tariffRates": "Expected Income - Water Tariff",
+>>>>>>> ams-final
     "otherParam": "Expected Income/Expenditures (other)",
     "cashbook": "Actual Income/Expenditure (Cashbook)",
     "cashbookByDate": "Actual Income/Expenditure (Cashbook By Date)",

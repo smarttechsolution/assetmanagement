@@ -13,7 +13,8 @@ export type TestParametersType = {
     unit: string
     types: string
     NDWQS_standard: string
-
+    ndwqs1: number
+    ndwqs2: number
 }[]
 
 const apiDetails = Object.freeze(apiList.testParameters.getTestParameters);

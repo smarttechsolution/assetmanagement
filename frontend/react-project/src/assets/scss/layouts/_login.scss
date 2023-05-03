@@ -58,6 +58,20 @@
       -webkit-text-stroke: 1px #707070;
 
     }
+    .contact_info{
+      margin-left: 5.3rem;
+      position: absolute;
+      h6{
+        font-size: 15px;
+        font-weight: 400;
+      }
+      a{
+        font-size: 13px;
+        font-weight: 400;
+        display: flex;
+        justify-content: center;
+      }
+    }
   }
 
   &-form {
@@ -263,3 +277,5 @@
     }
   }
 }
+
+

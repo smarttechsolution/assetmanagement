@@ -4,14 +4,20 @@
     "home": "होम",
     "finance": "वित्त",
     "visualization": "रखरखाव",
+<<<<<<< HEAD
     "cashBook": "नगद किताब",
     "maintainance": "रखरखाव",
+=======
+    "cashBook": "क्यास्बुक",
+    "maintainance": "मर्मतसम्भार ",
+>>>>>>> ams-final
     "service": "सेवा",
     "costVisualization": "लागत दृश्य",
     "dataVisualization": "डाटा भिजुअलाइजेशन",
     "assetComponents": "सम्पत्ति अवयव",
     "supplyVisualization": "आपूर्ति दृश्य",
     "qualityTestResult": "गुणस्तर परीक्षण परिणाम",
+<<<<<<< HEAD
     "tariffRates": "अपेक्षित आय - पानी ट्यारिफहरू",
     "otherParam": "अपेक्षित आय/व्यय (अन्य)",
     "cashbook": "वास्तविक आय/व्यय (क्यासबुक)",
@@ -21,4 +27,16 @@
     "componentLogs": "वास्तविक मर्मतसम्भार (लगहरू)",
     "quality": "पानीको गुणस्तर र मात्रा",
     "inflationParam": "मुद्रास्फीति (%) प्यारामिटरहरू"
+=======
+    "tariffRates": "अनुमानित आम्दानी - पानी ट्यारिफहरू",
+    "otherParam": "अनुमानित आम्दानी/खर्च  (अन्य)",
+    "cashbook": "वास्तविक आम्दानी/खर्च  (क्यासबुक)",
+    "cashbookByDate": "वास्तविक आम्दानी/खर्च  (मिति अनुसार नगद पुस्तिका)",
+    "componentCategories": "सम्पत्ति सूची",
+    "assetComponent": "अनुमानित जोखिम, गतिविधि र लागत",
+    "componentLogs": "वास्तविक मर्मतसम्भार (लगहरू)",
+    "quality": "पानीको गुणस्तर परीक्षण",
+    "inflationParam": "मुल्यवृद्धि दर (%) ",
+    "waterSupplyRecord": "पानी आपूर्ति विवरण"
+>>>>>>> ams-final
 }

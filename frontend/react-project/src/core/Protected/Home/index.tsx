@@ -16,7 +16,6 @@ const HomeMain = (props: IProps) => {
 
   return (
     <div className="container py-3">
-      {/* <h6 className="mb-3 text-black">Dashboard</h6> */}
       <div className="row">
         <div className="col-lg-8 col-md-6">
           <div className="mb-3">

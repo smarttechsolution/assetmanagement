@@ -27,6 +27,8 @@ type ChartDataType = {
   total_supply_avg?: (string | number)[];
   total_supply?: (string | number)[];
   non_revenue_water?: (string | number)[];
+  revenue_water?:(string | number)[];
+  // daily_target?: (string | number)[];
 };
 
 interface Props extends PropsFromRedux {
@@ -34,6 +36,7 @@ interface Props extends PropsFromRedux {
   options: any[];
   compareKey: string;
   defaultSelected: string[];
+  key: string;
 }
 
 const LineChart = (props: Props) => {
@@ -55,11 +58,20 @@ const LineChart = (props: Props) => {
           )} - ${getNumberByLanguage(getYearFromDate(item.date_to))}`
       ),
 
+<<<<<<< HEAD
       total_supply_avg: props.waterSupplyData?.supply?.map((item) => Number(item.total_supply_avg)),
+=======
+      total_supply_avg: props.waterSupplyData?.supply?.map((item) => Number(item.total_supply_average)),
+>>>>>>> ams-final
       total_supply: props.waterSupplyData?.supply?.map((item) => Number(item.total_supply)),
       non_revenue_water: props.waterSupplyData?.supply?.map((item) =>
         Number(item.non_revenue_water)
       ),
+<<<<<<< HEAD
+=======
+      revenue_water: props.waterSupplyData?.supply?.map((item) =>Number(item.revenue_water)),
+      // daily_target: props.waterSupplyData?.supply?.map((item) => props.waterSupplyData?.daily_target),
+>>>>>>> ams-final
     };
     setChartData(newData);
   }, [props.waterSupplyData]);
@@ -138,7 +150,7 @@ const LineChart = (props: Props) => {
       <div className="col-md-9">
         <GeneralChart minHeight={400} options={optionData} />
         {tableData?.length > 0 && props.type && (
-          <DataTable years={chartData?.xAxis} tableData={tableData} type={props.type} />
+          <DataTable years={chartData?.xAxis} tableData={tableData} key={props.key} type={props.type} />
         )}
       </div>
       <div className="col-md-3 chartOptions">

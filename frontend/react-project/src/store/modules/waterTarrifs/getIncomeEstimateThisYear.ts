@@ -34,6 +34,10 @@ export type IncomeEstimates = {
     commercial_connection: number;
     total_connection: number;
     other_income: number;
+<<<<<<< HEAD
+=======
+    income: number;
+>>>>>>> ams-final
 }
 
 const apiDetails = Object.freeze(apiList.waterTarrif.incomeEstimateThisYear);

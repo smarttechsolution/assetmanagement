@@ -26,6 +26,7 @@ type ChartDataType = {
   total_supply_avg?: (string | number)[];
   total_supply?: (string | number)[];
   non_revenue_water?: (string | number)[];
+  revenue_water?: (string | number)[];
 };
 
 interface Props extends PropsFromRedux {
@@ -34,6 +35,7 @@ interface Props extends PropsFromRedux {
   compareKey?: string;
   selectedYear: number;
   defaultSelected: string[];
+  key:string;
 }
 
 const LineChart = (props: Props) => {
@@ -59,15 +61,25 @@ const LineChart = (props: Props) => {
         xAxis: fiscalYearArray?.map((item) => {
           return getMonthByLanguageAndScheme(item, props.schemeDetails?.system_date_format);
         }),
+        
         total_supply_avg: fiscalYearArray?.map((item) => {
           return (
+<<<<<<< HEAD
             props.waterSupplyData?.supply?.find((inc) => {
               return +inc.supply_date__month < 10
                 ? +inc.supply_date__month?.toString()?.replace("0", "") === item
                 : +inc.supply_date__month === item;
             })?.total_supply_avg || 0
+=======
+            props.waterSupplyData?.average?.find((inc) => {
+              return +inc.month < 10
+                ? +inc.month?.toString()?.replace("0", "") === item
+                : +inc.month === item;
+            })?.supply_average || 0
+>>>>>>> ams-final
           );
-        }),
+          
+        }),        
         total_supply: fiscalYearArray?.map((item) => {
           return (
             props.waterSupplyData?.supply?.find((inc) => {
@@ -84,9 +96,30 @@ const LineChart = (props: Props) => {
                 ? +inc.supply_date__month?.toString()?.replace("0", "") === item
                 : +inc.supply_date__month === item;
             })?.non_revenue_water || 0
+<<<<<<< HEAD
           );
         }),
       };
+=======
+            
+            // props.waterSupplyData?.supply?.find((inc) => {
+            //   return +inc.supply_date__month < 10
+            //   ? +inc.supply_date__month?.toString()?.replace("0", "") === item
+            //   : +inc.supply_date__month === item;
+            // })?.non_revenue_water || 0
+            );
+          }),
+          revenue_water: fiscalYearArray?.map((item) => {
+            return (
+              props.waterSupplyData?.supply?.find((inc) => {
+                return +inc.supply_date__month < 10
+                  ? +inc.supply_date__month?.toString()?.replace("0", "") === item
+                  : +inc.supply_date__month === item;
+              })?.revenue_water || 0
+              );
+            }),
+        };
+>>>>>>> ams-final
 
 
       setChartData(newData);
@@ -166,7 +199,7 @@ const LineChart = (props: Props) => {
       <div className="col-md-9">
         <GeneralChart minHeight={400} options={optionData} />
         {tableData?.length > 0 && props.type && (
-          <DataTable years={chartData?.xAxis} tableData={tableData} type={props.type} />
+          <DataTable years={chartData?.xAxis} key={props.key} tableData={tableData} type={props.type} />
         )}
       </div>
       <div className="col-md-3 chartOptions">

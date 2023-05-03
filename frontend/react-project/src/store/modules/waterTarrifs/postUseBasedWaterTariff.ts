@@ -26,7 +26,7 @@ export default function postUseBasedWaterTariffReducer(state = initialState, act
     return initDefaultReducer(actionName, action, stateCopy);
 }
 
-export const postUseBasedWaterTariffAction = (lang, requestData: requestData): AppThunk<APIResponseDetail<WaterTarrifsType>> => async (dispatch: Dispatch) => {
-    const updatedDetails = { disableSuccessToast: true, pathVariables: { lang }, requestData }
+export const postUseBasedWaterTariffAction = (lang, requestData: requestData, params: any): AppThunk<APIResponseDetail<WaterTarrifsType>> => async (dispatch: Dispatch) => {
+    const updatedDetails = { disableSuccessToast: true, pathVariables: { lang }, requestData, params }
     return await initDefaultAction(apiDetails, dispatch, updatedDetails);
 };

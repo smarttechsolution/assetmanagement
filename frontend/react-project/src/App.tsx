@@ -9,6 +9,7 @@ import { geti18nLanguage, switchI18nLanguage } from "store/modules/i18n/i18n";
 import { addUserDetails } from "store/modules/userDetails";
 import { RootState } from "store/root-reducer";
 import "./App.scss";
+import { Helmet } from 'react-helmet';
 
 // Initialize Notification Toaster
 toast.configure({
@@ -62,8 +63,32 @@ function App() {
     dispatch(addUserDetails(userDetails));
   }, []);
 
+  const [ title, setTitle ] = React.useState<any>();
+
+  useEffect(() => {
+    var path = window.location.href;
+    const arr = path.split('/')
+
+    for (let i = 0; i < arr.length; i++) {
+      const element = arr[i];
+      if (element === 'auth') {
+        var ele = (<Helmet>
+          <title>AMS | Config</title>
+        </Helmet>)
+        setTitle(ele)
+      }else if(element === 'scheme'){
+        var ele = (<Helmet>
+          <title>AMS | Dashboard</title>
+        </Helmet>)
+        setTitle(ele)
+      }
+    }
+
+  }, [])
+
   return (
     <>
+    {title}
       {isAuthenticated() ? (
         <PrivateRoute
           appRoutes={appRoutes.filter((route) => route.type !== "login")}

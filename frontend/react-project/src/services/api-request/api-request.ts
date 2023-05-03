@@ -144,6 +144,14 @@ function getFormData(requestData: { [key: string]: any }) {
         else if (requestData[data] instanceof File) {
             formData.append(data, requestData[data]);
         }
+        else if (requestData[data] instanceof FileList) {
+            Array.from(requestData[data]).map((f: any) => {
+                formData.append(`${data}`, f);
+                for(let i in requestData) {
+                    console.log(i , requestData [i], " requestData dataRequest ==========")
+                }
+            });
+        }
         else if (requestData[data] instanceof Object) {
             Object.entries(requestData[data]).forEach(([key, value]: [string, any]) => formData.append(`${data}.${key}`, value))
         }

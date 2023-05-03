@@ -11,6 +11,8 @@ import { connect, ConnectedProps } from "react-redux";
 import { getWaterTarrifsAction } from "store/modules/waterTarrifs/getWaterTarrifs";
 import { getFixedRateIncomeEstimatesAction } from "store/modules/waterTarrifs/getFixedRateIncomeEstimates";
 import { getUseBasedWaterTarrifsAction } from "store/modules/waterTarrifs/getUseBasedWaterTarrifs";
+import Note from "./UseBased/Note";
+import TooltipLabel from "components/UI/TooltipLabel";
 
 interface Props extends PropsFromRedux {}
 
@@ -18,6 +20,7 @@ const Tarrifrates = (props: Props) => {
   const { t } = useTranslation();
   const [rateType, setRateType] = React.useState("1"); //1 -> use Based //2 -> Fixed rate
   const [tariffType, setTariffType] = React.useState("");
+  const [ note, setNote] = React.useState<any>();
  
 
   React.useEffect(() => {
@@ -33,9 +36,11 @@ const Tarrifrates = (props: Props) => {
 
   React.useEffect(() => {
     if (props.waterTarrifs || props.useBasedWaterTarrifs) {
+      var nots = <Note />
       if (props.useBasedWaterTarrifs?.some((item) => item.terif_type === "Use Based")) {
         setTariffType("useBased");
         setRateType("1");
+        setNote(nots)
       } else if (props.waterTarrifs?.some((item) => item.terif_type === "Fixed")) {
         setTariffType("fixed");
         setRateType("2");
@@ -83,10 +88,17 @@ const Tarrifrates = (props: Props) => {
         <div className="col-lg-8 mt-3 ">
           <GeneralCard title={t("finance:incomeEstimateTY")}>
             <ThisYear rateType={rateType} />
+            <hr style={{padding: "10px 15px"}} />
+            {/* <Note /> */}
+            {note}
           </GeneralCard>
         </div>
         <div className="col-lg-4 mt-3 ">
+<<<<<<< HEAD
           <GeneralCard title={t("finance:incomeEstimate")}>
+=======
+          <GeneralCard title={t("finance:incomeEstimate")}><TooltipLabel id="inco" text={t("finance:incomeT")}/>
+>>>>>>> ams-final
             <IncomeEstimates />
           </GeneralCard>
         </div>

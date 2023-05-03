@@ -15,7 +15,15 @@ import {
   mobileUserInitialValues,
   mobileUserValidationSchema,
   mobileUserValidationSchemaWithoutPhone,
+<<<<<<< HEAD
 } from "./schema";
+=======
+  // role__OptionType,
+} from "./schema";
+import StyledSelect from "components/React/StyledSelect/StyledSelect";
+import * as Yup from "yup";
+
+>>>>>>> ams-final
 
 interface Props extends PropsFromRedux {
   editData: any;
@@ -23,18 +31,31 @@ interface Props extends PropsFromRedux {
   setEditData: any;
 }
 
+const role__OptionType = [
+  {
+      label: "Caretaker",
+      value: "is_care_taker"
+  },
+  {
+      label: "General Manager",
+      value: "general_manager"
+  },
+  {
+      label: "Other",
+      value: "other"
+  },
+  {
+    label: "Administrative Staff",
+    value: "is_administrative_staff"
+  }
+]
+
+
 const Form = (props: Props) => {
   const { t } = useTranslation(["home"]);
 
   const [initialData, setInitialData] = React.useState(mobileUserInitialValues);
 
-  React.useEffect(() => {
-    if (props.editData) {
-      setInitialData({
-        ...props.editData,
-      });
-    }
-  }, [props.editData]);
 
   const {
     values,
@@ -52,8 +73,11 @@ const Form = (props: Props) => {
       ? mobileUserValidationSchemaWithoutPhone
       : mobileUserValidationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
-      const requestData = submitValue;
-
+      const requestData = {
+      ...submitValue,
+      role: submitValue?.role?.value,
+      // is_care_taker: submitValue?.is_care_taker?.value
+    }
       let res;
       if (props.editData) {
         res = await props.updateWaterSchemeUserAction(props.editData.id, requestData);
@@ -70,9 +94,14 @@ const Form = (props: Props) => {
         } else {
           setInitialData(mobileUserInitialValues);
           toast.success(t("home:updateSuccess"));
+<<<<<<< HEAD
           props.setEditData(null);
+=======
+          console.log(setInitialData, "update successfull");
+          
+>>>>>>> ams-final
         }
-
+        props.setEditData(null);
         props.getSchemeUserAction();
       } else {
         const errors = Object.values(res.data)?.map((item: any) => {
@@ -81,6 +110,40 @@ const Form = (props: Props) => {
       }
     },
   });
+
+
+
+  React.useEffect(() => {
+    if (props.editData) {
+        console.log(props.editData);
+
+        const role_name = props.editData.general_manager ? 'general_manager'
+            : (props.editData.is_care_taker ? 'is_care_taker' : (props.editData.Other ? 'other' : (props.editData.is_administrative_staff ? 'is_administrative_staff' : '')));
+        const role = props.editData.general_manager ? 'General Manager'
+            : (props.editData.is_care_taker ? 'Caretaker' : (props.editData.Other ? 'Other' : (props.editData.is_administrative_staff ? 'Administrative Staff' : '')));
+
+        setInitialData({
+            ...props.editData,
+            role: { label: role, value: role_name }
+        });
+    }
+  }, [props.editData]);
+
+  // React.useEffect(() => {
+  //   if (props.editData) {
+  //     console.log(props.editData);
+
+  //     const role_name = props.editData.general_manager ? 'general_manager' 
+  //     : (props.editData.is_care_taker ? 'is_care_taker' :  (props.editData.Other ? 'other' : ''));
+  //     const role = props.editData.general_manager ? 'General Manager' 
+  //     : (props.editData.is_care_taker ? 'Caretaker' : (props.editData.Other ? 'Other' : ''));
+      
+  //     setInitialData({
+  //       ...props.editData,
+  //       role: {label: role, value: role_name}
+  //     });
+  //   }
+  // }, [props.editData]);
 
   return (
     <form
@@ -137,8 +200,12 @@ const Form = (props: Props) => {
               {t("home:password")} ({t("home:pin")}){" "}
               <TooltipLabel
                 id={"psba4"}
+<<<<<<< HEAD
                 text={`"Password should be atleast 4  number digits. Alpha Character and special 
 character are not used."`}
+=======
+                text={t("home:pwd")}
+>>>>>>> ams-final
               />
               :
             </label>
@@ -167,6 +234,28 @@ character are not used."`}
               onChange={handleChange}
             />
             <FormikValidationError name="password2" errors={errors} touched={touched} />
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="form-group">
+            <label htmlFor="" className="mr-1 ">
+              {t("home:role")}
+            </label>
+
+            <StyledSelect
+              name="role"
+              value={values.role}
+              options={role__OptionType}
+              onChange={({name, value}) => {
+                setFieldValue(name, value)
+                console.log(value, "vall");
+              }}
+              onBlur={() => {
+                setFieldTouched("role", true);
+              }}
+            />
+
+            <FormikValidationError name="role" errors={errors} touched={touched} />
           </div>
         </div>
 

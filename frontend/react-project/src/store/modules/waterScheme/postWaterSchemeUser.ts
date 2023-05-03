@@ -12,7 +12,8 @@ type requestData = {
     name: string,
     phone_number: string, 
     password1: string,
-    password2: string
+    password2: string,
+    role: string,
 }
 
 

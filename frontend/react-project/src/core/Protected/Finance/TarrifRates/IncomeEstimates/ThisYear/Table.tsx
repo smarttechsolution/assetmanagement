@@ -21,6 +21,10 @@ const Table = (props: IProps) => {
     props.incomeEstimates?.estimated_paying_connection_commercial ||
     props.incomeEstimates?.estimated_paying_connection_public ||
     props.incomeEstimates?.estimated_paying_connection_institution ||
+<<<<<<< HEAD
+=======
+    props.incomeEstimates?.total_connection||
+>>>>>>> ams-final
     props.incomeEstimates?.estimated_paying_connection_household;
 
   return (
@@ -32,7 +36,11 @@ const Table = (props: IProps) => {
               <tr>
                 <th style={{}}>{t("home:sn")}</th>
                 <th style={{}}>{t("finance:unitRange")}</th>
+<<<<<<< HEAD
                 <th style={{}}>{t("home:rate")}</th>
+=======
+                <th style={{}}>{t("home:rate")} {t("finance:permnth")}</th>
+>>>>>>> ams-final
                 <th style={{ whiteSpace: "break-spaces" }} colSpan={2}>
                   {t("finance:epc")} (%)
                 </th>
@@ -67,8 +75,12 @@ const Table = (props: IProps) => {
                     <td> {item.unit_from} - {item.unit_to} Units</td>
                     <td> {props.scheme?.currency} {item.rate}</td>
                     <td colSpan={2}>
+<<<<<<< HEAD
                       {item.estimated_paying_connection} ({props.scheme?.currency}.{" "}
                       {item.income || "-"}) x 12
+=======
+                      {item.estimated_paying_connection}% of {getNumberByLanguage(props.incomeEstimates?.total_connection)}
+>>>>>>> ams-final
                     </td>
 
                     <td className="text-right">
@@ -79,7 +91,11 @@ const Table = (props: IProps) => {
 
                 <tr className="table-border-top">
                   <td className="text-right" colSpan={5}>
+<<<<<<< HEAD
                     Other Income
+=======
+                    {t("finance:otherinc")}
+>>>>>>> ams-final
                   </td>
                   <td className="text-right" colSpan={3}>
                     {props.incomeEstimates?.other_income || "-"}
@@ -87,7 +103,11 @@ const Table = (props: IProps) => {
                 </tr>
                 <tr className="">
                   <td className="text-right" colSpan={5}>
+<<<<<<< HEAD
                     Total
+=======
+                    {t("finance:total")}
+>>>>>>> ams-final
                   </td>
                   <td colSpan={2} className="text-right">
                     {props.incomeEstimates?.total_income || "-"}
@@ -98,6 +118,7 @@ const Table = (props: IProps) => {
               <>
                 <tr>
                   <td>1</td>
+<<<<<<< HEAD
                   <td> {props.scheme?.currency} {props.incomeEstimates?.rate_for_household}</td>
                   <td> {props.scheme?.currency} {props.incomeEstimates?.rate_for_institution}</td>
                   <td> {props.scheme?.currency} {props.incomeEstimates?.rate_for_public}</td>
@@ -106,23 +127,47 @@ const Table = (props: IProps) => {
                   <td>{props.incomeEstimates?.estimated_paying_connection_institution} %</td>
                   <td>{props.incomeEstimates?.estimated_paying_connection_public} %</td>
                   <td>{props.incomeEstimates?.estimated_paying_connection_commercial} %</td>
+=======
+                  <td> {props.scheme?.currency} {getNumberByLanguage(props.incomeEstimates?.rate_for_household)}</td>
+                  <td> {props.scheme?.currency} {getNumberByLanguage(props.incomeEstimates?.rate_for_institution)}</td>
+                  <td> {props.scheme?.currency} {getNumberByLanguage(props.incomeEstimates?.rate_for_public)}</td>
+                  <td> {props.scheme?.currency} {getNumberByLanguage (props.incomeEstimates?.rate_for_commercial)}</td>
+                  <td>{getNumberByLanguage (props.incomeEstimates?.estimated_paying_connection_household)} %</td>
+                  <td>{getNumberByLanguage (props.incomeEstimates?.estimated_paying_connection_institution)} %</td>
+                  <td>{getNumberByLanguage (props.incomeEstimates?.estimated_paying_connection_public)} %</td>
+                  <td>{getNumberByLanguage (props.incomeEstimates?.estimated_paying_connection_commercial)} %</td>
+>>>>>>> ams-final
                   <td></td>
-                  <td>{props.incomeEstimates?.total_income}</td>
+                  <td>{getNumberByLanguage(props.incomeEstimates?.income)}</td>
                 </tr>
                 <tr className="table-border-top">
                   <td className="text-right" colSpan={8}>
+<<<<<<< HEAD
                     Other Expected Transactions
                   </td>
                   <td className="text-right" colSpan={3}>
                     {props.incomeEstimates?.other_income || 0}
+=======
+                    {t("finance:OET")}
+                  </td>
+                  <td className="text-right" colSpan={3}>
+                    {getNumberByLanguage(props.incomeEstimates?.other_income || 0)}
+>>>>>>> ams-final
                   </td>
                 </tr>
                 <tr className="">
                   <td className="text-right" colSpan={8}>
+<<<<<<< HEAD
                     Total
                   </td>
                   <td className="text-right" colSpan={3}>
                     {props.incomeEstimates?.total_income || 0}
+=======
+                    {t("finance:total")}
+                  </td>
+                  <td className="text-right" colSpan={3}>
+                    {getNumberByLanguage(props.incomeEstimates?.total_income || 0)}
+>>>>>>> ams-final
                   </td>
                 </tr>
               </>

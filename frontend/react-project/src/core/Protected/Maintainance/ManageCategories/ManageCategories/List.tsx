@@ -27,8 +27,12 @@ const CategoriesList = (props: Props) => {
   const handleDelete = async () => {
     const response: any = await props.deleteComponentCategoriesAction(editId);
 
+    if(response.status === 403) {
+      toast.success(t('home:deleteSuccess'));
+      resetDeleteData();
+    }
+
     if (response.status === 204) {
-      // toast.success(t('home:deleteSuccess'));
       props.getComponentCategoriesAction();
       resetDeleteData();
     } else {
@@ -45,7 +49,7 @@ const CategoriesList = (props: Props) => {
             <tr>
               <th style={{ borderRadius: "5px 0 0 0" }}>{t("home:sn")}</th>
               <th>
-                {t("maintainance:category")} {t("home:name")}
+                {t("maintainance:categoriof")} {t("home:name")}
               </th>
               <th style={{ borderRadius: "0 5px 0 0" }}>{t("home:action")}</th>
             </tr>

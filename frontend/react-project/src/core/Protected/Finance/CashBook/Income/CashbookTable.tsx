@@ -177,6 +177,8 @@ const CashbookTable = (props: Props) => {
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteClick(income.id);
+                        console.log(handleDeleteClick(income.id), "Deleted Successful");
+
                       }}
                     >
                       <img src={DeleteIcon} alt="" />
@@ -215,7 +217,7 @@ const CashbookTable = (props: Props) => {
         </div>
 
         <GeneralModal
-          title={t("home:addEdit") + " " + t("finance:incomeCategories")}
+          title={t("finance:incoCate")}
           size="lg"
           open={categoriesModal}
           toggle={toggle}
@@ -223,7 +225,7 @@ const CashbookTable = (props: Props) => {
           <ManageIncomeCatagories />
         </GeneralModal>
         <GeneralModal
-          title={t("home:addEdit") + " " + t("home:income")}
+          title={t("finance:incomeform")}
           size="lg"
           open={incomeModal}
           toggle={() => {

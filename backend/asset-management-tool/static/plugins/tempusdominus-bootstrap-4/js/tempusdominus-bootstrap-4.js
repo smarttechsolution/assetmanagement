@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*!@preserve
  * Tempus Dominus Bootstrap4 v5.39.0 (https://tempusdominus.github.io/bootstrap-4/)
  * Copyright 2016-2020 Jonathan Peterson and contributors
@@ -27,6 +28,37 @@ if ((version[0] <= 2 && version[1] < 17) || (version[0] >= 3)) {
 
 +function () {
 
+=======
+/*!@preserve
+ * Tempus Dominus Bootstrap4 v5.39.0 (https://tempusdominus.github.io/bootstrap-4/)
+ * Copyright 2016-2020 Jonathan Peterson and contributors
+ * Licensed under MIT (https://github.com/tempusdominus/bootstrap-3/blob/master/LICENSE)
+ */
+
+if (typeof jQuery === 'undefined') {
+  throw new Error('Tempus Dominus Bootstrap4\'s requires jQuery. jQuery must be included before Tempus Dominus Bootstrap4\'s JavaScript.');
+}
+
++function ($) {
+  var version = $.fn.jquery.split(' ')[0].split('.');
+  if ((version[0] < 2 && version[1] < 9) || (version[0] === 1 && version[1] === 9 && version[2] < 1) || (version[0] >= 4)) {
+    throw new Error('Tempus Dominus Bootstrap4\'s requires at least jQuery v3.0.0 but less than v4.0.0');
+  }
+}(jQuery);
+
+
+if (typeof moment === 'undefined') {
+  throw new Error('Tempus Dominus Bootstrap4\'s requires moment.js. Moment.js must be included before Tempus Dominus Bootstrap4\'s JavaScript.');
+}
+
+var version = moment.version.split('.')
+if ((version[0] <= 2 && version[1] < 17) || (version[0] >= 3)) {
+  throw new Error('Tempus Dominus Bootstrap4\'s requires at least moment.js v2.17.0 but less than v3.0.0');
+}
+
++function () {
+
+>>>>>>> ams-final
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -3419,10 +3451,17 @@ var TempusDominusBootstrap4 = function ($) {
 
     return TempusDominusBootstrap4;
   }(DateTimePicker);
+<<<<<<< HEAD
   /**
   * ------------------------------------------------------------------------
   * jQuery
   * ------------------------------------------------------------------------
+=======
+  /**
+  * ------------------------------------------------------------------------
+  * jQuery
+  * ------------------------------------------------------------------------
+>>>>>>> ams-final
   */
 
 
@@ -3500,6 +3539,12 @@ var TempusDominusBootstrap4 = function ($) {
   };
 
   return TempusDominusBootstrap4;
+<<<<<<< HEAD
 }(jQuery);
 
 }();
+=======
+}(jQuery);
+
+}();
+>>>>>>> ams-final

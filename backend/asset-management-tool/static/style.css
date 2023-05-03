@@ -262,4 +262,14 @@ html {
   #icon {
     width:60%;
   }
+<<<<<<< HEAD
+=======
+
+  .card-body ul li p{
+    padding-bottom: 0px !important;
+  }
+  .card-body ul li p ul{
+    padding-top: 5px;
+  }
+>>>>>>> ams-final
   

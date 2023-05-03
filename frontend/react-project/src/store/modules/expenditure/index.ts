@@ -9,12 +9,17 @@ import deleteExpense from './deleteExpense';
 import updateExpense from './updateExpense';
 import postExpense from './postExpense';
 import getAllExpenditureData from './getAllExpenditure';
+<<<<<<< HEAD
+=======
+import getExpenditureTotal from './getExpenditureTotal';
+>>>>>>> ams-final
 
 const outhReducer = combineReducers({
   getExpenditureData,
   getAllExpenditureData,
   getExpenditureCategory,
   getPreviousExpenditureTotal,
+  getExpenditureTotal,
   postExpenseCategories,
   updateExpenseCategories,
   deleteExpenseCategory,

@@ -175,7 +175,11 @@ const DonoughtChart = (props: Props) => {
       </div>
       <div className="col-lg-6">
         <GeneralCard
+<<<<<<< HEAD
           title={t("home:expenditureDistribution")}
+=======
+          title={[t("home:expenditureDistribution"), " - " ,t("home:actual")]}
+>>>>>>> ams-final
           className="ml-md-3  mt-2"
           print={true}
         >

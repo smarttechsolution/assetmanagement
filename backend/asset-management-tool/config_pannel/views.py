@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.edit import UpdateView
 from .models import *
 from django.views.generic import ListView, TemplateView,CreateView,UpdateView, DeleteView
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from users.models import Users
 from django.http import HttpResponseRedirect
 from .forms import WaterSchemeForm, UsersForm
@@ -31,6 +31,11 @@ class SuperuserLogin(TemplateView):
             return render(request, 'login.html', {'error': 'Wrong credintials'})
 
 
+def superuser_logout(request):
+    logout(request)
+    return redirect("main-config:superuser-login")
+
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 class SchemeList(LoginRequiredMixin,ListView):
     template_name = 'water_scheme_list.html'
@@ -41,7 +46,6 @@ class SchemeList(LoginRequiredMixin,ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         """Get the context for this view."""
         from decouple import config
-        print(config('FRONTEND_DOMAIN_URL'),'---------')
         import nepali_datetime
         from finance.api.utils import str_to_datetime
         queryset = object_list if object_list is not None else self.object_list

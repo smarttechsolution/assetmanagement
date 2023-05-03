@@ -3,7 +3,7 @@ import CustomCheckBox from "components/UI/CustomCheckbox";
 import { getFiscalYearData, getMonthByLanguageAndScheme, getNumberByLanguage } from "i18n/i18n";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { connect, ConnectedProps } from "react-redux";
+import { connect, ConnectedProps, useSelector } from "react-redux";
 import { MaintainanceCostSingleType } from "store/modules/report/maintainanceCost";
 import { RootState } from "store/root-reducer";
 import DataTable from "./DataTable";
@@ -54,6 +54,8 @@ const BarChartThisYear = (props: Props) => {
   const [seriesData, setSeriesData] = useState<SeriesConfig[]>();
 
   const [tableData, setTableData] = useState<any>();
+
+  const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
 
   const options = [
     {
@@ -202,11 +204,26 @@ const BarChartThisYear = (props: Props) => {
     }
   };
 
+  const stacked = {
+    actual_material: 'actual',
+    actual_replacement: 'actual',
+    actual_labor: 'actual',
+
+    actual_unsegregated: 'actual_unsegregated',
+
+    expected_material: 'expected',
+    expected_replacement: 'expected',
+    expected_labor: 'expected',
+
+    expected_unsegregated: 'expected_unsegregated',
+  };
+
   useEffect(() => {
     const selectedData = selected.map((item) => ({
       name: options.find((opt) => opt.id === item)?.name,
       type: "bar",
-      stack: item?.includes("expec") ? "expected" : "actual",
+      // stack: item?.includes("expec") ? "expected" : "actual",
+      stack: stacked[item],
       areaStyle: {
         color: options.find((opt) => opt.id === item)?.color,
       },
@@ -214,7 +231,7 @@ const BarChartThisYear = (props: Props) => {
     }));
 
     const tableData = selected.map((item) => ({
-      name: options.find((opt) => opt.id === item)?.name || "",
+      name: options.find((opt) => opt.id === item)?.name + ` ( ${currency} )`,
       color: options.find((opt) => opt.id === item)?.color || "",
       data: chartData && chartData[item],
     }));

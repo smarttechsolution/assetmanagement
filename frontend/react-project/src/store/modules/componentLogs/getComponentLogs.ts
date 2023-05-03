@@ -21,6 +21,10 @@ export interface ComponentLogsType {
   supply_belt: number;
   remarks: string;
   log_type: "Issue" | "Maintenance";
+<<<<<<< HEAD
+=======
+  log_status: boolean;
+>>>>>>> ams-final
 }
  
 

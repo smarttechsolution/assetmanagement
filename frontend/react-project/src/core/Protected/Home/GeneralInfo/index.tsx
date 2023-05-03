@@ -19,10 +19,11 @@ import { RootState } from "store/root-reducer";
 import formatDate from "utils/utilsFunction/date-converter";
 import { generalInfoInitialValues, generalInfoValidationSchema } from "./scheme";
 
-interface Props extends PropsFromRedux {}
+interface Props extends PropsFromRedux { }
 
 const GeneralInfo = (props: Props) => {
-  const { t } = useTranslation("home");
+  const { t } = useTranslation("");
+
 
   const dispatch = useDispatch();
   const [edit, setEdit] = useState(false);
@@ -54,6 +55,15 @@ const GeneralInfo = (props: Props) => {
         ...values,
         system_date_format: values?.system_date_format?.value,
       };
+
+      for (const key in requestData) {
+        if (requestData[key]) {
+          requestData[key] = requestData[key];
+        } else {
+          requestData[key] = null;
+        }
+      }
+
       let res: any = await props.updateWaterSchemeDetailsAction(
         waterSchemeDetails?.system_date_format,
         waterSchemeDetails?.slug,
@@ -144,7 +154,7 @@ keeping or in any financial projection.`}
       <GeneralModal
         open={edit}
         toggle={toggleModal}
-        title={t("home:edit") + " " + t("home:generalInformation")}
+        title={t("home:editGeninfo")}
         size="xl"
       >
         <form
@@ -193,7 +203,11 @@ keeping or in any financial projection.`}
                   {t("home:waterSource")}{" "}
                   <TooltipLabel
                     id={"sowsas"}
+<<<<<<< HEAD
                     text={`Sources of water such as (ground water, spring, rivers)`}
+=======
+                    text={t("home:waterTool")}
+>>>>>>> ams-final
                   />
                   :
                 </label>
@@ -212,11 +226,18 @@ keeping or in any financial projection.`}
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
+<<<<<<< HEAD
                   {t("home:dailyTarget")}{" "}
                   <TooltipLabel
                     id={"twspd"}
                     text={`Total water supply (in liters) per day. It doesn't affect in
 any data projections & displayed in dashboard only.`}
+=======
+                  {t("home:dailytarget")} {t("home:liter")} {" "}
+                  <TooltipLabel
+                    id={"twspd"}
+                    text={t("home:dailyTrgt")}
+>>>>>>> ams-final
                   />
                   :
                 </label>
@@ -235,10 +256,17 @@ any data projections & displayed in dashboard only.`}
             <div className="col-lg-4">
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
+<<<<<<< HEAD
                   {t("home:vsf")} ( Year ){" "}
                   <TooltipLabel
                     id={"sbdates"}
                     text={`The number of years for which the data will be visualized`}
+=======
+                  {t("home:vsf")} {" "}
+                  <TooltipLabel
+                    id={"sbdates"}
+                    text={t("home:visualizeData")}
+>>>>>>> ams-final
                   />
                   :
                 </label>
@@ -258,7 +286,11 @@ any data projections & displayed in dashboard only.`}
               <div className="form-group ">
                 <label htmlFor="" className="mr-1">
                   {t("home:currency")}{" "}
+<<<<<<< HEAD
                   <TooltipLabel id={"curr"} text={`The unit of currency to be used. `} />:
+=======
+                  <TooltipLabel id={"curr"} text={t("home:curren")} />:
+>>>>>>> ams-final
                 </label>
 
                 <input
@@ -279,7 +311,11 @@ any data projections & displayed in dashboard only.`}
                   {t("home:systemDateFormat")}{" "}
                   <TooltipLabel
                     id={"systemDateFormat"}
+<<<<<<< HEAD
                     text={`The format and month names to display with visualization. Current options are EN for English and NP for Nepali.`}
+=======
+                    text={t("home:sdf")}
+>>>>>>> ams-final
                   />
                   :
                 </label>
@@ -304,8 +340,12 @@ any data projections & displayed in dashboard only.`}
                   {t("home:systemBuiltDate")}{" "}
                   <TooltipLabel
                     id={"sbdate"}
+<<<<<<< HEAD
                     text={`Calendar date on which a Water System was built.It does not affect the book 
 keeping or in any financial projection.`}
+=======
+                    text={t("home:sbd")}
+>>>>>>> ams-final
                   />
                   :
                 </label>
@@ -376,7 +416,11 @@ keeping or in any financial projection.`}
                   {t("home:toolStartDate")}{" "}
                   <TooltipLabel
                     id={"tsdate"}
+<<<<<<< HEAD
                     text={`The calendar date on which this tool is instantiated for this water system. All projections and records starts at this date. `}
+=======
+                    text={t("home:tsd")}
+>>>>>>> ams-final
                   />
                   :
                 </label>

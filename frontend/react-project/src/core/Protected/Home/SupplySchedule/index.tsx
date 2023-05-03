@@ -52,7 +52,7 @@ const SupplySchedule = (props: Props) => {
         ))}
 
       <GeneralModal
-        title={t("home:addEdit") + " " + t("home:supplySchedule")}
+        title={t("home:supplyschd")}
         open={open}
         toggle={toggle}
       >

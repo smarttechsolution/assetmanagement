@@ -17,6 +17,7 @@ import { getIncomeCategoryAction } from "store/modules/income/getIncomeCategory"
 import { RootState } from "store/root-reducer";
 import formatDate, { getDefaultDate } from "utils/utilsFunction/date-converter";
 import * as Yup from "yup";
+import { geAllExpenditureAction } from "store/modules/expenditure/getAllExpenditure";
 
 const validationScheme = Yup.object({
   category: Yup.mixed().required("This field is required"),
@@ -128,6 +129,10 @@ const ExpenseForm = (props: Props) => {
         props.toggle(false);
         props.setEditData(null);
         props.getExpenditureAction(props.language, props.schemeSlug);
+<<<<<<< HEAD
+=======
+        props.geAllExpenditureAction(props.language, props.schemeSlug);
+>>>>>>> ams-final
 
         props.getExpenditureCategoryAction(props.schemeSlug);
         props.getPreviousExpenditureTotalAction(
@@ -389,6 +394,7 @@ const mapDispatchToProps = {
   postExpenseAction,
   getExpenditureCategoryAction,
   getPreviousExpenditureTotalAction,
+  geAllExpenditureAction,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

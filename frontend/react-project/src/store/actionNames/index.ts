@@ -133,7 +133,7 @@ const apiDetails = {
       requestBodyType: RequestBodyType.NOAUTH
     },
     updateUseBasedTarrifsRate: {
-      controllerName: "api/v1/water-tariff/use-based-data/{id}/{lang}/",
+      controllerName: "api/v1/water-tariff/{lang}/{id}/",
       actionName: "UPDATE_USE_BASED_TARIFF_RATE",
       requestMethod: RequestMethod.PUT,
       requestBodyType: RequestBodyType.NOAUTH
@@ -237,6 +237,12 @@ const apiDetails = {
       requestMethod: RequestMethod.DELETE,
       requestBodyType: RequestBodyType.AUTH
     },
+    deleteMultipleTestParameters: {
+      controllerName: "api/v1/test-parameter/bulk-delete/",
+      actionName: "DELETE_MULTIPLE_TEST_PARAMETERS",
+      requestMethod: RequestMethod.DELETE,
+      requestBodyType: RequestBodyType.AUTH
+    },
   },
   waterScheme: {
     getSchemeDetails: {
@@ -312,6 +318,7 @@ const apiDetails = {
     //   requestBodyType: RequestBodyType.AUTH
     // },
   },
+
   waterSupplySchedule: {
     getWaterSupplySchedule: {
       controllerName: "api/v1/water-supply-schedule/list/{lang}/{water_scheme_slug}/",
@@ -368,6 +375,12 @@ const apiDetails = {
       controllerName:
         "api/v1/present-previous-month/income-total/{lang}/{water_scheme_slug}/",
       actionName: "GET_PREVIOUS_INCOME_TOTAL",
+      requestMethod: RequestMethod.GET,
+      requestBodyType: RequestBodyType.NOAUTH,
+    },
+    getIncomeTotal: {
+      controllerName: "api/v1/income-total/{lang}/{water_scheme_slug}/date-range/",
+      actionName: "GET_INCOME_TOTAL",
       requestMethod: RequestMethod.GET,
       requestBodyType: RequestBodyType.NOAUTH,
     },
@@ -439,6 +452,12 @@ const apiDetails = {
       actionName: "GET_PREVIOUS_EXPENDITURE_TOTAL",
       requestMethod: RequestMethod.GET,
       requestBodyType: RequestBodyType.NOAUTH,
+    },
+    getExpenditureTotal: {
+      controllerName: "api/v1/expenditure-total/{lang}/{water_scheme_slug}/date-range/",
+      actionName: "GET_EXPENDITURE_TOTAL",
+      requestMethod: RequestMethod.GET,
+      requestBodyType: RequestBodyType.NOAUTH
     },
     getExpenditureCategory: {
       controllerName: "api/v1/expense-category/list/{water_scheme_slug}/",
@@ -689,6 +708,18 @@ const apiDetails = {
     },
   },
   waterSupplyRecord: {
+<<<<<<< HEAD
+=======
+    // subharaj
+    postWaterSupplyRecordA: {
+      controllerName:
+        "api/v1/water-supply-record/{lang}/create/",
+      actionName: "POST_WATER_SUPPLY_RECORD",
+      requestMethod: RequestMethod.POST,
+      requestBodyType: RequestBodyType.FORMDATA,
+    },
+
+>>>>>>> ams-final
     getWaterSupplyRecord: {
       controllerName:
         "api/v1/config/water-supply-record/list/{lang}/",
@@ -740,6 +771,16 @@ const apiDetails = {
       requestMethod: RequestMethod.POST,
       requestBodyType: RequestBodyType.AUTH,
     },
+<<<<<<< HEAD
+=======
+    postWaterTestResult: {
+      controllerName:
+        "api/v1/water-test-results/{lang}/create/",
+      actionName: "POST_WATER_TEST_RESULTS",
+      requestMethod: RequestMethod.POST,
+      requestBodyType: RequestBodyType.AUTH,
+    },
+>>>>>>> ams-final
     updateWaterSupplyTest: {
       controllerName:
         "api/v1/config/water-test-results/{lang}/{id}/",
@@ -755,6 +796,10 @@ const apiDetails = {
       requestBodyType: RequestBodyType.AUTH,
     },
   },
+<<<<<<< HEAD
+=======
+  
+>>>>>>> ams-final
 
 };
 

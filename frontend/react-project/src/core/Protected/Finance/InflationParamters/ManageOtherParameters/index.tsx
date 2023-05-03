@@ -38,6 +38,10 @@ const ManageOtherParamaters = (props: Props) => {
     setFieldTouched,
     setFieldValue,
     handleChange,
+<<<<<<< HEAD
+=======
+    handleReset,
+>>>>>>> ams-final
     handleBlur,
     handleSubmit,
   } = useFormik({
@@ -74,8 +78,19 @@ const ManageOtherParamaters = (props: Props) => {
           });
           toast.success(t("home:updateSuccess"));
         }
+<<<<<<< HEAD
         props.getInflationParametersAction(props.language);
       }
+=======
+
+        props.getInflationParametersAction(props.language);
+      }
+      if (response.status === 400){
+        const errors = Object.values(response.data)?.map((item: any) => {
+          toast.error(item[0]);
+        });
+      }
+>>>>>>> ams-final
     },
   });
 
@@ -104,7 +119,13 @@ const ManageOtherParamaters = (props: Props) => {
         <div className="col-md-12">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
+<<<<<<< HEAD
               {t("finance:inflation")} :
+=======
+              {t("finance:yearly")} {t("finance:inflation")} 
+                <TooltipLabel id={"apd"} text={t("home:inflrate")} />
+               :
+>>>>>>> ams-final
             </label>
 
             <input
@@ -120,12 +141,29 @@ const ManageOtherParamaters = (props: Props) => {
         
         <div className="col-md-12 mt-2 text-right">
           <Button
+<<<<<<< HEAD
             className="btn custom-btn"
+=======
+            className="btn custom-btn mr-2"
+>>>>>>> ams-final
             text={t("home:save")}
             type="submit"
             disabled={props.postLoading || props.updateLoading}
             loading={props.postLoading || props.updateLoading}
           />
+<<<<<<< HEAD
+=======
+          {/* <Button
+            className="btn custom-btn-outlined mr-3"
+            text={t("home:cancel")}
+            type="reset"
+            onClick={() => {
+              handleReset({
+                initialData
+              })
+            }}
+          /> */}
+>>>>>>> ams-final
         </div>
       </div>
     </form>

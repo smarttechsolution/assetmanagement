@@ -10,6 +10,7 @@ import { getWaterSchemeDetailsAction } from "store/modules/waterScheme/waterSche
 import { RootState } from "store/root-reducer";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
+// import Footer from "./Footer/Footer";
 
 interface Props extends PropsFromRedux {
   children: any;
@@ -28,7 +29,7 @@ function Dashboard(props: Props): ReactElement {
     if (containsSchemeInUrl) {
       const route = window.location.hash.split("/")[2];
       const response = await props.getWaterSchemeDetailsAction(route);
-
+      
       if (response.data && response.status !== 400) {
         props.updateSchemeNameAction(route);
         props.getSchemeYearIntervalsAction(props.langauge, route);
@@ -71,6 +72,9 @@ function Dashboard(props: Props): ReactElement {
           />
         </div>
       </main>
+      {/* <main className="relativeFooter">
+        <Footer />
+      </main> */}
     </div>
   );
 }

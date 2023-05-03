@@ -131,7 +131,7 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
-                      {t("home:inp")}:
+                      {t("home:inp")} {t("home:inday")}:
                     </label>
 
                     <input
@@ -151,7 +151,7 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
-                      {t("home:enp")}:
+                      {t("home:enp")} {t("home:inday")}:
                     </label>
 
                     <input
@@ -171,7 +171,7 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
-                      {t("home:trnp")}:
+                      {t("home:trnp")} {t("home:inday")}:
                     </label>
 
                     <input
@@ -191,7 +191,7 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
-                      {t("home:srnp")}:
+                      {t("home:srnp")} {t("home:inday")}:
                     </label>
 
                     <input
@@ -211,7 +211,11 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
+<<<<<<< HEAD
                       {t("home:mnb")}:
+=======
+                      {t("home:mnb")} {t("home:inday")}:
+>>>>>>> ams-final
                     </label>
 
                     <input
@@ -231,7 +235,11 @@ const GeneralInfo = (props: Props) => {
                 <div className="col-lg-6">
                   <div className="form-group ">
                     <label htmlFor="" className="mr-1 ">
+<<<<<<< HEAD
                       {t("home:mna")}:
+=======
+                      {t("home:mna")} {t("home:inday")}:
+>>>>>>> ams-final
                     </label>
 
                     <input

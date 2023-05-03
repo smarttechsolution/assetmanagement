@@ -80,6 +80,17 @@
             }
         }
     }
+    >.side-footer{
+        font-size: 15px;
+        color: #919191;
+        >.footer-link{
+            .nav-item{
+                list-style: none;
+                padding: 18px 10px;
+                text-align: center;
+            }
+        }
+    }
     &-logo {
         display: block;
         // margin: auto;

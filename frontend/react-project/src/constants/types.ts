@@ -50,5 +50,6 @@ export enum RESPONSIBLE_ENUM {
 
 export enum PARAMETER_TYPES_ENUM {
     CHEMICAL = "Chemical",
-    OTHER = "Other", 
+    PHYSICAL = "Physical",
+    OTHERS = "Others", 
 }

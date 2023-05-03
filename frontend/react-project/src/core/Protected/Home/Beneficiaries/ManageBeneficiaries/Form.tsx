@@ -18,11 +18,12 @@ import { supplyBeltInitialValues, supplyBeltValidationSchema } from "./schema";
 interface Props extends PropsFromRedux {
   editData: any;
   toggle: any;
+  setEditData: any
 }
 
 const Form = (props: Props) => {
   const { t } = useTranslation(["home"]);
-  const [initialData, seetInitialData] = React.useState(supplyBeltInitialValues);
+  const [initialData, setInitialData] = React.useState(supplyBeltInitialValues);
 
   React.useEffect(() => {
     if (props.language && props.schemeSlug) {
@@ -32,21 +33,18 @@ const Form = (props: Props) => {
 
   React.useEffect(() => {
     if (props.editData) {
-      seetInitialData({
+      setInitialData({
         ...props.editData,
       });
-    }
-  }, [props.editData]);
-
-  React.useEffect(() => {
-    if (props.scheme) {
-      seetInitialData({
-        ...props.editData,
+    } else {
+      setInitialData({
+        ...initialData,
         apply_date: props.scheme?.tool_start_date,
       });
     }
-  }, [props.scheme]);
+  }, [props.editData, props.scheme]);
 
+<<<<<<< HEAD
   const { values, errors, touched, handleChange, setFieldValue, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
@@ -83,17 +81,61 @@ const Form = (props: Props) => {
         } else {
           seetInitialData(supplyBeltInitialValues);
           toast.success(t("home:updateSuccess"));
+=======
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue, handleSubmit } =
+    useFormik({
+      enableReinitialize: true,
+      initialValues: initialData,
+      validationSchema: supplyBeltValidationSchema,
+      onSubmit: async (submitValue, { resetForm }) => {
+        let requestData = {};
+
+        for (const key in submitValue) {
+          if (submitValue[key]) {
+            requestData[key] = submitValue[key];
+          } else {
+            requestData[key] = "0";
+          }
+>>>>>>> ams-final
         }
 
-        props.getSchemeDataAction(props.language);
-      } else {
-        const errors = Object.values(res.data)?.map((item: any) => {
-          toast.error(item[0]);
-        });
-      }
-    },
-  });
+        let res;
+        if (props.editData) {
+          res = await props.updateWaterSchemeDataAction(
+            props.language,
+            props.editData.id,
+            requestData
+          );
+        } else {
+          res = await props.postWaterSchemeDataAction(props.language, requestData);
+        }
 
+<<<<<<< HEAD
+=======
+        console.log(res, "resss");
+
+        if (res.status === 201 || res.status === 200) {
+          if (res.status === 201) {
+            resetForm()
+            toast.success(t("home:postSuccess"));
+          } else {
+            setInitialData(supplyBeltInitialValues);
+            props.setEditData(null)
+            toast.success(t("home:updateSuccess"));
+          }
+
+          props.getSchemeDataAction(props.language);
+        } else {
+          const errors = Object.values(res.data)?.map((item: any) => {
+            toast.error(item[0]);
+          });
+        }
+      },
+    });
+
+  console.log(errors, values, touched, "errrrpro");
+
+>>>>>>> ams-final
   return (
     <form
       onSubmit={(e) => {
@@ -105,6 +147,27 @@ const Form = (props: Props) => {
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 ">
+<<<<<<< HEAD
+=======
+              {t("home:houseConn")}{" "}
+              {/* <TooltipLabel id={"tnohuws"} text={`Total number of houses using water system`} />: */}
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="household_connection"
+              value={values.household_connection}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <FormikValidationError name="household_connection" errors={errors} touched={touched} />
+          </div>
+        </div>
+        <div className="col-lg-4">
+          <div className="form-group ">
+            <label htmlFor="" className="mr-1 ">
+>>>>>>> ams-final
               {t("home:instConn")}{" "}
               {/* <TooltipLabel
                 id={"tnoieocu"}
@@ -119,6 +182,7 @@ const Form = (props: Props) => {
               name="institutional_connection"
               value={values.institutional_connection}
               onChange={handleChange}
+              onBlur={handleBlur}
             />
             <FormikValidationError
               name="institutional_connection"
@@ -127,9 +191,31 @@ const Form = (props: Props) => {
             />
           </div>
         </div>
+
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 ">
+<<<<<<< HEAD
+=======
+              {t("home:publicConn")}:
+            </label>
+
+            <input
+              type="number"
+              className="form-control"
+              name="public_connection"
+              value={values.public_connection}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <FormikValidationError name="public_connection" errors={errors} touched={touched} />
+          </div>
+        </div>
+
+        <div className="col-lg-4">
+          <div className="form-group ">
+            <label htmlFor="" className="mr-1 ">
+>>>>>>> ams-final
               {t("home:commercialConn")}{" "}
               {/* <TooltipLabel
                 id={"tnocuws"}
@@ -144,10 +230,15 @@ const Form = (props: Props) => {
               name="commercial_connection"
               value={values.commercial_connection}
               onChange={handleChange}
+<<<<<<< HEAD
+=======
+              onBlur={handleBlur}
+>>>>>>> ams-final
             />
             <FormikValidationError name="commercial_connection" errors={errors} touched={touched} />
           </div>
         </div>
+<<<<<<< HEAD
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 ">
@@ -181,13 +272,20 @@ const Form = (props: Props) => {
             <FormikValidationError name="public_connection" errors={errors} touched={touched} />
           </div>
         </div>
+=======
+
+>>>>>>> ams-final
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1 ">
               {t("home:applyDate")}{" "}
               <TooltipLabel
                 id={"tnohuws"}
+<<<<<<< HEAD
                 text={`The date from which this record  should be applied to the system. `}
+=======
+                text={t("home:appdate")}
+>>>>>>> ams-final
               />
               :
             </label>
@@ -219,6 +317,7 @@ const Form = (props: Props) => {
 
         <div className="col-md-12 text-right">
           <Button
+            type="submit"
             className="btn custom-btn  mr-3"
             text={t("home:save")}
             loading={props.postLoading || props.updateLoading}

@@ -3,6 +3,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import ManageOtherExpenses from "./ManageOtherExpenses";
 import ManageOtherParameters from "./ManageOtherParameters";
+import TooltipLabel from "components/UI/TooltipLabel";
+
 
 interface Props {}
 
@@ -15,6 +17,10 @@ const OtherExpenses = (props: Props) => {
       <div className="row">
         <div className="col-lg-12">
           <GeneralCard title={t("sidebar:otherParam")}>
+<<<<<<< HEAD
+=======
+            <TooltipLabel id={"exptExp"} text={t("home:exptinco")} />
+>>>>>>> ams-final
             <ManageOtherExpenses />
           </GeneralCard>
         </div>

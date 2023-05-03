@@ -61,6 +61,18 @@ class WaterSchemeForm(forms.ModelForm):
         model = WaterScheme
         fields = '__all__'
         exclude = ['slug',]
+        # system_built_date = forms.DateField(widget=forms.TextInput(attrs={'class':'datepicker'}),required=True,input_formats=['%d/%m/%Y',])
+        # tool_start_date = forms.DateField(widget=forms.TextInput(attrs={'class':'datepicker'}),required=True,input_formats=['%d/%m/%Y',])
+
+
+
+
+        widgets = {
+            'system_built_date': forms.DateInput(attrs={'placeholder': 'yyyy-mm-dd'}),
+            'tool_start_date':forms.DateInput(attrs={'placeholder':'yyyy-mm-dd'})
+        }
+        labels = {'period': 'Visualize data for ( Year )', 'daily_target':'Daily target (Liters)'}
+
 
     def clean(self):
         data = self.cleaned_data

@@ -10,6 +10,9 @@ import initialState from "../../helper/default-state";
 export type YearaIntervalType = {
     id: number
     is_care_taker: boolean
+    is_administrative_staff: boolean
+    general_manager: boolean
+    Other: boolean
     name: string
     phone_number: string
     username: string

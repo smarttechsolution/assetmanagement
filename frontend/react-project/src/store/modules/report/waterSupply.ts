@@ -12,13 +12,22 @@ export type SingleWaterSupply = {
     "date_from": any
     "date_to": any
     "total_supply": any
-    "total_supply_avg": any
+    // "total_supply_avg": any
+    "total_supply_average": any
 
     "non_revenue_water": any
+    "revenue_water": any
     "supply_date__year": any
     "supply_date__month": any
     "supply_date": any
     "daily_avg": any
+<<<<<<< HEAD
+=======
+
+    /* Only For Year */
+    "month": any
+    "supply_average": any
+>>>>>>> ams-final
 }
 
 
@@ -27,6 +36,7 @@ export type WaterSupplyResultResponse = {
     "non_revenue": SingleWaterSupply[]
     "daily_target": number
     "daily_avg": { "daily_avg": number }
+    "average" : SingleWaterSupply[],
 
 }
 

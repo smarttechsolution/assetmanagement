@@ -68,3 +68,17 @@
         }
     }
 }
+
+#exptExp {
+    position: absolute;
+    top: 16px;
+    left: 334px;
+}
+
+@media only screen and (max-width:767px) {
+    #exptExp {
+        position: absolute;
+        top: 38px;
+        left: 77px;
+    }
+} 

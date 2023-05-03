@@ -2,6 +2,10 @@ import EnglishDatePicker from "components/React/EnglishDatepicker/EnglishDatepic
 import FormikValidationError from "components/React/FormikValidationError/FormikValidationError";
 import toast from "components/React/ToastNotifier/ToastNotifier";
 import Button from "components/UI/Forms/Buttons";
+<<<<<<< HEAD
+=======
+import TooltipLabel from "components/UI/TooltipLabel";
+>>>>>>> ams-final
 import { useFormik } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -15,16 +19,21 @@ import { initialValues, validationSchema } from "./schema";
 interface Props extends PropsFromRedux {
   editData: any;
   toggle: any;
+  setEditData: any
 }
 
 const Form = (props: Props) => {
   const { t } = useTranslation(["home"]);
 
+<<<<<<< HEAD
   const [initialData, seetInitialData] = React.useState(initialValues);
+=======
+  const [initialData, setInitialData] = React.useState(initialValues);
+>>>>>>> ams-final
 
   React.useEffect(() => {
     if (props.editData) {
-      seetInitialData({
+      setInitialData({
         ...props.editData,
         time_from: new Date().setHours(
           props.editData.time_from?.split(":")[0],
@@ -75,7 +84,12 @@ const Form = (props: Props) => {
           resetForm();
           toast.success(t("home:postSuccess"));
         } else {
+<<<<<<< HEAD
           seetInitialData(initialValues);
+=======
+          setInitialData(initialValues);
+          props.setEditData(null)
+>>>>>>> ams-final
           toast.success(t("home:updateSuccess"));
         }
 
@@ -104,7 +118,8 @@ const Form = (props: Props) => {
         <div className="col-md-4">
           <div className="form-group">
             <label htmlFor="" className="mr-1 ">
-              {t("home:day")}
+              {t("home:dayoftheweek")} 
+              <TooltipLabel id="dayofweek" text={t("home:dayofweek")}/>
             </label>
 
             <input className="form-control" name="day" value={values.day} onChange={handleChange} />
@@ -151,7 +166,26 @@ const Form = (props: Props) => {
 
             <FormikValidationError name="time_to" errors={errors} touched={touched} />
           </div>
+<<<<<<< HEAD
+=======
         </div>
+
+
+
+        <div className="col-md-4">
+          <div className="form-group">
+            <label htmlFor="" >
+              {t("home:comment")}
+            </label>
+
+            <input className="form-control" name="comment" value={values.comment} onChange={handleChange} />
+            <FormikValidationError name="comment" errors={errors} touched={touched} />
+          </div>
+>>>>>>> ams-final
+        </div>
+
+
+
 
         <div className="col-12 text-right">
           <div className="pl-md-5 mt-3">

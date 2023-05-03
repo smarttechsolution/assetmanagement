@@ -28,6 +28,6 @@ export default function updateUseBasedWaterTariffReducer(state = initialState, a
 }
 
 
-export const updateUseBasedWaterTariffAction = (lang, id, requestData: requestData): AppThunk<APIResponseDetail<WaterTarrifsType>> => async (dispatch: Dispatch) => {
-    return await initDefaultAction(apiDetails, dispatch, { requestData, disableSuccessToast: true, pathVariables: { id, lang }, });
+export const updateUseBasedWaterTariffAction = (lang, id, requestData: requestData, params: any): AppThunk<APIResponseDetail<WaterTarrifsType>> => async (dispatch: Dispatch) => {
+    return await initDefaultAction(apiDetails, dispatch, { requestData, disableSuccessToast: true, pathVariables: { id, lang }, params });
 };

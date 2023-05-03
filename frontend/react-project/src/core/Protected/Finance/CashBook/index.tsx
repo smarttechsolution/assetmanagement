@@ -13,11 +13,17 @@ import { RootState } from "store/root-reducer";
 import formatDate from "utils/utilsFunction/date-converter";
 import CashbookExpenditureTable from "./Expenditure/CashbookExpenditureTable";
 import CashbookIncomeTable from "./Income/CashbookTable";
+<<<<<<< HEAD
+
+import CashbookIncomeTableByDate from "./CashBookByDate/CashbookTable";
+import CashbookExpenseTableByDate from "./CashBookByDate/CashbookExpenditureTable";
+=======
+>>>>>>> ams-final
 
 import CashbookIncomeTableByDate from "./CashBookByDate/CashbookTable";
 import CashbookExpenseTableByDate from "./CashBookByDate/CashbookExpenditureTable";
 
-interface Props extends PropsFromRedux {}
+interface Props extends PropsFromRedux { }
 
 const CashBook = (props: Props) => {
   const [activeTab, setActiveTab] = useState("1");
@@ -25,6 +31,27 @@ const CashBook = (props: Props) => {
   const [activeDate, setActiveDate] = useState<any>("");
   const [startDate, setStartDate] = useState<any>("");
   const [endDate, setEndDate] = useState<any>("");
+<<<<<<< HEAD
+=======
+  const [startDay, setStartDay] = useState<any>("");
+  const [endDay, setEndDay] = useState<any>("");
+
+  React.useEffect(() => {
+    var cashbookStartDay = startDate.split("-")[0];
+    if (cashbookStartDay != null) {
+      setStartDay(cashbookStartDay);
+    } else {
+    }
+    console.log(cashbookStartDay,"______________________________-");
+
+    var cashbookEndDay = endDate.split("-")[0];
+    if (cashbookEndDay !=null) {
+      setEndDay(cashbookEndDay);
+    } else {
+    }
+    console.log(cashbookEndDay,"______________________________-");
+  })
+>>>>>>> ams-final
 
   React.useEffect(() => {
     if (props.schemeDetails) {
@@ -44,6 +71,7 @@ const CashBook = (props: Props) => {
   return (
     <div className="container py-3 cash-book">
       <GeneralCard
+<<<<<<< HEAD
         title={`${t("cashbook:cashbook")}  
         ${
           cashbookType === "byMonth"
@@ -75,12 +103,45 @@ const CashBook = (props: Props) => {
               } )
             `
         }
+=======
+        title={`${t("cashbook:cashbook")}
+        ${cashbookType === "byMonth"
+            ? `
+          (${activeDate
+              ? getMonthByLanguageAndScheme(
+                activeDate.split("-")[1],
+                props.schemeDetails?.system_date_format
+              )
+              : ""
+            })
+          `
+            : `
+            (${startDate
+              ? getMonthByLanguageAndScheme(
+                startDate.split("-")[1],
+                props.schemeDetails?.system_date_format
+              )
+              : ""
+            } ${startDay} -  ${endDate
+              ? getMonthByLanguageAndScheme(
+                endDate.split("-")[1],
+                props.schemeDetails?.system_date_format
+              )
+              : ""
+            } ${endDay} )
+            `
+          }
+>>>>>>> ams-final
 
         `}
       >
         <div className="cash-content">
           <div className="flex-between">
+<<<<<<< HEAD
             <Nav tabs style={{ flex: 1 }}>
+=======
+            <Nav tabs style={{ flex: 0.5 }}>
+>>>>>>> ams-final
               <NavItem>
                 <NavLink
                   className={classnames({ active: activeTab === "1" })}
@@ -103,7 +164,11 @@ const CashBook = (props: Props) => {
               </NavItem>
             </Nav>
 
+<<<<<<< HEAD
             <div className="row justify-content-end" style={{ flex: 1 }}>
+=======
+            <div className="row justify-content-end" style={{ flex: 1.2 }}>
+>>>>>>> ams-final
               <div className="col-4">
                 <div className="d-flex">
                   <div className="mr-2">
@@ -134,7 +199,11 @@ const CashBook = (props: Props) => {
                     <div className="form-group my-0 mr-3">
                       <div className="row">
                         <div className="col-4">
+<<<<<<< HEAD
                           <label htmlFor="">Date From</label>
+=======
+                          <label htmlFor="">{t("finance:datefrom")}</label>
+>>>>>>> ams-final
                         </div>
                         <div className="col-8">
                           {props.schemeDetails?.system_date_format === "nep" ? (
@@ -163,6 +232,7 @@ const CashBook = (props: Props) => {
                     <div className="form-group my-0 mr-3">
                       <div className="row">
                         <div className="col-4">
+<<<<<<< HEAD
                           <label htmlFor="">Date To</label>
                         </div>
                         <div className="col-8">
@@ -184,6 +254,31 @@ const CashBook = (props: Props) => {
                               }}
                             />
                           )}
+=======
+                          <label htmlFor="">{t("finance:dateto")}</label>
+                        </div>
+                        <div className="col-8">
+                          <div className="dfdfdf">
+                            {props.schemeDetails?.system_date_format === "nep" ? (
+                              <NepaliDatePicker
+                                className="form-control"
+                                name="name_en"
+                                value={endDate}
+                                onChange={(e) => {
+                                  setEndDate(e);
+                                }}
+                              />
+                            ) : (
+                              <EnglishDatePicker
+                                name="eng"
+                                value={endDate}
+                                handleChange={(e) => {
+                                  setEndDate(formatDate(e));
+                                }}
+                              />
+                            )}
+                          </div>
+>>>>>>> ams-final
                         </div>
                       </div>
                     </div>
@@ -197,7 +292,11 @@ const CashBook = (props: Props) => {
                     <div className="form-group my-0 mr-3">
                       <div className="row">
                         <div className="col-4">
+<<<<<<< HEAD
                           <label htmlFor="">Select Month</label>
+=======
+                          <label htmlFor="">{t("finance:selectMnth")}</label>
+>>>>>>> ams-final
                         </div>
                         <div className="col-8">
                           {props.schemeDetails?.system_date_format === "nep" ? (

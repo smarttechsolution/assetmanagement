@@ -231,7 +231,7 @@ const CashbookExpenditureTable = (props: Props) => {
         </div>
 
         <GeneralModal
-          title={t("finance:manageEC")}
+          title={t("finance:manageform")}
           open={categoriesModal}
           toggle={toggle}
           size="lg"
@@ -240,7 +240,7 @@ const CashbookExpenditureTable = (props: Props) => {
         </GeneralModal>
 
         <GeneralModal
-          title={t("home:addEdit") + " " + t("home:expense")}
+          title={t("finance:expenseform")}
           size="lg"
           open={expenseModal}
           toggle={() => {

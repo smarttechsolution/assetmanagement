@@ -3,21 +3,26 @@
     margin-bottom: 0;
     // overflow: hidden;
     border-radius: $table-border-radius;
+
     thead {
+
         th,
         td {
             @include des;
             color: $table-head-color;
         }
+
         th {
             font-weight: 600;
             white-space: nowrap;
             border-color: $table-head-border-color;
+
             &.match-child {
                 width: 1px;
             }
         }
     }
+
     tbody {
         td {
             @include des;
@@ -25,9 +30,11 @@
             border-top: 1px solid $gray-100;
             color: $gray-900;
         }
+
         .ic-more {
             transform: rotate(90deg);
             display: block;
+
             // margin-left: auto;
             // padding-left: 1.5rem;
             &:hover {
@@ -35,21 +42,25 @@
             }
         }
     }
+
     &-basic {
         thead {
             background-color: $blue;
             color: $white;
         }
     }
+
     &-dropdown {
         .dropdown-menu {
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
             padding: 0;
             border-color: transparent;
+
             .dropdown-item {
                 font-weight: 600;
                 color: $secondary;
+
                 &:hover {
                     background-color: #f8f8fb;
                     color: $blue;
@@ -57,6 +68,7 @@
             }
         }
     }
+
     &-dialog {
         width: 190px;
         position: absolute;
@@ -69,10 +81,13 @@
         border-radius: 2px;
         display: none;
     }
+
     td {
         white-space: nowrap;
+
         &.toggle {
             position: relative;
+
             @include hover {
                 .table-dialog {
                     display: block;
@@ -80,19 +95,23 @@
             }
         }
     }
+
     &-01 {
         border: 1px solid $border-color;
+
         tbody {
             td {
                 border: none;
             }
         }
+
         tfoot {
             td {
                 border: 1px solid $border-color;
                 white-space: nowrap;
                 vertical-align: middle;
             }
+
             &.borderless {
                 td {
                     border: none;
@@ -101,12 +120,14 @@
             }
         }
     }
+
     &-02 {
         &.≈ {
             td {
                 border: none;
             }
         }
+
         thead {
             th {
                 background-color: $table-head-bg;
@@ -115,12 +136,14 @@
                 font-size: 16px;
                 font-family: "Roboto", sans-serif;
             }
+
             tr {
                 th:first-child {
                     border-radius: 5px 0 0 0;
                 }
             }
         }
+
         tbody {
             td {
                 padding: 8px;
@@ -131,21 +154,28 @@
                 border: none;
                 line-height: 30px;
             }
+
             tr {
                 &:hover {
                     background: #eaf2ff !important;
                 }
             }
         }
+
         tr:nth-child(even)>td,
         tr:nth-child(even)>th {
             background-color: #EAF2FF; // Choose your own color here
         }
+
         .action {
             display: flex;
             align-items: center;
             justify-content: space-around;
             height: 70px;
+<<<<<<< HEAD
+=======
+
+>>>>>>> ams-final
             img {
                 height: 1.0rem !important;
                 width: 1.0rem !important;
@@ -153,39 +183,47 @@
             }
         }
     }
+
     &-borderless {
         border: unset !important;
     }
+
     &-rounded {
         thead {
             tr {
-                 :first-child {
+                :first-child {
                     border-radius: 4px 0 0 0;
                 }
-                 :last-child {
+
+                :last-child {
                     border-radius: 0 4px 0 0;
                 }
-                 :only-child {
+
+                :only-child {
                     border-radius: 4px 4px 0 0;
                 }
             }
         }
+
         // thead {
         //   tr {
         //     border-radius: 4px 4px 0 0;
         //   }
         // }
     }
+
     &-react {
         .rt-table {
             background-color: $table-bg;
             border-color: $table-border-color;
             border-collapse: collapse;
+
             .rt {
                 &-thead {
                     .rt-tr {
                         text-align: left;
                     }
+
                     .rt-th {
                         padding: $table-cell-padding;
                         font-size: 0.833rem;
@@ -196,6 +234,7 @@
                         background-color: $table-head-bg;
                     }
                 }
+
                 &-tbody {
                     .rt-td {
                         font-size: 0.833rem;
@@ -204,21 +243,26 @@
                 }
             }
         }
+
         &.borderless {
             border: none;
+
             .rt {
                 &-th {
                     border: none;
                 }
+
                 &-td {
                     border: none;
                 }
             }
         }
     }
+
     .actions {
         color: $cool-gray-600;
         cursor: pointer;
+
         &:not(:last-child) {
             margin-right: 0.5rem;
         }
@@ -237,6 +281,7 @@
 
 .data-table {
     .table {
+
         // overflow-y: scroll;
         // height: 600px;
         // display: block;
@@ -245,16 +290,20 @@
                 border-top-left-radius: 0.5rem;
                 // border-bottom-left-radius: 1rem;
             }
+
             tr th:last-child {
                 border-top-right-radius: 0.5rem;
                 // border-bottom-right-radius: 1rem;
             }
+
             th {
                 padding: 0.8rem 16px;
                 font-size: 15px;
             }
+
             .action {
                 padding: 1rem 0 !important;
+
                 img {
                     height: 1.0rem !important;
                     width: 1.0rem !important;
@@ -262,14 +311,17 @@
                 }
             }
         }
+
         .title {
             font-size: 20px;
             font-weight: bold;
             font-family: "Roboto";
         }
+
         th:first-child {
             text-align: left;
         }
+
         th {
             color: #000;
             text-align: center;
@@ -280,14 +332,17 @@
             font-weight: bold;
             border-bottom: 1px solid #343A40;
         }
+
         tr td:first-child {
             font-family: "Roboto";
             font-size: 0.75rem;
             color: #7f8086;
         }
+
         td:first-child {
             text-align: left;
         }
+
         td {
             padding: 16px 12px !important;
             border: none !important;
@@ -296,23 +351,53 @@
             color: #b3b8bd;
             text-align: center;
             @include letter-spacing(48.06);
+
+            .btn-resolved {
+                padding: 6px 17px;
+                border:1px solid #41D6C3;
+                background-color: #ECFBF9;
+                color: #41D6C3;
+                border-radius: 4px;
+            }
+            .btn-resolved:hover{
+                color: #eaf2ff;
+                background-color: #41D6C3;
+            }
+
+            .btn-unresolved{
+                padding: 6px 10px;
+                border: 1px solid #E50752;
+                background-color: #FEE4ED;
+                color: #E50752;
+                border-radius: 4px;
+            }
+            .btn-unresolved:hover{
+                color: #eaf2ff;
+                background-color: #E50752;
+            }
         }
+
         .action {
             display: flex;
             align-items: center;
             justify-content: space-around;
+            min-height: 82px;
+
             img {
                 height: 1.0rem !important;
                 width: 1.0rem !important;
                 margin-right: 16px;
             }
         }
+
         tr:nth-child(even)>td,
         tr:nth-child(even)>th {
             background-color: #EAF2FF !important; // Choose your own color here
         }
     }
+
     &-even-stripe {
+
         tr:nth-child(odd)>td,
         tr:nth-child(odd)>th {
             background-color: #FFF !important; // Choose your own color here

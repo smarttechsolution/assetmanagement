@@ -66,6 +66,7 @@ const UseBasedList = (props: Props) => {
                   <td>{getNumberByLanguage(index + 1)}</td>
                   <td> {getNumberByLanguage(item.apply_date)}</td>
                   <td>
+<<<<<<< HEAD
                     {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_household) || "-"}{" "} (Per Month)
                     
                   </td>
@@ -79,6 +80,22 @@ const UseBasedList = (props: Props) => {
                   <td>
                     {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_commercial) || "-"}{" "} (Per Month)
                      
+=======
+                    {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_household) || "-"}{" "}
+                    {t("finance:permonth")}
+                  </td>
+                  <td>
+                    {props.scheme?.currency}.{" "}
+                    {getNumberByLanguage(item.rate_for_institution) || "-"} {t("finance:permonth")}
+                  </td>
+                  <td>
+                    {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_public) || "-"}{" "}
+                    {t("finance:permonth")}
+                  </td>
+                  <td>
+                    {props.scheme?.currency}. {getNumberByLanguage(item.rate_for_commercial) || "-"}{" "}
+                    {t("finance:permonth")}
+>>>>>>> ams-final
                   </td>
                   <td>
                     {getNumberByLanguage(item.estimated_paying_connection_household) || "-"} %

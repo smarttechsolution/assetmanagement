@@ -31,6 +31,9 @@ urlpatterns = [
 
     path('present-previous-month/income-total/<str:lang>/<str:water_scheme_slug>/',MonthIncomeTotal.as_view(), name ='month-income-total'),
     path('present-previous-month/expenditure-total/<str:lang>/<str:water_scheme_slug>/',MonthExpenditureTotal.as_view(), name ='month-expense-total'),
+    path('expenditure-total/<str:lang>/<str:water_scheme_slug>/date-range/', ExpenditureTotalDateRange.as_view(), name='date-range-expense-total'),
+    path('income-total/<str:lang>/<str:water_scheme_slug>/date-range/', IncomeTotalDateRange.as_view(), name='date-range-income-total'),
+
 
     path('income-expense/closed-month/<str:lang>/',CashBookClosingMonthView.as_view()),
 

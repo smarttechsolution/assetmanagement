@@ -44,7 +44,11 @@ const DonoughtChart = (props: Props) => {
           itemStyle: { color: "#accef7" },
         },
         {
+<<<<<<< HEAD
           value: props.maintainanceCostByYear?.this_year_actual_cost?.unsegregated_cost || 0,
+=======
+          value: props.maintainanceCostByYear?.this_year_actual_cost?.cost_total__sum || 0,
+>>>>>>> ams-final
           name: "Unsegregated Cost",
           itemStyle: { color: "#e5f1ff" },
         },
@@ -230,8 +234,13 @@ const DonoughtChart = (props: Props) => {
                     formatter: function () {
                       return `${props.currency}  ${
                         getNumberByLanguage(
+<<<<<<< HEAD
                           props.maintainanceCostByYear?.all_time_actual_cost
                             ?.all_time_actual_cost_total
+=======
+                          props.maintainanceCostByYear?.this_year_actual_cost
+                            ?.this_year_actual_cost_total
+>>>>>>> ams-final
                         ) || 0
                       }`;
                     },
@@ -250,8 +259,13 @@ const DonoughtChart = (props: Props) => {
                     formatter: function () {
                       return `${props.currency}  ${
                         getNumberByLanguage(
+<<<<<<< HEAD
                           props.maintainanceCostByYear?.this_year_actual_cost
                             ?.this_year_actual_cost_total
+=======
+                          props.maintainanceCostByYear?.all_time_actual_cost
+                            ?.all_time_actual_cost_total
+>>>>>>> ams-final
                         ) || 0
                       }`;
                     },
@@ -270,7 +284,11 @@ const DonoughtChart = (props: Props) => {
       </div>
       <div className="col-lg-6">
         <GeneralCard
+<<<<<<< HEAD
           title={t("home:maintenanceCostDistributionPlanned")}
+=======
+          title={t("home:maintenanceCostDistributionExpected")}
+>>>>>>> ams-final
           className="ml-md-3  mt-2"
           print={true}
         >

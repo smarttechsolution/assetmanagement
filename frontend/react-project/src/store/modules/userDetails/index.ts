@@ -10,6 +10,7 @@ const initialState = {
     },
     username: "",
     water_scheme: "",
+    // help_url: "",
 }
 
 type IUserDetails = {
@@ -22,6 +23,7 @@ type IUserDetails = {
     },
     username: string
     water_scheme: string
+    // help_url: string
 }
 
 export const userDetailsReducer = (state: IUserDetails = initialState, action: DefaultAction): IUserDetails => {

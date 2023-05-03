@@ -9,6 +9,10 @@ import updateIncome from './updateIncome';
 import deleteIncome from './deleteIncome';
 import postIncome from './postIncome';
 import getAllIncomeData from './getAllIncome';
+<<<<<<< HEAD
+=======
+import getIncomeTotal from './getIncomeTotal';
+>>>>>>> ams-final
 
 const outhReducer = combineReducers({
     getIncomeData,
@@ -20,7 +24,8 @@ const outhReducer = combineReducers({
     getIncomeExpenseImgae,
     getPreviousIncomeTotal,
     postIncomeCategories,
-    updateIncomeCategories
+    updateIncomeCategories,
+    getIncomeTotal,
 })
 
 export default outhReducer

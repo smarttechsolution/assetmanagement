@@ -10,6 +10,10 @@ import { Table } from "reactstrap";
 import { geAllIncomeAction } from "store/modules/income/getAllIncome";
 import { getIncomeCategoryAction } from "store/modules/income/getIncomeCategory";
 import { getIncomeExpenseImageAction } from "store/modules/income/getIncomeExpenseImgae";
+<<<<<<< HEAD
+=======
+import { getIncomeTotalAction } from "store/modules/income/getIncomeTotal";
+>>>>>>> ams-final
 import { RootState } from "store/root-reducer";
 import { getDefaultDate } from "utils/utilsFunction/date-converter";
 import { sortAplabetically } from "utils/utilsFunction/sorting";
@@ -30,9 +34,17 @@ const CashbookTable = (props: Props) => {
     schemeSlug,
     schemeDetails,
     previousIncomeTotal,
+<<<<<<< HEAD
     geAllIncomeAction,
     getIncomeCategoryAction,
     getIncomeExpenseImageAction,
+=======
+    incomeTotal,
+    geAllIncomeAction,
+    getIncomeCategoryAction,
+    getIncomeExpenseImageAction,
+    getIncomeTotalAction,
+>>>>>>> ams-final
   } = props;
 
   const [modal, setModal] = useState(false);
@@ -49,6 +61,10 @@ const CashbookTable = (props: Props) => {
     ) {
       if (props.activeTab === "1") {
         geAllIncomeAction(language, schemeSlug, props.activeDate, props.endDate);
+<<<<<<< HEAD
+=======
+        getIncomeTotalAction(language, schemeSlug, props.activeDate, props.endDate);
+>>>>>>> ams-final
         getIncomeCategoryAction(schemeSlug);
         getIncomeExpenseImageAction(language, schemeSlug, props.activeDate || ADToBS(new Date()));
       }
@@ -57,6 +73,12 @@ const CashbookTable = (props: Props) => {
 
   console.log(props.activeDate, props.activeDate, "<<<<<<<<<");
 
+<<<<<<< HEAD
+=======
+  console.log(incomeTotal, "inc-----");
+  
+
+>>>>>>> ams-final
   return (
     <>
       <div className="mt-3">
@@ -89,7 +111,11 @@ const CashbookTable = (props: Props) => {
               </tr>
             ))}
 
+<<<<<<< HEAD
             <tr>
+=======
+            {/* <tr>
+>>>>>>> ams-final
               <td></td>
               <td>{t("cashbook:total")}</td>
               {sortAplabetically(incomeCategories, "name")?.map((incomeCategory, index) => {
@@ -106,7 +132,21 @@ const CashbookTable = (props: Props) => {
                   return <td key={index}>-</td>;
                 }
               })}
+<<<<<<< HEAD
             </tr>
+=======
+            </tr> */}
+            {incomeTotal && incomeTotal?.map((income, index) => (
+                <tr key={index}> 
+                  <td></td>
+                  <td>{t("cashbook:total")}</td>
+                  <td>{income.total_income}</td>
+                  <td></td>
+                </tr>
+              ))}
+
+
+>>>>>>> ams-final
             {props.sliderImages &&
               props.sliderImages instanceof Array &&
               props.sliderImages?.length > 0 && (
@@ -142,12 +182,20 @@ const mapStateToProps = (state: RootState) => ({
   incomeCategories: state.incomeData.getIncomeCategory.data,
   previousIncomeTotal: state.incomeData.getPreviousIncomeTotal.data,
   incomeExpenseImage: state.incomeData.getIncomeExpenseImgae.data,
+<<<<<<< HEAD
+=======
+  incomeTotal: state.incomeData.getIncomeTotal.data
+>>>>>>> ams-final
 });
 
 const mapDispatchToProps = {
   geAllIncomeAction: geAllIncomeAction,
   getIncomeCategoryAction: getIncomeCategoryAction,
   getIncomeExpenseImageAction: getIncomeExpenseImageAction,
+<<<<<<< HEAD
+=======
+  getIncomeTotalAction: getIncomeTotalAction
+>>>>>>> ams-final
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

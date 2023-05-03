@@ -7,6 +7,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "store/root-reducer";
 import { getYearFromDate } from "utils/utilsFunction/date-converter";
 import DataTable from "./DataTable";
+import { useSelector } from "react-redux";
 
 const config = {
   name: "",
@@ -38,19 +39,25 @@ interface Props extends PropsFromRedux {
 }
 
 const LineChart = (props: Props) => {
-  const { selected , setSelected} = props;
+  const { selected, setSelected } = props;
   const { t } = useTranslation();
   const [chartData, setChartData] = useState<ChartDataType>();
 
   const [seriesData, setSeriesData] = useState<SeriesConfig[]>();
 
   const [tableData, setTableData] = useState<any>();
- 
+
+  const currency = useSelector((state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.currency)
+
 
   const options = [
     {
       id: "actual_income",
+<<<<<<< HEAD
       name: `${t("home:actual")} ${t("home:income")}`,
+=======
+      name: `${t("home:actual")} ${t("home:income")} `,
+>>>>>>> ams-final
       color: "#4DFFFF",
     },
     {
@@ -62,8 +69,17 @@ const LineChart = (props: Props) => {
       id: "actual_cf",
       name: `${t("home:accf")}`,
       color: "#c47df7",
+<<<<<<< HEAD
     },
     { id: "expected_income", name: `${t("home:expected")} ${t("home:income")}`, color: "#fbc757" },
+=======
+    },
+    {
+      id: "expected_income",
+      name: `${t("home:expected")} ${t("home:income")}`,
+      color: "#fbc757"
+    },
+>>>>>>> ams-final
     {
       id: "expected_expense",
       name: `${t("home:expected")} ${t("home:expense")}`,
@@ -112,7 +128,7 @@ const LineChart = (props: Props) => {
     }));
 
     const tableData = selected.map((item) => ({
-      name: options.find((opt) => opt.id === item)?.name || "",
+      name: options.find((opt) => opt.id === item)?.name + ` ( ${currency} )`,
       color: options.find((opt) => opt.id === item)?.color || "",
       data: chartData && chartData[item],
     }));
@@ -163,7 +179,7 @@ const LineChart = (props: Props) => {
     <div className="row">
       <div className="col-md-9">
         <GeneralChart minHeight={300} options={optionData} />
-        {tableData?.length > 0 && <DataTable years={chartData?.years} tableData={tableData} />}
+       {tableData?.length > 0 && <DataTable years={chartData?.years} tableData={tableData} />}
       </div>
       <div className="col-md-3 chartOptions">
         <h6>Select</h6>

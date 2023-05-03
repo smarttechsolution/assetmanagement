@@ -22,7 +22,7 @@
     "ctt": "ट्यांकी सफा गर्नु ",
     "responsible": " जिम्मेवार ",
     "enterLog": "लग थिच्नुहोस् ",
-    "maintainLog": "मर्मत लग गर्नुहोस् ",
+    "maintainLog": "मर्मत लग",
     "maintainAction": "मर्मत लग गर्नुहोस् ",
     "acs": "लागत छुट्टै थप्नुहोस् ",
     "selectPicture": " फोटो छनोट गर्नुहोस् ",
@@ -36,6 +36,7 @@
     "NAD": "अर्को कार्य मिति",
     "component": "कम्पोनेन्ट",
     "components": "कम्पोनेन्टहरू",
+<<<<<<< HEAD
     "categories": "कोटीहरू",
     "title": "शीर्षक",
     "category": "श्रेणी",
@@ -46,4 +47,22 @@
     "lifespan": "जीवन अवधि",
     "issueLog": "मुद्दा लग"
 
+=======
+    "compone": "कम्पोनेन्टको",
+    "categories": "श्रेणीहरू",
+    "title": "शीर्षक",
+    "category": "श्रेणी",
+    "aci": "कम्पोनेन्ट जानकारी थप्नुहोस्",
+    "addEditaci": " कम्पोनेन्ट जानकारी थप / अपडेट गर्नुहोस्",
+    "componentLogs": "कम्पोनेन्ट लगहरू",
+    "logType": "लग प्रकार",
+    "lifespan": "जीवन अवधि",
+    "issueLog": "समस्या लग",
+    "componentIssueLogs" : "समस्या लग थप्नुहोस्",
+    "componentMaintLogs" : "मर्मत लग थप्नुहोस्",
+    "addcomponentIssueLogs" : "समस्या लग थप / अपडेट गर्नुहोस्",
+    "addcomponentMaintLogs" : "मर्मत लग थप / अपडेट गर्नुहोस्",
+    "categoriof": "श्रेणीको",
+    "nofcomponents": "कम्पोनेन्ट संख्या"
+>>>>>>> ams-final
 }

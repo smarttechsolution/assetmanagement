@@ -91,7 +91,11 @@ const Form = (props: Props) => {
         <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
+<<<<<<< HEAD
               {t("home:parameter")} {t("home:name")}:
+=======
+              {t("home:param")} {t("home:name")}:
+>>>>>>> ams-final
             </label>
 
             <input
@@ -123,7 +127,11 @@ const Form = (props: Props) => {
         <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
+<<<<<<< HEAD
               {t("home:ndwq")} <TooltipLabel id={"NDWQ"} text={`The quality standards for drinking water`} />:
+=======
+              {t("home:ndwq")} <TooltipLabel id={"NDWQ"} text={t("home:ndwstandard")} />:
+>>>>>>> ams-final
             </label>
 
             <input
@@ -159,10 +167,23 @@ const Form = (props: Props) => {
 
         <div className="col-md-12 text-right">
           <Button
-            className="btn custom-btn  mr-3"
+            className="btn custom-btn  mr-2"
             text={t("home:save")}
             disabled={props.loading}
             loading={props.loading}
+          />
+          <Button 
+            className="btn custom-btn-outlined"
+            text={t("home:cancel")}
+            type="reset"
+            onClick={() => {
+              const resetKeys: any = Object.keys(initialData).reduce((acc, curr) => {
+                acc[curr] = '';
+                return acc;
+              }, {});
+              seetInitialData(resetKeys)
+              props.setEditData(null)
+            }}
           />
         </div>
       </div>

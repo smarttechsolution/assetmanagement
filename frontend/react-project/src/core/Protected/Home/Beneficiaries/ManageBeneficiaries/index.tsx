@@ -12,10 +12,10 @@ const ManageSupplyBelts = (props: Props) => {
   return (
     <div className="row">
       <div className="col-12">
-        <Form editData={editData} toggle={props.toggle} />
+        <Form editData={editData} toggle={props.toggle} setEditData={setEditData} />
       </div>
       <div className="col-12">
-        <List setEditData={setEditData} toggle={props.toggle}/>
+        <List setEditData={setEditData} toggle={props.toggle} />
       </div>
     </div>
   );

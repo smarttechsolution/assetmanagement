@@ -62,7 +62,11 @@ const validationScheme = Yup.object({
   possibility_of_failure: Yup.mixed().required("This field is required"),
   mitigation: Yup.mixed().required("This field is required"),
   responsible: Yup.string().required("This field is required"),
+<<<<<<< HEAD
   next_action: Yup.string().required("This field is required"),
+=======
+  // next_action: Yup.string().required("This field is required"),
+>>>>>>> ams-final
   apply_date: Yup.string().required("This field is required"),
   interval_unit: Yup.string().required("This field is required"),
 });
@@ -76,9 +80,23 @@ interface Props extends PropsFromRedux {
 const ExpenseForm = (props: Props) => {
   const { t } = useTranslation();
 
+<<<<<<< HEAD
+=======
+  
+>>>>>>> ams-final
   const [initialData, setInitialData] = React.useState(initialFormValues);
   const [categoryOption, setCategoryOptions] = React.useState<OptionType[]>();
   const [imagePreview, setImagePreview] = React.useState<any>("");
+  const [ mitigate, setMitigate ] = React.useState();
+
+  // React.useEffect(() => {
+  //   // var reactive = "Reactive";
+  //   if (MITIGATION_OPTIONS === "Reactive") {
+      
+  //   } else {
+      
+  //   }
+  // },[])
 
   React.useEffect(() => {
     if (props.schemeSlug) {
@@ -164,6 +182,7 @@ const ExpenseForm = (props: Props) => {
         res = await props.postComponentInfoAction(props.language, requestData);
       }
 
+
       if (res.status === 201 || res.status === 200) {
         if (res.status === 201) {
           toast.success(t("home:postSuccess"));
@@ -174,7 +193,11 @@ const ExpenseForm = (props: Props) => {
         props.toggle(false);
         props.setEditData(null);
         props.getDashboardComponentInfoAction(props.language, props.schemeSlug);
-      } else {
+      } 
+      // else {
+      //   toast.error("Server Error");
+      // }
+       else {
         const errors = Object.values(res.data)?.map((item: any) => {
           toast.error(item[0]);
         });
@@ -193,6 +216,7 @@ const ExpenseForm = (props: Props) => {
     };
   };
 
+<<<<<<< HEAD
   const handleMaintenanceIntervalChange = (value, unit) => {
     if (unit === "Year") {
       const nextActionDate =
@@ -201,6 +225,16 @@ const ExpenseForm = (props: Props) => {
       setFieldValue("next_action", nextActionDate);
     }
   };
+=======
+  // const handleMaintenanceIntervalChange = (value, unit) => {
+  //   if (unit === "Year") {
+  //     const nextActionDate =
+  //       props.yearIntervals?.find((date) => String(value).split(".")[0] === String(date.year_num))
+  //         ?.start_date || "";
+  //     setFieldValue("next_action", nextActionDate);
+  //   }
+  // };
+>>>>>>> ams-final
 
   return (
     <form
@@ -213,7 +247,11 @@ const ExpenseForm = (props: Props) => {
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
+<<<<<<< HEAD
               {t("maintainance:component")} {t("home:name")} :
+=======
+              {t("maintainance:compone")} {t("home:name")} :
+>>>>>>> ams-final
             </label>
 
             <StyledSelect
@@ -234,8 +272,13 @@ const ExpenseForm = (props: Props) => {
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
+<<<<<<< HEAD
               {t("finance:number")} {t("finance:of")} {t("maintainance:components")}{" "}
               <TooltipLabel id={"nocints"} text={`Number of component in the system.`} />
+=======
+              {t("maintainance:nofcomponents")}{" "}
+              <TooltipLabel id={"nocints"} text={t("home:noc")} />
+>>>>>>> ams-final
             </label>
 
             <input
@@ -295,7 +338,11 @@ const ExpenseForm = (props: Props) => {
                 value={values.maintenance_interval}
                 onChange={(e) => {
                   handleChange(e);
+<<<<<<< HEAD
                   handleMaintenanceIntervalChange(e.target.value, values?.interval_unit);
+=======
+                  // handleMaintenanceIntervalChange(e.target.value, values?.interval_unit); comment ho
+>>>>>>> ams-final
                 }}
                 onBlur={handleBlur}
                 step="0.1"
@@ -307,6 +354,11 @@ const ExpenseForm = (props: Props) => {
                 value={values.interval_unit}
                 onChange={(e) => {
                   handleChange(e);
+<<<<<<< HEAD
+=======
+                  // if (e.target.value !== "Year")
+                  //   setFieldValue("next_action", props.scheme?.tool_start_date);
+>>>>>>> ams-final
                 }}
                 onBlur={handleBlur}
               >
@@ -321,13 +373,18 @@ const ExpenseForm = (props: Props) => {
         </div>
 
         <div className="col-lg-12">
+<<<<<<< HEAD
           <div className="form-group ">
+=======
+          <div className="form-group d-flex">
+>>>>>>> ams-final
             <CustomCheckBox
               id={"is_cost_seggregated"}
               label={t("finance:icCostSegregated")}
               checked={values.is_cost_seggregated}
               onChange={(e) => setFieldValue("is_cost_seggregated", e.target.checked)}
             />
+<<<<<<< HEAD
 
             <FormikValidationError name="is_cost_seggregated" errors={errors} touched={touched} />
           </div>
@@ -408,6 +465,89 @@ const ExpenseForm = (props: Props) => {
           </>
         )}
 
+=======
+            <TooltipLabel id="cost_seperately" text={t("finance:costseperate")}/>
+
+            <FormikValidationError name="is_cost_seggregated" errors={errors} touched={touched} />
+          </div>
+        </div>
+        {!values.is_cost_seggregated && (
+          <div className="col-lg-4">
+            <div className="form-group ">
+              <label htmlFor="" className="mr-1">
+              {t("home:compexpected")} {t("home:maintenance")} {t("home:cost")} ({props.scheme?.currency}):
+              </label>
+
+              <input
+                type="number"
+                className="form-control"
+                name="maintenance_cost"
+                value={values.maintenance_cost}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FormikValidationError name="maintenance_cost" errors={errors} touched={touched} />
+            </div>
+          </div>
+        )}
+
+        {values.is_cost_seggregated && (
+          <>
+            <div className="col-lg-4">
+              <div className="form-group ">
+                <label htmlFor="" className="mr-1">
+                  {t("finance:LabourCost")} ({props.scheme?.currency}): <TooltipLabel id="lc" text={t("finance:LC")} />
+                </label>
+
+                <input
+                  type="number"
+                  className="form-control"
+                  name="labour_cost"
+                  value={values.labour_cost}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <FormikValidationError name="labour_cost" errors={errors} touched={touched} />
+              </div>
+            </div>
+            <div className="col-lg-4">
+              <div className="form-group ">
+                <label htmlFor="" className="mr-1">
+                  {t("finance:MaterialCost")} ({props.scheme?.currency}): <TooltipLabel id="cc" text={t("finance:CC")} />
+                </label>
+
+                <input
+                  type="number"
+                  className="form-control"
+                  name="material_cost"
+                  value={values.material_cost}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <FormikValidationError name="material_cost" errors={errors} touched={touched} />
+              </div>
+            </div>
+            <div className="col-lg-4">
+              <div className="form-group ">
+                <label htmlFor="" className="mr-1">
+                  {t("finance:ReplacementCost")} ({props.scheme?.currency}): <TooltipLabel id="rc" text={t("finance:RC")} />
+                </label>
+
+                <input
+                  type="number"
+                  className="form-control"
+                  name="replacement_cost"
+                  value={values.replacement_cost}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <FormikValidationError name="replacement_cost" errors={errors} touched={touched} />
+              </div>
+            </div>
+          </>
+        )}
+
+>>>>>>> ams-final
         <div className="col-lg-4">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
@@ -458,6 +598,7 @@ const ExpenseForm = (props: Props) => {
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
               {t("finance:mitigation")}:
+              <TooltipLabel id="miti" text={t("finance:miti")}/>
             </label>
 
             <StyledSelect
@@ -497,7 +638,15 @@ const ExpenseForm = (props: Props) => {
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
               {t("finance:applyDate")}{" "}
+<<<<<<< HEAD
               <TooltipLabel id={"apd"} text={`The date from which this record  should be applied to the system.`} />:
+=======
+              <TooltipLabel
+                id={"apd"}
+                text={t("home:appdate")}
+              />
+              :
+>>>>>>> ams-final
             </label>
 
             {props.scheme?.system_date_format === "nep" ? (
@@ -530,7 +679,11 @@ const ExpenseForm = (props: Props) => {
               {t("finance:nextActionDate")}{" "}
               <TooltipLabel
                 id={"mada"}
+<<<<<<< HEAD
                 text={`It is a date on which the next maintenance action is scheduled.`}
+=======
+                text={t("home:nad")}
+>>>>>>> ams-final
               />
               :
             </label>
@@ -567,6 +720,7 @@ const ExpenseForm = (props: Props) => {
 
             <input
               type="file"
+              multiple
               accept="image/png, image/jpeg"
               className="form-control"
               name="componant_picture"
@@ -599,8 +753,13 @@ const ExpenseForm = (props: Props) => {
           type="submit"
           loading={props.postLoading || props.updateLoading}
           disabled={props.postLoading || props.updateLoading}
+<<<<<<< HEAD
           // disabled={authorizing}
           // loading={authorizing}
+=======
+        // disabled={authorizing}
+        // loading={authorizing}
+>>>>>>> ams-final
         />
         <Button
           className="btn custom-btn-outlined  mr-3"

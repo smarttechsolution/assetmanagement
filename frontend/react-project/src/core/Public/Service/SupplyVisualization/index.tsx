@@ -164,9 +164,9 @@ const SupplyVIsualization = (props: Props) => {
                 </NavItem>
               )}
             </Nav>
-            <span className="info-text">
+            {/* <span className="info-text">
               {t("home:allAmountInRupee")} {props.currency}
-            </span>
+            </span> */}
           </div>
 
           <TabContent activeTab={activeTab} className="mt-2">
@@ -206,7 +206,7 @@ const SupplyVIsualization = (props: Props) => {
                   {activeTab === "3" && (
                     <VisualizationBarGraph
                       compareKey="supply_date"
-                      defaultSelected={["total_supply", "daily_target"]}
+                      defaultSelected={["total_supply"]}
                       options={thisMonthOptions}
                       key="thisMonthGraph"
                     />

@@ -55,8 +55,11 @@ def add_nep_year(nep_date, interval):
     return date_nep
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> ams-final
 def add_month_to_date(date,month, date_format):
     from datetime import datetime, timedelta
     from dateutil.relativedelta import relativedelta
@@ -74,3 +77,37 @@ def add_days_to_date(date,days,date_format):
     if date_format == 'nep':
         return nepali_datetime.date.from_datetime_date(date_days.date())
     return date_days.date()
+<<<<<<< HEAD
+=======
+
+
+from io import BytesIO
+from PIL import Image
+from django.core.files import File
+def compress(image):
+    try:
+        im = Image.open(image)
+        im = im.convert('RGB')
+        im_io = BytesIO() 
+        im.save(im_io, 'JPEG', quality=30) 
+        new_image = File(im_io, name=image.name)
+        return new_image
+    except Exception as e:
+        print(e, "-------------")
+        return "error"
+
+
+def days_maintanace_interval(apply_date):
+    import calendar
+    import datetime
+    date = datetime.datetime.strptime(str(apply_date), "%Y-%m-%d")
+    d = date.replace(month=12, day = calendar.monthrange(date.year, date.month)[1])
+    delta = (d - date).days
+    return delta+1
+
+def month_maintanance_interval(apply_date):
+    import datetime
+    date = datetime.datetime.strptime(str(apply_date), "%Y-%m-%d")
+    delta = 12-date.month
+    return delta+1
+>>>>>>> ams-final

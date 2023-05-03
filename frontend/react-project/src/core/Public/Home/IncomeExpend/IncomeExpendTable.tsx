@@ -30,22 +30,24 @@ const IncomeExpendTable = (props: Props) => {
             </tr>
             <tr>
               <td>
-                <span className="income-title">{t("home:income")}</span>
+                <span className="income-title">{t("home:income")} ( {currency} )</span>
               </td>
               {props.income?.map((value, index) => (
                 <td style={{ width: 70 }} key={index}>
-                  {currency} {getNumberByLanguage(value) || 0}
+                  {/* {currency}  */}
+                  {getNumberByLanguage(value) || 0}
                 </td>
               ))}
             </tr>
             {props.expense && (
               <tr>
                 <td>
-                  <span className="expend-title">{t("home:expense")}</span>
+                  <span className="expend-title">{t("home:expense")} ( {currency} )</span>
                 </td>
                 {props.expense.map((value, index) => (
                   <td style={{ width: 70 }} key={index}>
-                    {currency} {getNumberByLanguage(value) || 0}
+                    {/* ( {currency})  */}
+                    {getNumberByLanguage(value) || 0}
                   </td>
                 ))}
               </tr>

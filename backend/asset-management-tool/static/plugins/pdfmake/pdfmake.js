@@ -100,6 +100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 function isString(variable) {
@@ -213,6 +214,121 @@ module.exports = {
 	offsetVector: offsetVector,
 	getNodeId: getNodeId
 };
+=======
+
+
+function isString(variable) {
+	return typeof variable === 'string' || variable instanceof String;
+}
+
+function isNumber(variable) {
+	return typeof variable === 'number' || variable instanceof Number;
+}
+
+function isBoolean(variable) {
+	return typeof variable === 'boolean';
+}
+
+function isArray(variable) {
+	return Array.isArray(variable);
+}
+
+function isFunction(variable) {
+	return typeof variable === 'function';
+}
+
+function isObject(variable) {
+	return variable !== null && typeof variable === 'object';
+}
+
+function isNull(variable) {
+	return variable === null;
+}
+
+function isUndefined(variable) {
+	return variable === undefined;
+}
+
+function pack() {
+	var result = {};
+
+	for (var i = 0, l = arguments.length; i < l; i++) {
+		var obj = arguments[i];
+
+		if (obj) {
+			for (var key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					result[key] = obj[key];
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
+function offsetVector(vector, x, y) {
+	switch (vector.type) {
+		case 'ellipse':
+		case 'rect':
+			vector.x += x;
+			vector.y += y;
+			break;
+		case 'line':
+			vector.x1 += x;
+			vector.x2 += x;
+			vector.y1 += y;
+			vector.y2 += y;
+			break;
+		case 'polyline':
+			for (var i = 0, l = vector.points.length; i < l; i++) {
+				vector.points[i].x += x;
+				vector.points[i].y += y;
+			}
+			break;
+	}
+}
+
+function fontStringify(key, val) {
+	if (key === 'font') {
+		return 'font';
+	}
+	return val;
+}
+
+function getNodeId(node) {
+	if (node.id) {
+		return node.id;
+	}
+
+	if (isArray(node.text)) {
+		for (var i = 0, l = node.text.length; i < l; i++) {
+			var n = node.text[i];
+			var nodeId = getNodeId(n);
+			if (nodeId) {
+				return nodeId;
+			}
+		}
+	}
+
+	return null;
+}
+
+module.exports = {
+	isString: isString,
+	isNumber: isNumber,
+	isBoolean: isBoolean,
+	isArray: isArray,
+	isFunction: isFunction,
+	isObject: isObject,
+	isNull: isNull,
+	isUndefined: isUndefined,
+	pack: pack,
+	fontStringify: fontStringify,
+	offsetVector: offsetVector,
+	getNodeId: getNodeId
+};
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -5425,6 +5541,7 @@ module.exports = function (exec) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */(function(Buffer, __dirname) {
 
 function VirtualFileSystem() {
@@ -5480,6 +5597,63 @@ function fixFilename(filename) {
 }
 
 module.exports = new VirtualFileSystem();
+=======
+/* WEBPACK VAR INJECTION */(function(Buffer, __dirname) {
+
+function VirtualFileSystem() {
+	this.fileSystem = {};
+	this.dataSystem = {};
+}
+
+VirtualFileSystem.prototype.existsSync = function (filename) {
+	filename = fixFilename(filename);
+	return typeof this.fileSystem[filename] !== 'undefined'
+		|| typeof this.dataSystem[filename] !== 'undefined';
+}
+
+VirtualFileSystem.prototype.readFileSync = function (filename, options) {
+	filename = fixFilename(filename);
+
+	var dataContent = this.dataSystem[filename];
+	if (typeof dataContent === 'string' && options === 'utf8') {
+		return dataContent;
+	}
+
+	if (dataContent) {
+		return new Buffer(dataContent, typeof dataContent === 'string' ? 'base64' : undefined);
+	}
+
+	var content = this.fileSystem[filename];
+	if (content) {
+		return content;
+	}
+
+	throw 'File \'' + filename + '\' not found in virtual file system';
+};
+
+VirtualFileSystem.prototype.writeFileSync = function (filename, content) {
+	this.fileSystem[fixFilename(filename)] = content;
+};
+
+VirtualFileSystem.prototype.bindFS = function (data) {
+	this.dataSystem = data || {};
+};
+
+
+function fixFilename(filename) {
+	if (filename.indexOf(__dirname) === 0) {
+		filename = filename.substring(__dirname.length);
+	}
+
+	if (filename.indexOf('/') === 0) {
+		filename = filename.substring(1);
+	}
+
+	return filename;
+}
+
+module.exports = new VirtualFileSystem();
+>>>>>>> ams-final
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(10).Buffer, "/"))
 
@@ -13055,6 +13229,7 @@ module.exports.f = function (C) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var isString = __webpack_require__(0).isString;
@@ -13428,6 +13603,381 @@ function widthOfString(text, font, fontSize, characterSpacing, fontFeatures) {
 }
 
 module.exports = TextTools;
+=======
+
+
+var isString = __webpack_require__(0).isString;
+var isNumber = __webpack_require__(0).isNumber;
+var isObject = __webpack_require__(0).isObject;
+var isArray = __webpack_require__(0).isArray;
+var isUndefined = __webpack_require__(0).isUndefined;
+var LineBreaker = __webpack_require__(290);
+
+var LEADING = /^(\s)+/g;
+var TRAILING = /(\s)+$/g;
+
+/**
+ * Creates an instance of TextTools - text measurement utility
+ *
+ * @constructor
+ * @param {FontProvider} fontProvider
+ */
+function TextTools(fontProvider) {
+	this.fontProvider = fontProvider;
+}
+
+/**
+ * Converts an array of strings (or inline-definition-objects) into a collection
+ * of inlines and calculated minWidth/maxWidth.
+ * and their min/max widths
+ * @param  {Object} textArray - an array of inline-definition-objects (or strings)
+ * @param  {Object} styleContextStack current style stack
+ * @return {Object}                   collection of inlines, minWidth, maxWidth
+ */
+TextTools.prototype.buildInlines = function (textArray, styleContextStack) {
+	var measured = measure(this.fontProvider, textArray, styleContextStack);
+
+	var minWidth = 0,
+		maxWidth = 0,
+		currentLineWidth;
+
+	measured.forEach(function (inline) {
+		minWidth = Math.max(minWidth, inline.width - inline.leadingCut - inline.trailingCut);
+
+		if (!currentLineWidth) {
+			currentLineWidth = { width: 0, leadingCut: inline.leadingCut, trailingCut: 0 };
+		}
+
+		currentLineWidth.width += inline.width;
+		currentLineWidth.trailingCut = inline.trailingCut;
+
+		maxWidth = Math.max(maxWidth, getTrimmedWidth(currentLineWidth));
+
+		if (inline.lineEnd) {
+			currentLineWidth = null;
+		}
+	});
+
+	if (getStyleProperty({}, styleContextStack, 'noWrap', false)) {
+		minWidth = maxWidth;
+	}
+
+	return {
+		items: measured,
+		minWidth: minWidth,
+		maxWidth: maxWidth
+	};
+
+	function getTrimmedWidth(item) {
+		return Math.max(0, item.width - item.leadingCut - item.trailingCut);
+	}
+};
+
+/**
+ * Returns size of the specified string (without breaking it) using the current style
+ * @param  {String} text              text to be measured
+ * @param  {Object} styleContextStack current style stack
+ * @return {Object}                   size of the specified string
+ */
+TextTools.prototype.sizeOfString = function (text, styleContextStack) {
+	text = text ? text.toString().replace(/\t/g, '    ') : '';
+
+	//TODO: refactor - extract from measure
+	var fontName = getStyleProperty({}, styleContextStack, 'font', 'Roboto');
+	var fontSize = getStyleProperty({}, styleContextStack, 'fontSize', 12);
+	var fontFeatures = getStyleProperty({}, styleContextStack, 'fontFeatures', null);
+	var bold = getStyleProperty({}, styleContextStack, 'bold', false);
+	var italics = getStyleProperty({}, styleContextStack, 'italics', false);
+	var lineHeight = getStyleProperty({}, styleContextStack, 'lineHeight', 1);
+	var characterSpacing = getStyleProperty({}, styleContextStack, 'characterSpacing', 0);
+
+	var font = this.fontProvider.provideFont(fontName, bold, italics);
+
+	return {
+		width: widthOfString(text, font, fontSize, characterSpacing, fontFeatures),
+		height: font.lineHeight(fontSize) * lineHeight,
+		fontSize: fontSize,
+		lineHeight: lineHeight,
+		ascender: font.ascender / 1000 * fontSize,
+		descender: font.descender / 1000 * fontSize
+	};
+};
+
+/**
+ * Returns size of the specified rotated string (without breaking it) using the current style
+ *
+ * @param  {string} text text to be measured
+ * @param  {number} angle
+ * @param  {object} styleContextStack current style stack
+ * @returns {object} size of the specified string
+ */
+TextTools.prototype.sizeOfRotatedText = function (text, angle, styleContextStack) {
+	var angleRad = angle * Math.PI / -180;
+	var size = this.sizeOfString(text, styleContextStack);
+	return {
+		width: Math.abs(size.height * Math.sin(angleRad)) + Math.abs(size.width * Math.cos(angleRad)),
+		height: Math.abs(size.width * Math.sin(angleRad)) + Math.abs(size.height * Math.cos(angleRad))
+	};
+}
+
+TextTools.prototype.widthOfString = function (text, font, fontSize, characterSpacing, fontFeatures) {
+	return widthOfString(text, font, fontSize, characterSpacing, fontFeatures);
+};
+
+function splitWords(text, noWrap) {
+	var results = [];
+	text = text.replace(/\t/g, '    ');
+
+	if (noWrap) {
+		results.push({ text: text });
+		return results;
+	}
+
+	var breaker = new LineBreaker(text);
+	var last = 0;
+	var bk;
+
+	while (bk = breaker.nextBreak()) {
+		var word = text.slice(last, bk.position);
+
+		if (bk.required || word.match(/\r?\n$|\r$/)) { // new line
+			word = word.replace(/\r?\n$|\r$/, '');
+			results.push({ text: word, lineEnd: true });
+		} else {
+			results.push({ text: word });
+		}
+
+		last = bk.position;
+	}
+
+	return results;
+}
+
+function copyStyle(source, destination) {
+	destination = destination || {};
+	source = source || {}; //TODO: default style
+
+	for (var key in source) {
+		if (key != 'text' && source.hasOwnProperty(key)) {
+			destination[key] = source[key];
+		}
+	}
+
+	return destination;
+}
+
+function normalizeTextArray(array, styleContextStack) {
+	function flatten(array) {
+		return array.reduce(function (prev, cur) {
+			var current = isArray(cur.text) ? flatten(cur.text) : cur;
+			var more = [].concat(current).some(Array.isArray);
+			return prev.concat(more ? flatten(current) : current);
+		}, []);
+	}
+
+	function getOneWord(index, words, noWrap) {
+		if (isUndefined(words[index])) {
+			return null;
+		}
+
+		if (words[index].lineEnd) {
+			return null;
+		}
+
+		var word = words[index].text;
+
+		if (noWrap) {
+			var tmpWords = splitWords(normalizeString(word), false);
+			if (isUndefined(tmpWords[tmpWords.length - 1])) {
+				return null;
+			}
+			word = tmpWords[tmpWords.length - 1].text;
+		}
+
+		return word;
+	}
+
+	var results = [];
+
+	if (!isArray(array)) {
+		array = [array];
+	}
+
+	array = flatten(array);
+
+	var lastWord = null;
+	for (var i = 0, l = array.length; i < l; i++) {
+		var item = array[i];
+		var style = null;
+		var words;
+
+		var noWrap = getStyleProperty(item || {}, styleContextStack, 'noWrap', false);
+		if (isObject(item)) {
+			if (item._textRef && item._textRef._textNodeRef.text) {
+				item.text = item._textRef._textNodeRef.text;
+			}
+			words = splitWords(normalizeString(item.text), noWrap);
+			style = copyStyle(item);
+		} else {
+			words = splitWords(normalizeString(item), noWrap);
+		}
+
+		if (lastWord && words.length) {
+			var firstWord = getOneWord(0, words, noWrap);
+
+			var wrapWords = splitWords(normalizeString(lastWord + firstWord), false);
+			if (wrapWords.length === 1) {
+				results[results.length - 1].noNewLine = true;
+			}
+		}
+
+		for (var i2 = 0, l2 = words.length; i2 < l2; i2++) {
+			var result = {
+				text: words[i2].text
+			};
+
+			if (words[i2].lineEnd) {
+				result.lineEnd = true;
+			}
+
+			copyStyle(style, result);
+
+			results.push(result);
+		}
+
+		lastWord = null;
+		if (i + 1 < l) {
+			lastWord = getOneWord(words.length - 1, words, noWrap);
+		}
+	}
+
+	return results;
+}
+
+function normalizeString(value) {
+	if (value === undefined || value === null) {
+		return '';
+	} else if (isNumber(value)) {
+		return value.toString();
+	} else if (isString(value)) {
+		return value;
+	} else {
+		return value.toString();
+	}
+}
+
+function getStyleProperty(item, styleContextStack, property, defaultValue) {
+	var value;
+
+	if (item[property] !== undefined && item[property] !== null) {
+		// item defines this property
+		return item[property];
+	}
+
+	if (!styleContextStack) {
+		return defaultValue;
+	}
+
+	styleContextStack.auto(item, function () {
+		value = styleContextStack.getProperty(property);
+	});
+
+	if (value !== null && value !== undefined) {
+		return value;
+	} else {
+		return defaultValue;
+	}
+}
+
+function measure(fontProvider, textArray, styleContextStack) {
+	var normalized = normalizeTextArray(textArray, styleContextStack);
+
+	if (normalized.length) {
+		var leadingIndent = getStyleProperty(normalized[0], styleContextStack, 'leadingIndent', 0);
+
+		if (leadingIndent) {
+			normalized[0].leadingCut = -leadingIndent;
+			normalized[0].leadingIndent = leadingIndent;
+		}
+	}
+
+	normalized.forEach(function (item) {
+		var fontName = getStyleProperty(item, styleContextStack, 'font', 'Roboto');
+		var fontSize = getStyleProperty(item, styleContextStack, 'fontSize', 12);
+		var fontFeatures = getStyleProperty(item, styleContextStack, 'fontFeatures', null);
+		var bold = getStyleProperty(item, styleContextStack, 'bold', false);
+		var italics = getStyleProperty(item, styleContextStack, 'italics', false);
+		var color = getStyleProperty(item, styleContextStack, 'color', 'black');
+		var decoration = getStyleProperty(item, styleContextStack, 'decoration', null);
+		var decorationColor = getStyleProperty(item, styleContextStack, 'decorationColor', null);
+		var decorationStyle = getStyleProperty(item, styleContextStack, 'decorationStyle', null);
+		var background = getStyleProperty(item, styleContextStack, 'background', null);
+		var lineHeight = getStyleProperty(item, styleContextStack, 'lineHeight', 1);
+		var characterSpacing = getStyleProperty(item, styleContextStack, 'characterSpacing', 0);
+		var link = getStyleProperty(item, styleContextStack, 'link', null);
+		var linkToPage = getStyleProperty(item, styleContextStack, 'linkToPage', null);
+		var linkToDestination = getStyleProperty(item, styleContextStack, 'linkToDestination', null);
+		var noWrap = getStyleProperty(item, styleContextStack, 'noWrap', null);
+		var preserveLeadingSpaces = getStyleProperty(item, styleContextStack, 'preserveLeadingSpaces', false);
+		var preserveTrailingSpaces = getStyleProperty(item, styleContextStack, 'preserveTrailingSpaces', false);
+		var opacity = getStyleProperty(item, styleContextStack, 'opacity', 1);
+		var sup = getStyleProperty(item, styleContextStack, 'sup', false);
+		var sub = getStyleProperty(item, styleContextStack, 'sub', false);
+
+		if ((sup || sub) && item.fontSize === undefined) {
+			// font size reduction taken from here: https://en.wikipedia.org/wiki/Subscript_and_superscript#Desktop_publishing
+			fontSize *= 0.58
+		}
+
+		var font = fontProvider.provideFont(fontName, bold, italics);
+
+		item.width = widthOfString(item.text, font, fontSize, characterSpacing, fontFeatures);
+		item.height = font.lineHeight(fontSize) * lineHeight;
+
+		if (!item.leadingCut) {
+			item.leadingCut = 0;
+		}
+
+		var leadingSpaces;
+		if (!preserveLeadingSpaces && (leadingSpaces = item.text.match(LEADING))) {
+			item.leadingCut += widthOfString(leadingSpaces[0], font, fontSize, characterSpacing, fontFeatures);
+		}
+
+		var trailingSpaces;
+		if (!preserveTrailingSpaces && (trailingSpaces = item.text.match(TRAILING))) {
+			item.trailingCut = widthOfString(trailingSpaces[0], font, fontSize, characterSpacing, fontFeatures);
+		} else {
+			item.trailingCut = 0;
+		}
+
+		item.alignment = getStyleProperty(item, styleContextStack, 'alignment', 'left');
+		item.font = font;
+		item.fontSize = fontSize;
+		item.fontFeatures = fontFeatures;
+		item.characterSpacing = characterSpacing;
+		item.color = color;
+		item.decoration = decoration;
+		item.decorationColor = decorationColor;
+		item.decorationStyle = decorationStyle;
+		item.background = background;
+		item.link = link;
+		item.linkToPage = linkToPage;
+		item.linkToDestination = linkToDestination;
+		item.noWrap = noWrap;
+		item.opacity = opacity;
+		item.sup = sup;
+		item.sub = sub;
+	});
+
+	return normalized;
+}
+
+function widthOfString(text, font, fontSize, characterSpacing, fontFeatures) {
+	return font.widthOfString(text, fontSize, fontFeatures) + ((characterSpacing || 0) * (text.length - 1));
+}
+
+module.exports = TextTools;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -13435,6 +13985,7 @@ module.exports = TextTools;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var isString = __webpack_require__(0).isString;
@@ -13571,6 +14122,144 @@ module.exports = {
 	isAutoColumn: isAutoColumn,
 	isStarColumn: isStarColumn
 };
+=======
+
+
+var isString = __webpack_require__(0).isString;
+
+function buildColumnWidths(columns, availableWidth) {
+	var autoColumns = [],
+		autoMin = 0, autoMax = 0,
+		starColumns = [],
+		starMaxMin = 0,
+		starMaxMax = 0,
+		fixedColumns = [],
+		initial_availableWidth = availableWidth;
+
+	columns.forEach(function (column) {
+		if (isAutoColumn(column)) {
+			autoColumns.push(column);
+			autoMin += column._minWidth;
+			autoMax += column._maxWidth;
+		} else if (isStarColumn(column)) {
+			starColumns.push(column);
+			starMaxMin = Math.max(starMaxMin, column._minWidth);
+			starMaxMax = Math.max(starMaxMax, column._maxWidth);
+		} else {
+			fixedColumns.push(column);
+		}
+	});
+
+	fixedColumns.forEach(function (col) {
+		// width specified as %
+		if (isString(col.width) && /\d+%/.test(col.width)) {
+			col.width = parseFloat(col.width) * initial_availableWidth / 100;
+		}
+		if (col.width < (col._minWidth) && col.elasticWidth) {
+			col._calcWidth = col._minWidth;
+		} else {
+			col._calcWidth = col.width;
+		}
+
+		availableWidth -= col._calcWidth;
+	});
+
+	// http://www.freesoft.org/CIE/RFC/1942/18.htm
+	// http://www.w3.org/TR/CSS2/tables.html#width-layout
+	// http://dev.w3.org/csswg/css3-tables-algorithms/Overview.src.htm
+	var minW = autoMin + starMaxMin * starColumns.length;
+	var maxW = autoMax + starMaxMax * starColumns.length;
+	if (minW >= availableWidth) {
+		// case 1 - there's no way to fit all columns within available width
+		// that's actually pretty bad situation with PDF as we have no horizontal scroll
+		// no easy workaround (unless we decide, in the future, to split single words)
+		// currently we simply use minWidths for all columns
+		autoColumns.forEach(function (col) {
+			col._calcWidth = col._minWidth;
+		});
+
+		starColumns.forEach(function (col) {
+			col._calcWidth = starMaxMin; // starMaxMin already contains padding
+		});
+	} else {
+		if (maxW < availableWidth) {
+			// case 2 - we can fit rest of the table within available space
+			autoColumns.forEach(function (col) {
+				col._calcWidth = col._maxWidth;
+				availableWidth -= col._calcWidth;
+			});
+		} else {
+			// maxW is too large, but minW fits within available width
+			var W = availableWidth - minW;
+			var D = maxW - minW;
+
+			autoColumns.forEach(function (col) {
+				var d = col._maxWidth - col._minWidth;
+				col._calcWidth = col._minWidth + d * W / D;
+				availableWidth -= col._calcWidth;
+			});
+		}
+
+		if (starColumns.length > 0) {
+			var starSize = availableWidth / starColumns.length;
+
+			starColumns.forEach(function (col) {
+				col._calcWidth = starSize;
+			});
+		}
+	}
+}
+
+function isAutoColumn(column) {
+	return column.width === 'auto';
+}
+
+function isStarColumn(column) {
+	return column.width === null || column.width === undefined || column.width === '*' || column.width === 'star';
+}
+
+//TODO: refactor and reuse in measureTable
+function measureMinMax(columns) {
+	var result = { min: 0, max: 0 };
+
+	var maxStar = { min: 0, max: 0 };
+	var starCount = 0;
+
+	for (var i = 0, l = columns.length; i < l; i++) {
+		var c = columns[i];
+
+		if (isStarColumn(c)) {
+			maxStar.min = Math.max(maxStar.min, c._minWidth);
+			maxStar.max = Math.max(maxStar.max, c._maxWidth);
+			starCount++;
+		} else if (isAutoColumn(c)) {
+			result.min += c._minWidth;
+			result.max += c._maxWidth;
+		} else {
+			result.min += ((c.width !== undefined && c.width) || c._minWidth);
+			result.max += ((c.width !== undefined && c.width) || c._maxWidth);
+		}
+	}
+
+	if (starCount) {
+		result.min += starCount * maxStar.min;
+		result.max += starCount * maxStar.max;
+	}
+
+	return result;
+}
+
+/**
+ * Calculates column widths
+ * @private
+ */
+module.exports = {
+	buildColumnWidths: buildColumnWidths,
+	measureMinMax: measureMinMax,
+	isAutoColumn: isAutoColumn,
+	isStarColumn: isStarColumn
+};
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -21227,6 +21916,7 @@ module.exports = LineBreaker;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 function TraversalTracker() {
@@ -21274,6 +21964,55 @@ TraversalTracker.prototype.auto = function (event, callback, innerFunction) {
 };
 
 module.exports = TraversalTracker;
+=======
+
+
+function TraversalTracker() {
+	this.events = {};
+}
+
+TraversalTracker.prototype.startTracking = function (event, callback) {
+	var callbacks = this.events[event] || (this.events[event] = []);
+
+	if (callbacks.indexOf(callback) < 0) {
+		callbacks.push(callback);
+	}
+};
+
+TraversalTracker.prototype.stopTracking = function (event, callback) {
+	var callbacks = this.events[event];
+
+	if (!callbacks) {
+		return;
+	}
+
+	var index = callbacks.indexOf(callback);
+	if (index >= 0) {
+		callbacks.splice(index, 1);
+	}
+};
+
+TraversalTracker.prototype.emit = function (event) {
+	var args = Array.prototype.slice.call(arguments, 1);
+	var callbacks = this.events[event];
+
+	if (!callbacks) {
+		return;
+	}
+
+	callbacks.forEach(function (callback) {
+		callback.apply(this, args);
+	});
+};
+
+TraversalTracker.prototype.auto = function (event, callback, innerFunction) {
+	this.startTracking(event, callback);
+	innerFunction();
+	this.stopTracking(event, callback);
+};
+
+module.exports = TraversalTracker;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -21281,6 +22020,7 @@ module.exports = TraversalTracker;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var isString = __webpack_require__(0).isString;
@@ -21460,6 +22200,187 @@ StyleContextStack.prototype.getProperty = function (property) {
 };
 
 module.exports = StyleContextStack;
+=======
+
+
+var isString = __webpack_require__(0).isString;
+var isArray = __webpack_require__(0).isArray;
+var isUndefined = __webpack_require__(0).isUndefined;
+var isNull = __webpack_require__(0).isNull;
+
+/**
+ * Creates an instance of StyleContextStack used for style inheritance and style overrides
+ *
+ * @constructor
+ * @this {StyleContextStack}
+ * @param {Object} named styles dictionary
+ * @param {Object} optional default style definition
+ */
+function StyleContextStack(styleDictionary, defaultStyle) {
+	this.defaultStyle = defaultStyle || {};
+	this.styleDictionary = styleDictionary;
+	this.styleOverrides = [];
+}
+
+/**
+ * Creates cloned version of current stack
+ * @return {StyleContextStack} current stack snapshot
+ */
+StyleContextStack.prototype.clone = function () {
+	var stack = new StyleContextStack(this.styleDictionary, this.defaultStyle);
+
+	this.styleOverrides.forEach(function (item) {
+		stack.styleOverrides.push(item);
+	});
+
+	return stack;
+};
+
+/**
+ * Pushes style-name or style-overrides-object onto the stack for future evaluation
+ *
+ * @param {String|Object} styleNameOrOverride style-name (referring to styleDictionary) or
+ *                                            a new dictionary defining overriding properties
+ */
+StyleContextStack.prototype.push = function (styleNameOrOverride) {
+	this.styleOverrides.push(styleNameOrOverride);
+};
+
+/**
+ * Removes last style-name or style-overrides-object from the stack
+ *
+ * @param {Number} howMany - optional number of elements to be popped (if not specified,
+ *                           one element will be removed from the stack)
+ */
+StyleContextStack.prototype.pop = function (howMany) {
+	howMany = howMany || 1;
+
+	while (howMany-- > 0) {
+		this.styleOverrides.pop();
+	}
+};
+
+/**
+ * Creates a set of named styles or/and a style-overrides-object based on the item,
+ * pushes those elements onto the stack for future evaluation and returns the number
+ * of elements pushed, so they can be easily poped then.
+ *
+ * @param {Object} item - an object with optional style property and/or style overrides
+ * @return the number of items pushed onto the stack
+ */
+StyleContextStack.prototype.autopush = function (item) {
+	if (isString(item)) {
+		return 0;
+	}
+
+	var styleNames = [];
+
+	if (item.style) {
+		if (isArray(item.style)) {
+			styleNames = item.style;
+		} else {
+			styleNames = [item.style];
+		}
+	}
+
+	for (var i = 0, l = styleNames.length; i < l; i++) {
+		this.push(styleNames[i]);
+	}
+
+	var styleProperties = [
+		'font',
+		'fontSize',
+		'fontFeatures',
+		'bold',
+		'italics',
+		'alignment',
+		'color',
+		'columnGap',
+		'fillColor',
+		'fillOpacity',
+		'decoration',
+		'decorationStyle',
+		'decorationColor',
+		'background',
+		'lineHeight',
+		'characterSpacing',
+		'noWrap',
+		'markerColor',
+		'leadingIndent',
+		'sup',
+		'sub'
+		//'tableCellPadding'
+		// 'cellBorder',
+		// 'headerCellBorder',
+		// 'oddRowCellBorder',
+		// 'evenRowCellBorder',
+		// 'tableBorder'
+	];
+	var styleOverrideObject = {};
+	var pushStyleOverrideObject = false;
+
+	styleProperties.forEach(function (key) {
+		if (!isUndefined(item[key]) && !isNull(item[key])) {
+			styleOverrideObject[key] = item[key];
+			pushStyleOverrideObject = true;
+		}
+	});
+
+	if (pushStyleOverrideObject) {
+		this.push(styleOverrideObject);
+	}
+
+	return styleNames.length + (pushStyleOverrideObject ? 1 : 0);
+};
+
+/**
+ * Automatically pushes elements onto the stack, using autopush based on item,
+ * executes callback and then pops elements back. Returns value returned by callback
+ *
+ * @param  {Object}   item - an object with optional style property and/or style overrides
+ * @param  {Function} function to be called between autopush and pop
+ * @return {Object} value returned by callback
+ */
+StyleContextStack.prototype.auto = function (item, callback) {
+	var pushedItems = this.autopush(item);
+	var result = callback();
+
+	if (pushedItems > 0) {
+		this.pop(pushedItems);
+	}
+
+	return result;
+};
+
+/**
+ * Evaluates stack and returns value of a named property
+ *
+ * @param {String} property - property name
+ * @return property value or null if not found
+ */
+StyleContextStack.prototype.getProperty = function (property) {
+	if (this.styleOverrides) {
+		for (var i = this.styleOverrides.length - 1; i >= 0; i--) {
+			var item = this.styleOverrides[i];
+
+			if (isString(item)) {
+				// named-style-override
+				var style = this.styleDictionary[item];
+				if (style && !isUndefined(style[property]) && !isNull(style[property])) {
+					return style[property];
+				}
+			} else if (!isUndefined(item[property]) && !isNull(item[property])) {
+				// style-overrides-object
+				return item[property];
+			}
+		}
+	}
+
+	return this.defaultStyle && this.defaultStyle[property];
+};
+
+module.exports = StyleContextStack;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -21467,6 +22388,7 @@ module.exports = StyleContextStack;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var TraversalTracker = __webpack_require__(291);
@@ -21781,6 +22703,322 @@ function bottomMostContext(c1, c2) {
 }
 
 module.exports = DocumentContext;
+=======
+
+
+var TraversalTracker = __webpack_require__(291);
+var isString = __webpack_require__(0).isString;
+
+/**
+ * Creates an instance of DocumentContext - a store for current x, y positions and available width/height.
+ * It facilitates column divisions and vertical sync
+ */
+function DocumentContext(pageSize, pageMargins) {
+	this.pages = [];
+
+	this.pageMargins = pageMargins;
+
+	this.x = pageMargins.left;
+	this.availableWidth = pageSize.width - pageMargins.left - pageMargins.right;
+	this.availableHeight = 0;
+	this.page = -1;
+
+	this.snapshots = [];
+
+	this.endingCell = null;
+
+	this.tracker = new TraversalTracker();
+
+	this.backgroundLength = [];
+
+	this.addPage(pageSize);
+}
+
+DocumentContext.prototype.beginColumnGroup = function () {
+	this.snapshots.push({
+		x: this.x,
+		y: this.y,
+		availableHeight: this.availableHeight,
+		availableWidth: this.availableWidth,
+		page: this.page,
+		bottomMost: {
+			x: this.x,
+			y: this.y,
+			availableHeight: this.availableHeight,
+			availableWidth: this.availableWidth,
+			page: this.page
+		},
+		endingCell: this.endingCell,
+		lastColumnWidth: this.lastColumnWidth
+	});
+
+	this.lastColumnWidth = 0;
+};
+
+DocumentContext.prototype.beginColumn = function (width, offset, endingCell) {
+	var saved = this.snapshots[this.snapshots.length - 1];
+
+	this.calculateBottomMost(saved);
+
+	this.endingCell = endingCell;
+	this.page = saved.page;
+	this.x = this.x + this.lastColumnWidth + (offset || 0);
+	this.y = saved.y;
+	this.availableWidth = width;	//saved.availableWidth - offset;
+	this.availableHeight = saved.availableHeight;
+
+	this.lastColumnWidth = width;
+};
+
+DocumentContext.prototype.calculateBottomMost = function (destContext) {
+	if (this.endingCell) {
+		this.saveContextInEndingCell(this.endingCell);
+		this.endingCell = null;
+	} else {
+		destContext.bottomMost = bottomMostContext(this, destContext.bottomMost);
+	}
+};
+
+DocumentContext.prototype.markEnding = function (endingCell) {
+	this.page = endingCell._columnEndingContext.page;
+	this.x = endingCell._columnEndingContext.x;
+	this.y = endingCell._columnEndingContext.y;
+	this.availableWidth = endingCell._columnEndingContext.availableWidth;
+	this.availableHeight = endingCell._columnEndingContext.availableHeight;
+	this.lastColumnWidth = endingCell._columnEndingContext.lastColumnWidth;
+};
+
+DocumentContext.prototype.saveContextInEndingCell = function (endingCell) {
+	endingCell._columnEndingContext = {
+		page: this.page,
+		x: this.x,
+		y: this.y,
+		availableHeight: this.availableHeight,
+		availableWidth: this.availableWidth,
+		lastColumnWidth: this.lastColumnWidth
+	};
+};
+
+DocumentContext.prototype.completeColumnGroup = function (height) {
+	var saved = this.snapshots.pop();
+
+	this.calculateBottomMost(saved);
+
+	this.endingCell = null;
+	this.x = saved.x;
+
+	var y = saved.bottomMost.y;
+	if (height) {
+		if (saved.page === saved.bottomMost.page) {
+			if ((saved.y + height) > y) {
+				y = saved.y + height;
+			}
+		} else {
+			y += height;
+		}
+	}
+
+	this.y = y;
+	this.page = saved.bottomMost.page;
+	this.availableWidth = saved.availableWidth;
+	this.availableHeight = saved.bottomMost.availableHeight;
+	if (height) {
+		this.availableHeight -= (y - saved.bottomMost.y);
+	}
+	this.lastColumnWidth = saved.lastColumnWidth;
+};
+
+DocumentContext.prototype.addMargin = function (left, right) {
+	this.x += left;
+	this.availableWidth -= left + (right || 0);
+};
+
+DocumentContext.prototype.moveDown = function (offset) {
+	this.y += offset;
+	this.availableHeight -= offset;
+
+	return this.availableHeight > 0;
+};
+
+DocumentContext.prototype.initializePage = function () {
+	this.y = this.pageMargins.top;
+	this.availableHeight = this.getCurrentPage().pageSize.height - this.pageMargins.top - this.pageMargins.bottom;
+	this.pageSnapshot().availableWidth = this.getCurrentPage().pageSize.width - this.pageMargins.left - this.pageMargins.right;
+};
+
+DocumentContext.prototype.pageSnapshot = function () {
+	if (this.snapshots[0]) {
+		return this.snapshots[0];
+	} else {
+		return this;
+	}
+};
+
+DocumentContext.prototype.moveTo = function (x, y) {
+	if (x !== undefined && x !== null) {
+		this.x = x;
+		this.availableWidth = this.getCurrentPage().pageSize.width - this.x - this.pageMargins.right;
+	}
+	if (y !== undefined && y !== null) {
+		this.y = y;
+		this.availableHeight = this.getCurrentPage().pageSize.height - this.y - this.pageMargins.bottom;
+	}
+};
+
+DocumentContext.prototype.moveToRelative = function (x, y) {
+	if (x !== undefined && x !== null) {
+		this.x = this.x + x;
+	}
+	if (y !== undefined && y !== null) {
+		this.y = this.y + y;
+	}
+};
+
+DocumentContext.prototype.beginDetachedBlock = function () {
+	this.snapshots.push({
+		x: this.x,
+		y: this.y,
+		availableHeight: this.availableHeight,
+		availableWidth: this.availableWidth,
+		page: this.page,
+		endingCell: this.endingCell,
+		lastColumnWidth: this.lastColumnWidth
+	});
+};
+
+DocumentContext.prototype.endDetachedBlock = function () {
+	var saved = this.snapshots.pop();
+
+	this.x = saved.x;
+	this.y = saved.y;
+	this.availableWidth = saved.availableWidth;
+	this.availableHeight = saved.availableHeight;
+	this.page = saved.page;
+	this.endingCell = saved.endingCell;
+	this.lastColumnWidth = saved.lastColumnWidth;
+};
+
+function pageOrientation(pageOrientationString, currentPageOrientation) {
+	if (pageOrientationString === undefined) {
+		return currentPageOrientation;
+	} else if (isString(pageOrientationString) && (pageOrientationString.toLowerCase() === 'landscape')) {
+		return 'landscape';
+	} else {
+		return 'portrait';
+	}
+}
+
+var getPageSize = function (currentPage, newPageOrientation) {
+
+	newPageOrientation = pageOrientation(newPageOrientation, currentPage.pageSize.orientation);
+
+	if (newPageOrientation !== currentPage.pageSize.orientation) {
+		return {
+			orientation: newPageOrientation,
+			width: currentPage.pageSize.height,
+			height: currentPage.pageSize.width
+		};
+	} else {
+		return {
+			orientation: currentPage.pageSize.orientation,
+			width: currentPage.pageSize.width,
+			height: currentPage.pageSize.height
+		};
+	}
+
+};
+
+
+DocumentContext.prototype.moveToNextPage = function (pageOrientation) {
+	var nextPageIndex = this.page + 1;
+
+	var prevPage = this.page;
+	var prevY = this.y;
+
+	var createNewPage = nextPageIndex >= this.pages.length;
+	if (createNewPage) {
+		var currentAvailableWidth = this.availableWidth;
+		var currentPageOrientation = this.getCurrentPage().pageSize.orientation;
+
+		var pageSize = getPageSize(this.getCurrentPage(), pageOrientation);
+		this.addPage(pageSize);
+
+		if (currentPageOrientation === pageSize.orientation) {
+			this.availableWidth = currentAvailableWidth;
+		}
+	} else {
+		this.page = nextPageIndex;
+		this.initializePage();
+	}
+
+	return {
+		newPageCreated: createNewPage,
+		prevPage: prevPage,
+		prevY: prevY,
+		y: this.y
+	};
+};
+
+
+DocumentContext.prototype.addPage = function (pageSize) {
+	var page = { items: [], pageSize: pageSize };
+	this.pages.push(page);
+	this.backgroundLength.push(0);
+	this.page = this.pages.length - 1;
+	this.initializePage();
+
+	this.tracker.emit('pageAdded');
+
+	return page;
+};
+
+DocumentContext.prototype.getCurrentPage = function () {
+	if (this.page < 0 || this.page >= this.pages.length) {
+		return null;
+	}
+
+	return this.pages[this.page];
+};
+
+DocumentContext.prototype.getCurrentPosition = function () {
+	var pageSize = this.getCurrentPage().pageSize;
+	var innerHeight = pageSize.height - this.pageMargins.top - this.pageMargins.bottom;
+	var innerWidth = pageSize.width - this.pageMargins.left - this.pageMargins.right;
+
+	return {
+		pageNumber: this.page + 1,
+		pageOrientation: pageSize.orientation,
+		pageInnerHeight: innerHeight,
+		pageInnerWidth: innerWidth,
+		left: this.x,
+		top: this.y,
+		verticalRatio: ((this.y - this.pageMargins.top) / innerHeight),
+		horizontalRatio: ((this.x - this.pageMargins.left) / innerWidth)
+	};
+};
+
+function bottomMostContext(c1, c2) {
+	var r;
+
+	if (c1.page > c2.page) {
+		r = c1;
+	} else if (c2.page > c1.page) {
+		r = c2;
+	} else {
+		r = (c1.y > c2.y) ? c1 : c2;
+	}
+
+	return {
+		page: r.page,
+		x: r.x,
+		y: r.y,
+		availableHeight: r.availableHeight,
+		availableWidth: r.availableWidth
+	};
+}
+
+module.exports = DocumentContext;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -21788,6 +23026,7 @@ module.exports = DocumentContext;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 /**
@@ -21879,6 +23118,99 @@ Line.prototype.getHeight = function () {
 };
 
 module.exports = Line;
+=======
+
+
+/**
+ * Creates an instance of Line
+ *
+ * @constructor
+ * @this {Line}
+ * @param {Number} Maximum width this line can have
+ */
+function Line(maxWidth) {
+	this.maxWidth = maxWidth;
+	this.leadingCut = 0;
+	this.trailingCut = 0;
+	this.inlineWidths = 0;
+	this.inlines = [];
+}
+
+Line.prototype.getAscenderHeight = function () {
+	var y = 0;
+
+	this.inlines.forEach(function (inline) {
+		y = Math.max(y, inline.font.ascender / 1000 * inline.fontSize);
+	});
+	return y;
+};
+
+Line.prototype.hasEnoughSpaceForInline = function (inline, nextInlines) {
+	nextInlines = nextInlines || [];
+
+	if (this.inlines.length === 0) {
+		return true;
+	}
+	if (this.newLineForced) {
+		return false;
+	}
+
+	var inlineWidth = inline.width;
+	var inlineTrailingCut = inline.trailingCut || 0;
+	if (inline.noNewLine) {
+		for (var i = 0, l = nextInlines.length; i < l; i++) {
+			var nextInline = nextInlines[i];
+			inlineWidth += nextInline.width;
+			inlineTrailingCut += nextInline.trailingCut || 0;
+			if (!nextInline.noNewLine) {
+				break;
+			}
+		}
+	}
+
+	return (this.inlineWidths + inlineWidth - this.leadingCut - inlineTrailingCut) <= this.maxWidth;
+};
+
+Line.prototype.addInline = function (inline) {
+	if (this.inlines.length === 0) {
+		this.leadingCut = inline.leadingCut || 0;
+	}
+	this.trailingCut = inline.trailingCut || 0;
+
+	inline.x = this.inlineWidths - this.leadingCut;
+
+	this.inlines.push(inline);
+	this.inlineWidths += inline.width;
+
+	if (inline.lineEnd) {
+		this.newLineForced = true;
+	}
+};
+
+Line.prototype.getWidth = function () {
+	return this.inlineWidths - this.leadingCut - this.trailingCut;
+};
+
+Line.prototype.getAvailableWidth = function () {
+	return this.maxWidth - this.getWidth();
+};
+
+/**
+ * Returns line height
+ * @return {Number}
+ */
+Line.prototype.getHeight = function () {
+	var max = 0;
+
+	this.inlines.forEach(function (item) {
+		max = Math.max(max, item.height || 0);
+	});
+
+	return max;
+};
+
+module.exports = Line;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -22190,6 +23522,7 @@ module.exports = ___EXPOSE_LOADER_IMPORT___;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */(function(Buffer, global) {
 
 var isFunction = __webpack_require__(0).isFunction;
@@ -22472,6 +23805,290 @@ module.exports = {
 		);
 	}
 };
+=======
+/* WEBPACK VAR INJECTION */(function(Buffer, global) {
+
+var isFunction = __webpack_require__(0).isFunction;
+var isUndefined = __webpack_require__(0).isUndefined;
+var isNull = __webpack_require__(0).isNull;
+var FileSaver = __webpack_require__(306);
+var saveAs = FileSaver.saveAs;
+
+var defaultClientFonts = {
+	Roboto: {
+		normal: 'Roboto-Regular.ttf',
+		bold: 'Roboto-Medium.ttf',
+		italics: 'Roboto-Italic.ttf',
+		bolditalics: 'Roboto-MediumItalic.ttf'
+	}
+};
+
+function Document(docDefinition, tableLayouts, fonts, vfs) {
+	this.docDefinition = docDefinition;
+	this.tableLayouts = tableLayouts || null;
+	this.fonts = fonts || defaultClientFonts;
+	this.vfs = vfs;
+}
+
+function canCreatePdf() {
+	// Ensure the browser provides the level of support needed
+	if (!Object.keys || typeof Uint16Array === 'undefined') {
+		return false;
+	}
+	return true;
+}
+
+Document.prototype._createDoc = function (options, cb) {
+	options = options || {};
+	if (this.tableLayouts) {
+		options.tableLayouts = this.tableLayouts;
+	}
+
+	var PdfPrinter = __webpack_require__(307);
+
+	var printer = new PdfPrinter(this.fonts);
+	__webpack_require__(53).bindFS(this.vfs); // bind virtual file system to file system
+
+	if (!isFunction(cb)) {
+		var doc = printer.createPdfKitDocument(this.docDefinition, options);
+
+		return doc;
+	}
+
+	var URLBrowserResolver = __webpack_require__(556);
+	var urlResolver = new URLBrowserResolver(__webpack_require__(53));
+
+	for (var font in this.fonts) {
+		if (this.fonts.hasOwnProperty(font)) {
+			if (this.fonts[font].normal) {
+				urlResolver.resolve(this.fonts[font].normal);
+			}
+			if (this.fonts[font].bold) {
+				urlResolver.resolve(this.fonts[font].bold);
+			}
+			if (this.fonts[font].italics) {
+				urlResolver.resolve(this.fonts[font].italics);
+			}
+			if (this.fonts[font].bolditalics) {
+				urlResolver.resolve(this.fonts[font].bolditalics);
+			}
+		}
+	}
+
+	if (this.docDefinition.images) {
+		for (var image in this.docDefinition.images) {
+			if (this.docDefinition.images.hasOwnProperty(image)) {
+				urlResolver.resolve(this.docDefinition.images[image]);
+			}
+		}
+	}
+
+	var _this = this;
+
+	urlResolver.resolved().then(function () {
+		var doc = printer.createPdfKitDocument(_this.docDefinition, options);
+
+		cb(doc);
+	}, function (result) {
+		throw result;
+	});
+};
+
+Document.prototype._flushDoc = function (doc, callback) {
+	var chunks = [];
+	var result;
+
+	doc.on('readable', function () {
+		var chunk;
+		while ((chunk = doc.read(9007199254740991)) !== null) {
+			chunks.push(chunk);
+		}
+	});
+	doc.on('end', function () {
+		result = Buffer.concat(chunks);
+		callback(result, doc._pdfMakePages);
+	});
+	doc.end();
+};
+
+Document.prototype._getPages = function (options, cb) {
+	if (!cb) {
+		throw '_getPages is an async method and needs a callback argument';
+	}
+	var _this = this;
+
+	this._createDoc(options, function (doc) {
+		_this._flushDoc(doc, function (ignoreBuffer, pages) {
+			cb(pages);
+		});
+	});
+};
+
+Document.prototype._bufferToBlob = function (buffer) {
+	var blob;
+	try {
+		blob = new Blob([buffer], { type: 'application/pdf' });
+	} catch (e) {
+		// Old browser which can't handle it without making it an byte array (ie10)
+		if (e.name === 'InvalidStateError') {
+			var byteArray = new Uint8Array(buffer);
+			blob = new Blob([byteArray.buffer], { type: 'application/pdf' });
+		}
+	}
+
+	if (!blob) {
+		throw 'Could not generate blob';
+	}
+
+	return blob;
+};
+
+Document.prototype._openWindow = function () {
+	// we have to open the window immediately and store the reference
+	// otherwise popup blockers will stop us
+	var win = window.open('', '_blank');
+	if (win === null) {
+		throw 'Open PDF in new window blocked by browser';
+	}
+
+	return win;
+};
+
+Document.prototype._openPdf = function (options, win) {
+	if (!win) {
+		win = this._openWindow();
+	}
+	try {
+		this.getBlob(function (result) {
+			var urlCreator = window.URL || window.webkitURL;
+			var pdfUrl = urlCreator.createObjectURL(result);
+			win.location.href = pdfUrl;
+
+			/* temporarily disabled
+			if (win !== window) {
+				setTimeout(function () {
+					if (isNull(win.window)) { // is closed by AdBlock
+						window.location.href = pdfUrl; // open in actual window
+					}
+				}, 500);
+			}
+			*/
+		}, options);
+	} catch (e) {
+		win.close();
+		throw e;
+	}
+};
+
+Document.prototype.open = function (options, win) {
+	options = options || {};
+	options.autoPrint = false;
+	win = win || null;
+
+	this._openPdf(options, win);
+};
+
+
+Document.prototype.print = function (options, win) {
+	options = options || {};
+	options.autoPrint = true;
+	win = win || null;
+
+	this._openPdf(options, win);
+};
+
+/**
+ * download(defaultFileName = 'file.pdf', cb = null, options = {})
+ * or
+ * download(cb, options = {})
+ */
+Document.prototype.download = function (defaultFileName, cb, options) {
+	if (isFunction(defaultFileName)) {
+		if (!isUndefined(cb)) {
+			options = cb;
+		}
+		cb = defaultFileName;
+		defaultFileName = null;
+	}
+
+	defaultFileName = defaultFileName || 'file.pdf';
+	this.getBlob(function (result) {
+		saveAs(result, defaultFileName);
+
+		if (isFunction(cb)) {
+			cb();
+		}
+	}, options);
+};
+
+Document.prototype.getBase64 = function (cb, options) {
+	if (!cb) {
+		throw 'getBase64 is an async method and needs a callback argument';
+	}
+	this.getBuffer(function (buffer) {
+		cb(buffer.toString('base64'));
+	}, options);
+};
+
+Document.prototype.getDataUrl = function (cb, options) {
+	if (!cb) {
+		throw 'getDataUrl is an async method and needs a callback argument';
+	}
+	this.getBuffer(function (buffer) {
+		cb('data:application/pdf;base64,' + buffer.toString('base64'));
+	}, options);
+};
+
+Document.prototype.getBlob = function (cb, options) {
+	if (!cb) {
+		throw 'getBlob is an async method and needs a callback argument';
+	}
+	var that = this;
+	this.getBuffer(function (result) {
+		var blob = that._bufferToBlob(result);
+		cb(blob);
+	}, options);
+};
+
+Document.prototype.getBuffer = function (cb, options) {
+	if (!cb) {
+		throw 'getBuffer is an async method and needs a callback argument';
+	}
+
+	var _this = this;
+
+	this._createDoc(options, function (doc) {
+		_this._flushDoc(doc, function (buffer) {
+			cb(buffer);
+		});
+	});
+};
+
+Document.prototype.getStream = function (options, cb) {
+	if (!isFunction(cb)) {
+		var doc = this._createDoc(options);
+		return doc;
+	}
+
+	this._createDoc(options, function (doc) {
+		cb(doc);
+	});
+};
+
+module.exports = {
+	createPdf: function (docDefinition, tableLayouts, fonts, vfs) {
+		if (!canCreatePdf()) {
+			throw 'Your browser does not provide the level of support needed';
+		}
+		return new Document(
+			docDefinition,
+			tableLayouts || global.pdfMake.tableLayouts,
+			fonts || global.pdfMake.fonts,
+			vfs || global.pdfMake.vfs
+		);
+	}
+};
+>>>>>>> ams-final
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(10).Buffer, __webpack_require__(24)))
 
@@ -23432,6 +25049,7 @@ module.exports = PdfPrinter;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 function _interopDefault(ex) {
@@ -23453,6 +25071,29 @@ module.exports = {
 	getEngineInstance: getEngineInstance,
 	createPdfDocument: createPdfDocument
 };
+=======
+
+
+function _interopDefault(ex) {
+	return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex;
+}
+
+var PdfKit = _interopDefault(__webpack_require__(309));
+
+function getEngineInstance() {
+	return PdfKit;
+}
+
+function createPdfDocument(options) {
+	options = options || {};
+	return new PdfKit(options);
+}
+
+module.exports = {
+	getEngineInstance: getEngineInstance,
+	createPdfDocument: createPdfDocument
+};
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -65094,6 +66735,7 @@ module.exports = /*#__PURE__*/function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var isArray = __webpack_require__(0).isArray;
@@ -65162,6 +66804,76 @@ FontProvider.prototype.provideFont = function (familyName, bold, italics) {
 };
 
 module.exports = FontProvider;
+=======
+
+
+var isArray = __webpack_require__(0).isArray;
+
+function typeName(bold, italics) {
+	var type = 'normal';
+	if (bold && italics) {
+		type = 'bolditalics';
+	} else if (bold) {
+		type = 'bold';
+	} else if (italics) {
+		type = 'italics';
+	}
+	return type;
+}
+
+function FontProvider(fontDescriptors, pdfKitDoc) {
+	this.fonts = {};
+	this.pdfKitDoc = pdfKitDoc;
+	this.fontCache = {};
+
+	for (var font in fontDescriptors) {
+		if (fontDescriptors.hasOwnProperty(font)) {
+			var fontDef = fontDescriptors[font];
+
+			this.fonts[font] = {
+				normal: fontDef.normal,
+				bold: fontDef.bold,
+				italics: fontDef.italics,
+				bolditalics: fontDef.bolditalics
+			};
+		}
+	}
+}
+
+FontProvider.prototype.getFontType = function (bold, italics) {
+	return typeName(bold, italics);
+}
+
+FontProvider.prototype.getFontFile = function (familyName, bold, italics) {
+	var type = this.getFontType(bold, italics);
+	if (!this.fonts[familyName] || !this.fonts[familyName][type]) {
+		return null;
+	}
+
+	return this.fonts[familyName][type];
+}
+
+FontProvider.prototype.provideFont = function (familyName, bold, italics) {
+	var type = this.getFontType(bold, italics);
+	if (this.getFontFile(familyName, bold, italics) === null) {
+		throw new Error('Font \'' + familyName + '\' in style \'' + type + '\' is not defined in the font section of the document definition.');
+	}
+
+	this.fontCache[familyName] = this.fontCache[familyName] || {};
+
+	if (!this.fontCache[familyName][type]) {
+		var def = this.fonts[familyName][type];
+		if (!isArray(def)) {
+			def = [def];
+		}
+		this.fontCache[familyName][type] = this.pdfKitDoc.font.apply(this.pdfKitDoc, def)._font;
+	}
+
+	return this.fontCache[familyName][type];
+};
+
+module.exports = FontProvider;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -65169,6 +66881,7 @@ module.exports = FontProvider;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var TraversalTracker = __webpack_require__(291);
@@ -65976,6 +67689,815 @@ LayoutBuilder.prototype.processQr = function (node) {
 };
 
 module.exports = LayoutBuilder;
+=======
+
+
+var TraversalTracker = __webpack_require__(291);
+var DocPreprocessor = __webpack_require__(541);
+var DocMeasure = __webpack_require__(542);
+var DocumentContext = __webpack_require__(293);
+var PageElementWriter = __webpack_require__(544);
+var ColumnCalculator = __webpack_require__(198);
+var TableProcessor = __webpack_require__(546);
+var Line = __webpack_require__(294);
+var isString = __webpack_require__(0).isString;
+var isArray = __webpack_require__(0).isArray;
+var isUndefined = __webpack_require__(0).isUndefined;
+var isNull = __webpack_require__(0).isNull;
+var pack = __webpack_require__(0).pack;
+var offsetVector = __webpack_require__(0).offsetVector;
+var fontStringify = __webpack_require__(0).fontStringify;
+var getNodeId = __webpack_require__(0).getNodeId;
+var isFunction = __webpack_require__(0).isFunction;
+var TextTools = __webpack_require__(197);
+var StyleContextStack = __webpack_require__(292);
+var isNumber = __webpack_require__(0).isNumber;
+
+function addAll(target, otherArray) {
+	otherArray.forEach(function (item) {
+		target.push(item);
+	});
+}
+
+/**
+ * Creates an instance of LayoutBuilder - layout engine which turns document-definition-object
+ * into a set of pages, lines, inlines and vectors ready to be rendered into a PDF
+ *
+ * @param {Object} pageSize - an object defining page width and height
+ * @param {Object} pageMargins - an object defining top, left, right and bottom margins
+ */
+function LayoutBuilder(pageSize, pageMargins, imageMeasure, svgMeasure) {
+	this.pageSize = pageSize;
+	this.pageMargins = pageMargins;
+	this.tracker = new TraversalTracker();
+	this.imageMeasure = imageMeasure;
+	this.svgMeasure = svgMeasure;
+	this.tableLayouts = {};
+}
+
+LayoutBuilder.prototype.registerTableLayouts = function (tableLayouts) {
+	this.tableLayouts = pack(this.tableLayouts, tableLayouts);
+};
+
+/**
+ * Executes layout engine on document-definition-object and creates an array of pages
+ * containing positioned Blocks, Lines and inlines
+ *
+ * @param {Object} docStructure document-definition-object
+ * @param {Object} fontProvider font provider
+ * @param {Object} styleDictionary dictionary with style definitions
+ * @param {Object} defaultStyle default style definition
+ * @return {Array} an array of pages
+ */
+LayoutBuilder.prototype.layoutDocument = function (docStructure, fontProvider, styleDictionary, defaultStyle, background, header, footer, images, watermark, pageBreakBeforeFct) {
+
+	function addPageBreaksIfNecessary(linearNodeList, pages) {
+
+		if (!isFunction(pageBreakBeforeFct)) {
+			return false;
+		}
+
+		linearNodeList = linearNodeList.filter(function (node) {
+			return node.positions.length > 0;
+		});
+
+		linearNodeList.forEach(function (node) {
+			var nodeInfo = {};
+			[
+				'id', 'text', 'ul', 'ol', 'table', 'image', 'qr', 'canvas', 'svg', 'columns',
+				'headlineLevel', 'style', 'pageBreak', 'pageOrientation',
+				'width', 'height'
+			].forEach(function (key) {
+				if (node[key] !== undefined) {
+					nodeInfo[key] = node[key];
+				}
+			});
+			nodeInfo.startPosition = node.positions[0];
+			nodeInfo.pageNumbers = node.positions.map(function (node) {
+				return node.pageNumber;
+			}).filter(function (element, position, array) {
+				return array.indexOf(element) === position;
+			});
+			nodeInfo.pages = pages.length;
+			nodeInfo.stack = isArray(node.stack);
+
+			node.nodeInfo = nodeInfo;
+		});
+
+		for (var index = 0; index < linearNodeList.length; index++) {
+			var node = linearNodeList[index];
+			if (node.pageBreak !== 'before' && !node.pageBreakCalculated) {
+				node.pageBreakCalculated = true;
+				var pageNumber = node.nodeInfo.pageNumbers[0];
+				var followingNodesOnPage = [];
+				var nodesOnNextPage = [];
+				var previousNodesOnPage = [];
+				for (var ii = index + 1, l = linearNodeList.length; ii < l; ii++) {
+					if (linearNodeList[ii].nodeInfo.pageNumbers.indexOf(pageNumber) > -1) {
+						followingNodesOnPage.push(linearNodeList[ii].nodeInfo);
+					}
+					if (linearNodeList[ii].nodeInfo.pageNumbers.indexOf(pageNumber + 1) > -1) {
+						nodesOnNextPage.push(linearNodeList[ii].nodeInfo);
+					}
+				}
+				for (var ii = 0; ii < index; ii++) {
+					if (linearNodeList[ii].nodeInfo.pageNumbers.indexOf(pageNumber) > -1) {
+						previousNodesOnPage.push(linearNodeList[ii].nodeInfo);
+					}
+				}
+				if (pageBreakBeforeFct(node.nodeInfo, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage)) {
+					node.pageBreak = 'before';
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	this.docPreprocessor = new DocPreprocessor();
+	this.docMeasure = new DocMeasure(fontProvider, styleDictionary, defaultStyle, this.imageMeasure, this.svgMeasure, this.tableLayouts, images);
+
+
+	function resetXYs(result) {
+		result.linearNodeList.forEach(function (node) {
+			node.resetXY();
+		});
+	}
+
+	var result = this.tryLayoutDocument(docStructure, fontProvider, styleDictionary, defaultStyle, background, header, footer, images, watermark);
+	while (addPageBreaksIfNecessary(result.linearNodeList, result.pages)) {
+		resetXYs(result);
+		result = this.tryLayoutDocument(docStructure, fontProvider, styleDictionary, defaultStyle, background, header, footer, images, watermark);
+	}
+
+	return result.pages;
+};
+
+LayoutBuilder.prototype.tryLayoutDocument = function (docStructure, fontProvider, styleDictionary, defaultStyle, background, header, footer, images, watermark, pageBreakBeforeFct) {
+
+	this.linearNodeList = [];
+	docStructure = this.docPreprocessor.preprocessDocument(docStructure);
+	docStructure = this.docMeasure.measureDocument(docStructure);
+
+	this.writer = new PageElementWriter(
+		new DocumentContext(this.pageSize, this.pageMargins), this.tracker);
+
+	var _this = this;
+	this.writer.context().tracker.startTracking('pageAdded', function () {
+		_this.addBackground(background);
+	});
+
+	this.addBackground(background);
+	this.processNode(docStructure);
+	this.addHeadersAndFooters(header, footer);
+	if (watermark != null) {
+		this.addWatermark(watermark, fontProvider, defaultStyle);
+	}
+
+	return { pages: this.writer.context().pages, linearNodeList: this.linearNodeList };
+};
+
+
+LayoutBuilder.prototype.addBackground = function (background) {
+	var backgroundGetter = isFunction(background) ? background : function () {
+		return background;
+	};
+
+	var context = this.writer.context();
+	var pageSize = context.getCurrentPage().pageSize;
+
+	var pageBackground = backgroundGetter(context.page + 1, pageSize);
+
+	if (pageBackground) {
+		this.writer.beginUnbreakableBlock(pageSize.width, pageSize.height);
+		pageBackground = this.docPreprocessor.preprocessDocument(pageBackground);
+		this.processNode(this.docMeasure.measureDocument(pageBackground));
+		this.writer.commitUnbreakableBlock(0, 0);
+		context.backgroundLength[context.page] += pageBackground.positions.length;
+	}
+};
+
+LayoutBuilder.prototype.addStaticRepeatable = function (headerOrFooter, sizeFunction) {
+	this.addDynamicRepeatable(function () {
+		return JSON.parse(JSON.stringify(headerOrFooter)); // copy to new object
+	}, sizeFunction);
+};
+
+LayoutBuilder.prototype.addDynamicRepeatable = function (nodeGetter, sizeFunction) {
+	var pages = this.writer.context().pages;
+
+	for (var pageIndex = 0, l = pages.length; pageIndex < l; pageIndex++) {
+		this.writer.context().page = pageIndex;
+
+		var node = nodeGetter(pageIndex + 1, l, this.writer.context().pages[pageIndex].pageSize);
+
+		if (node) {
+			var sizes = sizeFunction(this.writer.context().getCurrentPage().pageSize, this.pageMargins);
+			this.writer.beginUnbreakableBlock(sizes.width, sizes.height);
+			node = this.docPreprocessor.preprocessDocument(node);
+			this.processNode(this.docMeasure.measureDocument(node));
+			this.writer.commitUnbreakableBlock(sizes.x, sizes.y);
+		}
+	}
+};
+
+LayoutBuilder.prototype.addHeadersAndFooters = function (header, footer) {
+	var headerSizeFct = function (pageSize, pageMargins) {
+		return {
+			x: 0,
+			y: 0,
+			width: pageSize.width,
+			height: pageMargins.top
+		};
+	};
+
+	var footerSizeFct = function (pageSize, pageMargins) {
+		return {
+			x: 0,
+			y: pageSize.height - pageMargins.bottom,
+			width: pageSize.width,
+			height: pageMargins.bottom
+		};
+	};
+
+	if (isFunction(header)) {
+		this.addDynamicRepeatable(header, headerSizeFct);
+	} else if (header) {
+		this.addStaticRepeatable(header, headerSizeFct);
+	}
+
+	if (isFunction(footer)) {
+		this.addDynamicRepeatable(footer, footerSizeFct);
+	} else if (footer) {
+		this.addStaticRepeatable(footer, footerSizeFct);
+	}
+};
+
+LayoutBuilder.prototype.addWatermark = function (watermark, fontProvider, defaultStyle) {
+	if (isString(watermark)) {
+		watermark = { 'text': watermark };
+	}
+
+	if (!watermark.text) { // empty watermark text
+		return;
+	}
+
+	watermark.font = watermark.font || defaultStyle.font || 'Roboto';
+	watermark.fontSize = watermark.fontSize || 'auto';
+	watermark.color = watermark.color || 'black';
+	watermark.opacity = isNumber(watermark.opacity) ? watermark.opacity : 0.6;
+	watermark.bold = watermark.bold || false;
+	watermark.italics = watermark.italics || false;
+	watermark.angle = !isUndefined(watermark.angle) && !isNull(watermark.angle) ? watermark.angle : null;
+
+	if (watermark.angle === null) {
+		watermark.angle = Math.atan2(this.pageSize.height, this.pageSize.width) * -180 / Math.PI;
+	}
+
+	if (watermark.fontSize === 'auto') {
+		watermark.fontSize = getWatermarkFontSize(this.pageSize, watermark, fontProvider);
+	}
+
+	var watermarkObject = {
+		text: watermark.text,
+		font: fontProvider.provideFont(watermark.font, watermark.bold, watermark.italics),
+		fontSize: watermark.fontSize,
+		color: watermark.color,
+		opacity: watermark.opacity,
+		angle: watermark.angle
+	};
+
+	watermarkObject._size = getWatermarkSize(watermark, fontProvider);
+
+	var pages = this.writer.context().pages;
+	for (var i = 0, l = pages.length; i < l; i++) {
+		pages[i].watermark = watermarkObject;
+	}
+
+	function getWatermarkSize(watermark, fontProvider) {
+		var textTools = new TextTools(fontProvider);
+		var styleContextStack = new StyleContextStack(null, { font: watermark.font, bold: watermark.bold, italics: watermark.italics });
+
+		styleContextStack.push({
+			fontSize: watermark.fontSize
+		});
+
+		var size = textTools.sizeOfString(watermark.text, styleContextStack);
+		var rotatedSize = textTools.sizeOfRotatedText(watermark.text, watermark.angle, styleContextStack);
+
+		return { size: size, rotatedSize: rotatedSize };
+	}
+
+	function getWatermarkFontSize(pageSize, watermark, fontProvider) {
+		var textTools = new TextTools(fontProvider);
+		var styleContextStack = new StyleContextStack(null, { font: watermark.font, bold: watermark.bold, italics: watermark.italics });
+		var rotatedSize;
+
+		/**
+		 * Binary search the best font size.
+		 * Initial bounds [0, 1000]
+		 * Break when range < 1
+		 */
+		var a = 0;
+		var b = 1000;
+		var c = (a + b) / 2;
+		while (Math.abs(a - b) > 1) {
+			styleContextStack.push({
+				fontSize: c
+			});
+			rotatedSize = textTools.sizeOfRotatedText(watermark.text, watermark.angle, styleContextStack);
+			if (rotatedSize.width > pageSize.width) {
+				b = c;
+				c = (a + b) / 2;
+			} else if (rotatedSize.width < pageSize.width) {
+				if (rotatedSize.height > pageSize.height) {
+					b = c;
+					c = (a + b) / 2;
+				} else {
+					a = c;
+					c = (a + b) / 2;
+				}
+			}
+			styleContextStack.pop();
+		}
+		/*
+		 End binary search
+		 */
+		return c;
+	}
+};
+
+function decorateNode(node) {
+	var x = node.x, y = node.y;
+	node.positions = [];
+
+	if (isArray(node.canvas)) {
+		node.canvas.forEach(function (vector) {
+			var x = vector.x, y = vector.y, x1 = vector.x1, y1 = vector.y1, x2 = vector.x2, y2 = vector.y2;
+			vector.resetXY = function () {
+				vector.x = x;
+				vector.y = y;
+				vector.x1 = x1;
+				vector.y1 = y1;
+				vector.x2 = x2;
+				vector.y2 = y2;
+			};
+		});
+	}
+
+	node.resetXY = function () {
+		node.x = x;
+		node.y = y;
+		if (isArray(node.canvas)) {
+			node.canvas.forEach(function (vector) {
+				vector.resetXY();
+			});
+		}
+	};
+}
+
+LayoutBuilder.prototype.processNode = function (node) {
+	var self = this;
+
+	this.linearNodeList.push(node);
+	decorateNode(node);
+
+	applyMargins(function () {
+		var unbreakable = node.unbreakable;
+		if (unbreakable) {
+			self.writer.beginUnbreakableBlock();
+		}
+
+		var absPosition = node.absolutePosition;
+		if (absPosition) {
+			self.writer.context().beginDetachedBlock();
+			self.writer.context().moveTo(absPosition.x || 0, absPosition.y || 0);
+		}
+
+		var relPosition = node.relativePosition;
+		if (relPosition) {
+			self.writer.context().beginDetachedBlock();
+			self.writer.context().moveToRelative(relPosition.x || 0, relPosition.y || 0);
+		}
+
+		if (node.stack) {
+			self.processVerticalContainer(node);
+		} else if (node.columns) {
+			self.processColumns(node);
+		} else if (node.ul) {
+			self.processList(false, node);
+		} else if (node.ol) {
+			self.processList(true, node);
+		} else if (node.table) {
+			self.processTable(node);
+		} else if (node.text !== undefined) {
+			self.processLeaf(node);
+		} else if (node.toc) {
+			self.processToc(node);
+		} else if (node.image) {
+			self.processImage(node);
+		} else if (node.svg) {
+			self.processSVG(node);
+		} else if (node.canvas) {
+			self.processCanvas(node);
+		} else if (node.qr) {
+			self.processQr(node);
+		} else if (!node._span) {
+			throw 'Unrecognized document structure: ' + JSON.stringify(node, fontStringify);
+		}
+
+		if (absPosition || relPosition) {
+			self.writer.context().endDetachedBlock();
+		}
+
+		if (unbreakable) {
+			self.writer.commitUnbreakableBlock();
+		}
+	});
+
+	function applyMargins(callback) {
+		var margin = node._margin;
+
+		if (node.pageBreak === 'before') {
+			self.writer.moveToNextPage(node.pageOrientation);
+		} else if (node.pageBreak === 'beforeOdd') {
+			self.writer.moveToNextPage(node.pageOrientation);
+			if ((self.writer.context().page + 1) % 2 === 1) {
+				self.writer.moveToNextPage(node.pageOrientation);
+			}
+		} else if (node.pageBreak === 'beforeEven') {
+			self.writer.moveToNextPage(node.pageOrientation);
+			if ((self.writer.context().page + 1) % 2 === 0) {
+				self.writer.moveToNextPage(node.pageOrientation);
+			}
+		}
+
+		if (margin) {
+			self.writer.context().moveDown(margin[1]);
+			self.writer.context().addMargin(margin[0], margin[2]);
+		}
+
+		callback();
+
+		if (margin) {
+			self.writer.context().addMargin(-margin[0], -margin[2]);
+			self.writer.context().moveDown(margin[3]);
+		}
+
+		if (node.pageBreak === 'after') {
+			self.writer.moveToNextPage(node.pageOrientation);
+		} else if (node.pageBreak === 'afterOdd') {
+			self.writer.moveToNextPage(node.pageOrientation);
+			if ((self.writer.context().page + 1) % 2 === 1) {
+				self.writer.moveToNextPage(node.pageOrientation);
+			}
+		} else if (node.pageBreak === 'afterEven') {
+			self.writer.moveToNextPage(node.pageOrientation);
+			if ((self.writer.context().page + 1) % 2 === 0) {
+				self.writer.moveToNextPage(node.pageOrientation);
+			}
+		}
+	}
+};
+
+// vertical container
+LayoutBuilder.prototype.processVerticalContainer = function (node) {
+	var self = this;
+	node.stack.forEach(function (item) {
+		self.processNode(item);
+		addAll(node.positions, item.positions);
+
+		//TODO: paragraph gap
+	});
+};
+
+// columns
+LayoutBuilder.prototype.processColumns = function (columnNode) {
+	var columns = columnNode.columns;
+	var availableWidth = this.writer.context().availableWidth;
+	var gaps = gapArray(columnNode._gap);
+
+	if (gaps) {
+		availableWidth -= (gaps.length - 1) * columnNode._gap;
+	}
+
+	ColumnCalculator.buildColumnWidths(columns, availableWidth);
+	var result = this.processRow(columns, columns, gaps);
+	addAll(columnNode.positions, result.positions);
+
+
+	function gapArray(gap) {
+		if (!gap) {
+			return null;
+		}
+
+		var gaps = [];
+		gaps.push(0);
+
+		for (var i = columns.length - 1; i > 0; i--) {
+			gaps.push(gap);
+		}
+
+		return gaps;
+	}
+};
+
+LayoutBuilder.prototype.processRow = function (columns, widths, gaps, tableBody, tableRow, height) {
+	var self = this;
+	var pageBreaks = [], positions = [];
+
+	this.tracker.auto('pageChanged', storePageBreakData, function () {
+		widths = widths || columns;
+
+		self.writer.context().beginColumnGroup();
+
+		for (var i = 0, l = columns.length; i < l; i++) {
+			var column = columns[i];
+			var width = widths[i]._calcWidth;
+			var leftOffset = colLeftOffset(i);
+
+			if (column.colSpan && column.colSpan > 1) {
+				for (var j = 1; j < column.colSpan; j++) {
+					width += widths[++i]._calcWidth + gaps[i];
+				}
+			}
+
+			self.writer.context().beginColumn(width, leftOffset, getEndingCell(column, i));
+			if (!column._span) {
+				self.processNode(column);
+				addAll(positions, column.positions);
+			} else if (column._columnEndingContext) {
+				// row-span ending
+				self.writer.context().markEnding(column);
+			}
+		}
+
+		self.writer.context().completeColumnGroup(height);
+	});
+
+	return { pageBreaks: pageBreaks, positions: positions };
+
+	function storePageBreakData(data) {
+		var pageDesc;
+
+		for (var i = 0, l = pageBreaks.length; i < l; i++) {
+			var desc = pageBreaks[i];
+			if (desc.prevPage === data.prevPage) {
+				pageDesc = desc;
+				break;
+			}
+		}
+
+		if (!pageDesc) {
+			pageDesc = data;
+			pageBreaks.push(pageDesc);
+		}
+		pageDesc.prevY = Math.max(pageDesc.prevY, data.prevY);
+		pageDesc.y = Math.min(pageDesc.y, data.y);
+	}
+
+	function colLeftOffset(i) {
+		if (gaps && gaps.length > i) {
+			return gaps[i];
+		}
+		return 0;
+	}
+
+	function getEndingCell(column, columnIndex) {
+		if (column.rowSpan && column.rowSpan > 1) {
+			var endingRow = tableRow + column.rowSpan - 1;
+			if (endingRow >= tableBody.length) {
+				throw 'Row span for column ' + columnIndex + ' (with indexes starting from 0) exceeded row count';
+			}
+			return tableBody[endingRow][columnIndex];
+		}
+
+		return null;
+	}
+};
+
+// lists
+LayoutBuilder.prototype.processList = function (orderedList, node) {
+	var self = this,
+		items = orderedList ? node.ol : node.ul,
+		gapSize = node._gapSize;
+
+	this.writer.context().addMargin(gapSize.width);
+
+	var nextMarker;
+	this.tracker.auto('lineAdded', addMarkerToFirstLeaf, function () {
+		items.forEach(function (item) {
+			nextMarker = item.listMarker;
+			self.processNode(item);
+			addAll(node.positions, item.positions);
+		});
+	});
+
+	this.writer.context().addMargin(-gapSize.width);
+
+	function addMarkerToFirstLeaf(line) {
+		// I'm not very happy with the way list processing is implemented
+		// (both code and algorithm should be rethinked)
+		if (nextMarker) {
+			var marker = nextMarker;
+			nextMarker = null;
+
+			if (marker.canvas) {
+				var vector = marker.canvas[0];
+
+				offsetVector(vector, -marker._minWidth, 0);
+				self.writer.addVector(vector);
+			} else if (marker._inlines) {
+				var markerLine = new Line(self.pageSize.width);
+				markerLine.addInline(marker._inlines[0]);
+				markerLine.x = -marker._minWidth;
+				markerLine.y = line.getAscenderHeight() - markerLine.getAscenderHeight();
+				self.writer.addLine(markerLine, true);
+			}
+		}
+	}
+};
+
+// tables
+LayoutBuilder.prototype.processTable = function (tableNode) {
+	var processor = new TableProcessor(tableNode);
+
+	processor.beginTable(this.writer);
+
+	var rowHeights = tableNode.table.heights;
+	for (var i = 0, l = tableNode.table.body.length; i < l; i++) {
+		processor.beginRow(i, this.writer);
+
+		var height;
+		if (isFunction(rowHeights)) {
+			height = rowHeights(i);
+		} else if (isArray(rowHeights)) {
+			height = rowHeights[i];
+		} else {
+			height = rowHeights;
+		}
+
+		if (height === 'auto') {
+			height = undefined;
+		}
+
+		var result = this.processRow(tableNode.table.body[i], tableNode.table.widths, tableNode._offsets.offsets, tableNode.table.body, i, height);
+		addAll(tableNode.positions, result.positions);
+
+		processor.endRow(i, this.writer, result.pageBreaks);
+	}
+
+	processor.endTable(this.writer);
+};
+
+// leafs (texts)
+LayoutBuilder.prototype.processLeaf = function (node) {
+	var line = this.buildNextLine(node);
+	if (line && (node.tocItem || node.id)) {
+		line._node = node;
+	}
+	var currentHeight = (line) ? line.getHeight() : 0;
+	var maxHeight = node.maxHeight || -1;
+
+	if (line) {
+		var nodeId = getNodeId(node);
+		if (nodeId) {
+			line.id = nodeId;
+		}
+	}
+
+	if (node._tocItemRef) {
+		line._pageNodeRef = node._tocItemRef;
+	}
+
+	if (node._pageRef) {
+		line._pageNodeRef = node._pageRef._nodeRef;
+	}
+
+	if (line && line.inlines && isArray(line.inlines)) {
+		for (var i = 0, l = line.inlines.length; i < l; i++) {
+			if (line.inlines[i]._tocItemRef) {
+				line.inlines[i]._pageNodeRef = line.inlines[i]._tocItemRef;
+			}
+
+			if (line.inlines[i]._pageRef) {
+				line.inlines[i]._pageNodeRef = line.inlines[i]._pageRef._nodeRef;
+			}
+		}
+	}
+
+	while (line && (maxHeight === -1 || currentHeight < maxHeight)) {
+		var positions = this.writer.addLine(line);
+		node.positions.push(positions);
+		line = this.buildNextLine(node);
+		if (line) {
+			currentHeight += line.getHeight();
+		}
+	}
+};
+
+LayoutBuilder.prototype.processToc = function (node) {
+	if (node.toc.title) {
+		this.processNode(node.toc.title);
+	}
+	if (node.toc._table) {
+		this.processNode(node.toc._table);
+	}
+};
+
+LayoutBuilder.prototype.buildNextLine = function (textNode) {
+
+	function cloneInline(inline) {
+		var newInline = inline.constructor();
+		for (var key in inline) {
+			newInline[key] = inline[key];
+		}
+		return newInline;
+	}
+
+	if (!textNode._inlines || textNode._inlines.length === 0) {
+		return null;
+	}
+
+	var line = new Line(this.writer.context().availableWidth);
+	var textTools = new TextTools(null);
+
+	var isForceContinue = false;
+	while (textNode._inlines && textNode._inlines.length > 0 &&
+		(line.hasEnoughSpaceForInline(textNode._inlines[0], textNode._inlines.slice(1)) || isForceContinue)) {
+		var isHardWrap = false;
+		var inline = textNode._inlines.shift();
+		isForceContinue = false;
+
+		if (!inline.noWrap && inline.text.length > 1 && inline.width > line.getAvailableWidth()) {
+			var widthPerChar = inline.width / inline.text.length;
+			var maxChars = Math.floor(line.getAvailableWidth() / widthPerChar);
+			if (maxChars < 1) {
+				maxChars = 1;
+			}
+			if (maxChars < inline.text.length) {
+				var newInline = cloneInline(inline);
+
+				newInline.text = inline.text.substr(maxChars);
+				inline.text = inline.text.substr(0, maxChars);
+
+				newInline.width = textTools.widthOfString(newInline.text, newInline.font, newInline.fontSize, newInline.characterSpacing, newInline.fontFeatures);
+				inline.width = textTools.widthOfString(inline.text, inline.font, inline.fontSize, inline.characterSpacing, inline.fontFeatures);
+
+				textNode._inlines.unshift(newInline);
+				isHardWrap = true;
+			}
+		}
+
+		line.addInline(inline);
+
+		isForceContinue = inline.noNewLine && !isHardWrap;
+	}
+
+	line.lastLineInParagraph = textNode._inlines.length === 0;
+
+	return line;
+};
+
+// images
+LayoutBuilder.prototype.processImage = function (node) {
+	var position = this.writer.addImage(node);
+	node.positions.push(position);
+};
+
+LayoutBuilder.prototype.processSVG = function (node) {
+	var position = this.writer.addSVG(node);
+	node.positions.push(position);
+};
+
+LayoutBuilder.prototype.processCanvas = function (node) {
+	var height = node._minHeight;
+
+	if (node.absolutePosition === undefined && this.writer.context().availableHeight < height) {
+		// TODO: support for canvas larger than a page
+		// TODO: support for other overflow methods
+
+		this.writer.moveToNextPage();
+	}
+
+	this.writer.alignCanvas(node);
+
+	node.canvas.forEach(function (vector) {
+		var position = this.writer.addVector(vector);
+		node.positions.push(position);
+	}, this);
+
+	this.writer.context().moveDown(height);
+};
+
+LayoutBuilder.prototype.processQr = function (node) {
+	var position = this.writer.addQr(node);
+	node.positions.push(position);
+};
+
+module.exports = LayoutBuilder;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -65983,6 +68505,7 @@ module.exports = LayoutBuilder;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 
 var isString = __webpack_require__(0).isString;
@@ -66238,6 +68761,263 @@ DocPreprocessor.prototype._getNodeForNodeRef = function (node) {
 }
 
 module.exports = DocPreprocessor;
+=======
+/* WEBPACK VAR INJECTION */(function(Buffer) {
+
+var isString = __webpack_require__(0).isString;
+var isNumber = __webpack_require__(0).isNumber;
+var isBoolean = __webpack_require__(0).isBoolean;
+var isArray = __webpack_require__(0).isArray;
+var isUndefined = __webpack_require__(0).isUndefined;
+var fontStringify = __webpack_require__(0).fontStringify;
+
+function DocPreprocessor() {
+
+}
+
+DocPreprocessor.prototype.preprocessDocument = function (docStructure) {
+	this.parentNode = null;
+	this.tocs = [];
+	this.nodeReferences = [];
+	return this.preprocessNode(docStructure);
+};
+
+DocPreprocessor.prototype.preprocessNode = function (node) {
+	// expand shortcuts and casting values
+	if (isArray(node)) {
+		node = { stack: node };
+	} else if (isString(node)) {
+		node = { text: node };
+	} else if (isNumber(node) || isBoolean(node)) {
+		node = { text: node.toString() };
+	} else if (node === undefined || node === null) {
+		node = { text: '' };
+	} else if (Object.keys(node).length === 0) { // empty object
+		node = { text: '' };
+	} else if ('text' in node && (node.text === undefined || node.text === null)) {
+		node.text = '';
+	}
+
+	if (node.columns) {
+		return this.preprocessColumns(node);
+	} else if (node.stack) {
+		return this.preprocessVerticalContainer(node);
+	} else if (node.ul) {
+		return this.preprocessList(node);
+	} else if (node.ol) {
+		return this.preprocessList(node);
+	} else if (node.table) {
+		return this.preprocessTable(node);
+	} else if (node.text !== undefined) {
+		return this.preprocessText(node);
+	} else if (node.toc) {
+		return this.preprocessToc(node);
+	} else if (node.image) {
+		return this.preprocessImage(node);
+	} else if (node.svg) {
+		return this.preprocessSVG(node);
+	} else if (node.canvas) {
+		return this.preprocessCanvas(node);
+	} else if (node.qr) {
+		return this.preprocessQr(node);
+	} else if (node.pageReference || node.textReference) {
+		return this.preprocessText(node);
+	} else {
+		throw 'Unrecognized document structure: ' + JSON.stringify(node, fontStringify);
+	}
+};
+
+DocPreprocessor.prototype.preprocessColumns = function (node) {
+	var columns = node.columns;
+
+	for (var i = 0, l = columns.length; i < l; i++) {
+		columns[i] = this.preprocessNode(columns[i]);
+	}
+
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessVerticalContainer = function (node) {
+	var items = node.stack;
+
+	for (var i = 0, l = items.length; i < l; i++) {
+		items[i] = this.preprocessNode(items[i]);
+	}
+
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessList = function (node) {
+	var items = node.ul || node.ol;
+
+	for (var i = 0, l = items.length; i < l; i++) {
+		items[i] = this.preprocessNode(items[i]);
+	}
+
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessTable = function (node) {
+	var col, row, cols, rows;
+
+	for (col = 0, cols = node.table.body[0].length; col < cols; col++) {
+		for (row = 0, rows = node.table.body.length; row < rows; row++) {
+			var rowData = node.table.body[row];
+			var data = rowData[col];
+			if (data !== undefined) {
+				if (data === null) { // transform to object
+					data = '';
+				}
+				if (!data._span) {
+					rowData[col] = this.preprocessNode(data);
+				}
+			}
+		}
+	}
+
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessText = function (node) {
+	if (node.tocItem) {
+		if (!isArray(node.tocItem)) {
+			node.tocItem = [node.tocItem];
+		}
+
+		for (var i = 0, l = node.tocItem.length; i < l; i++) {
+			if (!isString(node.tocItem[i])) {
+				node.tocItem[i] = '_default_';
+			}
+
+			var tocItemId = node.tocItem[i];
+
+			if (!this.tocs[tocItemId]) {
+				this.tocs[tocItemId] = { toc: { _items: [], _pseudo: true } };
+			}
+
+			if (!node.id) {
+				node.id = 'toc-' + tocItemId + '-' + this.tocs[tocItemId].toc._items.length;
+			}
+
+			var tocItemRef = {
+				_nodeRef: this._getNodeForNodeRef(node),
+				_textNodeRef: node
+			};
+			this.tocs[tocItemId].toc._items.push(tocItemRef);
+		}
+	}
+
+	if (node.id) {
+		if (this.nodeReferences[node.id]) {
+			if (!this.nodeReferences[node.id]._pseudo) {
+				throw "Node id '" + node.id + "' already exists";
+			}
+
+			this.nodeReferences[node.id]._nodeRef = this._getNodeForNodeRef(node);
+			this.nodeReferences[node.id]._textNodeRef = node;
+			this.nodeReferences[node.id]._pseudo = false;
+		} else {
+			this.nodeReferences[node.id] = {
+				_nodeRef: this._getNodeForNodeRef(node),
+				_textNodeRef: node
+			};
+		}
+	}
+
+	if (node.pageReference) {
+		if (!this.nodeReferences[node.pageReference]) {
+			this.nodeReferences[node.pageReference] = {
+				_nodeRef: {},
+				_textNodeRef: {},
+				_pseudo: true
+			};
+		}
+		node.text = '00000';
+		node.linkToDestination = node.pageReference;
+		node._pageRef = this.nodeReferences[node.pageReference];
+	}
+
+	if (node.textReference) {
+		if (!this.nodeReferences[node.textReference]) {
+			this.nodeReferences[node.textReference] = { _nodeRef: {}, _pseudo: true };
+		}
+
+		node.text = '';
+		node.linkToDestination = node.textReference;
+		node._textRef = this.nodeReferences[node.textReference];
+	}
+
+	if (node.text && node.text.text) {
+		node.text = [this.preprocessNode(node.text)];
+	} else if (isArray(node.text)) {
+		var isSetParentNode = false;
+		if (this.parentNode === null) {
+			this.parentNode = node;
+			isSetParentNode = true;
+		}
+
+		for (var i = 0, l = node.text.length; i < l; i++) {
+			node.text[i] = this.preprocessNode(node.text[i]);
+		}
+
+		if (isSetParentNode) {
+			this.parentNode = null;
+		}
+	}
+
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessToc = function (node) {
+	if (!node.toc.id) {
+		node.toc.id = '_default_';
+	}
+
+	node.toc.title = node.toc.title ? this.preprocessNode(node.toc.title) : null;
+	node.toc._items = [];
+
+	if (this.tocs[node.toc.id]) {
+		if (!this.tocs[node.toc.id].toc._pseudo) {
+			throw "TOC '" + node.toc.id + "' already exists";
+		}
+
+		node.toc._items = this.tocs[node.toc.id].toc._items;
+	}
+
+	this.tocs[node.toc.id] = node;
+
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessImage = function (node) {
+	if (!isUndefined(node.image.type) && !isUndefined(node.image.data) && (node.image.type === 'Buffer') && isArray(node.image.data)) {
+		node.image = Buffer.from(node.image.data);
+	}
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessSVG = function (node) {
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessCanvas = function (node) {
+	return node;
+};
+
+DocPreprocessor.prototype.preprocessQr = function (node) {
+	return node;
+};
+
+DocPreprocessor.prototype._getNodeForNodeRef = function (node) {
+	if (this.parentNode) {
+		return this.parentNode;
+	}
+
+	return node;
+}
+
+module.exports = DocPreprocessor;
+>>>>>>> ams-final
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(10).Buffer))
 
@@ -66246,6 +69026,7 @@ module.exports = DocPreprocessor;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /*eslint no-unused-vars: ["error", {"args": "none"}]*/
 
 
@@ -67053,6 +69834,815 @@ DocMeasure.prototype.measureQr = function (node) {
 };
 
 module.exports = DocMeasure;
+=======
+/*eslint no-unused-vars: ["error", {"args": "none"}]*/
+
+
+
+var TextTools = __webpack_require__(197);
+var StyleContextStack = __webpack_require__(292);
+var ColumnCalculator = __webpack_require__(198);
+var isString = __webpack_require__(0).isString;
+var isNumber = __webpack_require__(0).isNumber;
+var isObject = __webpack_require__(0).isObject;
+var isArray = __webpack_require__(0).isArray;
+var fontStringify = __webpack_require__(0).fontStringify;
+var getNodeId = __webpack_require__(0).getNodeId;
+var pack = __webpack_require__(0).pack;
+var qrEncoder = __webpack_require__(543);
+
+/**
+ * @private
+ */
+function DocMeasure(fontProvider, styleDictionary, defaultStyle, imageMeasure, svgMeasure, tableLayouts, images) {
+	this.textTools = new TextTools(fontProvider);
+	this.styleStack = new StyleContextStack(styleDictionary, defaultStyle);
+	this.imageMeasure = imageMeasure;
+	this.svgMeasure = svgMeasure;
+	this.tableLayouts = tableLayouts;
+	this.images = images;
+	this.autoImageIndex = 1;
+}
+
+/**
+ * Measures all nodes and sets min/max-width properties required for the second
+ * layout-pass.
+ * @param  {Object} docStructure document-definition-object
+ * @return {Object}              document-measurement-object
+ */
+DocMeasure.prototype.measureDocument = function (docStructure) {
+	return this.measureNode(docStructure);
+};
+
+DocMeasure.prototype.measureNode = function (node) {
+
+	var self = this;
+
+	return this.styleStack.auto(node, function () {
+		// TODO: refactor + rethink whether this is the proper way to handle margins
+		node._margin = getNodeMargin(node);
+
+		if (node.columns) {
+			return extendMargins(self.measureColumns(node));
+		} else if (node.stack) {
+			return extendMargins(self.measureVerticalContainer(node));
+		} else if (node.ul) {
+			return extendMargins(self.measureUnorderedList(node));
+		} else if (node.ol) {
+			return extendMargins(self.measureOrderedList(node));
+		} else if (node.table) {
+			return extendMargins(self.measureTable(node));
+		} else if (node.text !== undefined) {
+			return extendMargins(self.measureLeaf(node));
+		} else if (node.toc) {
+			return extendMargins(self.measureToc(node));
+		} else if (node.image) {
+			return extendMargins(self.measureImage(node));
+		} else if (node.svg) {
+			return extendMargins(self.measureSVG(node));
+		} else if (node.canvas) {
+			return extendMargins(self.measureCanvas(node));
+		} else if (node.qr) {
+			return extendMargins(self.measureQr(node));
+		} else {
+			throw 'Unrecognized document structure: ' + JSON.stringify(node, fontStringify);
+		}
+	});
+
+	function extendMargins(node) {
+		var margin = node._margin;
+
+		if (margin) {
+			node._minWidth += margin[0] + margin[2];
+			node._maxWidth += margin[0] + margin[2];
+		}
+
+		return node;
+	}
+
+	function getNodeMargin() {
+
+		function processSingleMargins(node, currentMargin) {
+			if (node.marginLeft || node.marginTop || node.marginRight || node.marginBottom) {
+				return [
+					node.marginLeft || currentMargin[0] || 0,
+					node.marginTop || currentMargin[1] || 0,
+					node.marginRight || currentMargin[2] || 0,
+					node.marginBottom || currentMargin[3] || 0
+				];
+			}
+			return currentMargin;
+		}
+
+		function flattenStyleArray(styleArray) {
+			var flattenedStyles = {};
+			for (var i = styleArray.length - 1; i >= 0; i--) {
+				var styleName = styleArray[i];
+				var style = self.styleStack.styleDictionary[styleName];
+				for (var key in style) {
+					if (style.hasOwnProperty(key)) {
+						flattenedStyles[key] = style[key];
+					}
+				}
+			}
+			return flattenedStyles;
+		}
+
+		function convertMargin(margin) {
+			if (isNumber(margin)) {
+				margin = [margin, margin, margin, margin];
+			} else if (isArray(margin)) {
+				if (margin.length === 2) {
+					margin = [margin[0], margin[1], margin[0], margin[1]];
+				}
+			}
+			return margin;
+		}
+
+		var margin = [undefined, undefined, undefined, undefined];
+
+		if (node.style) {
+			var styleArray = isArray(node.style) ? node.style : [node.style];
+			var flattenedStyleArray = flattenStyleArray(styleArray);
+
+			if (flattenedStyleArray) {
+				margin = processSingleMargins(flattenedStyleArray, margin);
+			}
+
+			if (flattenedStyleArray.margin) {
+				margin = convertMargin(flattenedStyleArray.margin);
+			}
+		}
+
+		margin = processSingleMargins(node, margin);
+
+		if (node.margin) {
+			margin = convertMargin(node.margin);
+		}
+
+		if (margin[0] === undefined && margin[1] === undefined && margin[2] === undefined && margin[3] === undefined) {
+			return null;
+		} else {
+			return margin;
+		}
+	}
+};
+
+DocMeasure.prototype.convertIfBase64Image = function (node) {
+	if (/^data:image\/(jpeg|jpg|png);base64,/.test(node.image)) {
+		var label = '$$pdfmake$$' + this.autoImageIndex++;
+		this.images[label] = node.image;
+		node.image = label;
+	}
+};
+
+DocMeasure.prototype.measureImageWithDimensions = function (node, dimensions) {
+	if (node.fit) {
+		var factor = (dimensions.width / dimensions.height > node.fit[0] / node.fit[1]) ? node.fit[0] / dimensions.width : node.fit[1] / dimensions.height;
+		node._width = node._minWidth = node._maxWidth = dimensions.width * factor;
+		node._height = dimensions.height * factor;
+	} else {
+		node._width = node._minWidth = node._maxWidth = node.width || dimensions.width;
+		node._height = node.height || (dimensions.height * node._width / dimensions.width);
+
+		if (isNumber(node.maxWidth) && node.maxWidth < node._width) {
+			node._width = node._minWidth = node._maxWidth = node.maxWidth;
+			node._height = node._width * dimensions.height / dimensions.width;
+		}
+
+		if (isNumber(node.maxHeight) && node.maxHeight < node._height) {
+			node._height = node.maxHeight;
+			node._width = node._minWidth = node._maxWidth = node._height * dimensions.width / dimensions.height;
+		}
+
+		if (isNumber(node.minWidth) && node.minWidth > node._width) {
+			node._width = node._minWidth = node._maxWidth = node.minWidth;
+			node._height = node._width * dimensions.height / dimensions.width;
+		}
+
+		if (isNumber(node.minHeight) && node.minHeight > node._height) {
+			node._height = node.minHeight;
+			node._width = node._minWidth = node._maxWidth = node._height * dimensions.width / dimensions.height;
+		}
+	}
+
+	node._alignment = this.styleStack.getProperty('alignment');
+};
+
+DocMeasure.prototype.measureImage = function (node) {
+	if (this.images) {
+		this.convertIfBase64Image(node);
+	}
+
+	var dimensions = this.imageMeasure.measureImage(node.image);
+
+	this.measureImageWithDimensions(node, dimensions);
+
+	return node;
+};
+
+DocMeasure.prototype.measureSVG = function (node) {
+
+	var dimensions = this.svgMeasure.measureSVG(node.svg);
+
+	this.measureImageWithDimensions(node, dimensions);
+
+	node.font = this.styleStack.getProperty('font');
+
+	// scale SVG based on final dimension
+	node.svg = this.svgMeasure.writeDimensions(node.svg, {
+		width: node._width,
+		height: node._height
+	});
+
+	return node;
+};
+
+DocMeasure.prototype.measureLeaf = function (node) {
+
+	if (node._textRef && node._textRef._textNodeRef.text) {
+		node.text = node._textRef._textNodeRef.text;
+	}
+
+	// Make sure style properties of the node itself are considered when building inlines.
+	// We could also just pass [node] to buildInlines, but that fails for bullet points.
+	var styleStack = this.styleStack.clone();
+	styleStack.push(node);
+
+	var data = this.textTools.buildInlines(node.text, styleStack);
+
+	node._inlines = data.items;
+	node._minWidth = data.minWidth;
+	node._maxWidth = data.maxWidth;
+
+	return node;
+};
+
+DocMeasure.prototype.measureToc = function (node) {
+	if (node.toc.title) {
+		node.toc.title = this.measureNode(node.toc.title);
+	}
+
+	if (node.toc._items.length > 0) {
+		var body = [];
+		var textStyle = node.toc.textStyle || {};
+		var numberStyle = node.toc.numberStyle || textStyle;
+		var textMargin = node.toc.textMargin || [0, 0, 0, 0];
+		for (var i = 0, l = node.toc._items.length; i < l; i++) {
+			var item = node.toc._items[i];
+			var lineStyle = item._textNodeRef.tocStyle || textStyle;
+			var lineMargin = item._textNodeRef.tocMargin || textMargin;
+			var lineNumberStyle = item._textNodeRef.tocNumberStyle || numberStyle;
+			var destination = getNodeId(item._nodeRef);
+			body.push([
+				{ text: item._textNodeRef.text, linkToDestination: destination, alignment: 'left', style: lineStyle, margin: lineMargin },
+				{ text: '00000', linkToDestination: destination, alignment: 'right', _tocItemRef: item._nodeRef, style: lineNumberStyle, margin: [0, lineMargin[1], 0, lineMargin[3]] }
+			]);
+		}
+
+
+		node.toc._table = {
+			table: {
+				dontBreakRows: true,
+				widths: ['*', 'auto'],
+				body: body
+			},
+			layout: 'noBorders'
+		};
+
+		node.toc._table = this.measureNode(node.toc._table);
+	}
+
+	return node;
+};
+
+DocMeasure.prototype.measureVerticalContainer = function (node) {
+	var items = node.stack;
+
+	node._minWidth = 0;
+	node._maxWidth = 0;
+
+	for (var i = 0, l = items.length; i < l; i++) {
+		items[i] = this.measureNode(items[i]);
+
+		node._minWidth = Math.max(node._minWidth, items[i]._minWidth);
+		node._maxWidth = Math.max(node._maxWidth, items[i]._maxWidth);
+	}
+
+	return node;
+};
+
+DocMeasure.prototype.gapSizeForList = function () {
+	return this.textTools.sizeOfString('9. ', this.styleStack);
+};
+
+DocMeasure.prototype.buildUnorderedMarker = function (styleStack, gapSize, type) {
+	function buildDisc(gapSize, color) {
+		// TODO: ascender-based calculations
+		var radius = gapSize.fontSize / 6;
+		return {
+			canvas: [{
+				x: radius,
+				y: (gapSize.height / gapSize.lineHeight) + gapSize.descender - gapSize.fontSize / 3,
+				r1: radius,
+				r2: radius,
+				type: 'ellipse',
+				color: color
+			}]
+		};
+	}
+
+	function buildSquare(gapSize, color) {
+		// TODO: ascender-based calculations
+		var size = gapSize.fontSize / 3;
+		return {
+			canvas: [{
+				x: 0,
+				y: (gapSize.height / gapSize.lineHeight) + gapSize.descender - (gapSize.fontSize / 3) - (size / 2),
+				h: size,
+				w: size,
+				type: 'rect',
+				color: color
+			}]
+		};
+	}
+
+	function buildCircle(gapSize, color) {
+		// TODO: ascender-based calculations
+		var radius = gapSize.fontSize / 6;
+		return {
+			canvas: [{
+				x: radius,
+				y: (gapSize.height / gapSize.lineHeight) + gapSize.descender - gapSize.fontSize / 3,
+				r1: radius,
+				r2: radius,
+				type: 'ellipse',
+				lineColor: color
+			}]
+		};
+	}
+
+	var marker;
+	var color = styleStack.getProperty('markerColor') || styleStack.getProperty('color') || 'black';
+
+	switch (type) {
+		case 'circle':
+			marker = buildCircle(gapSize, color);
+			break;
+
+		case 'square':
+			marker = buildSquare(gapSize, color);
+			break;
+
+		case 'none':
+			marker = {};
+			break;
+
+		case 'disc':
+		default:
+			marker = buildDisc(gapSize, color);
+			break;
+	}
+
+	marker._minWidth = marker._maxWidth = gapSize.width;
+	marker._minHeight = marker._maxHeight = gapSize.height;
+
+	return marker;
+};
+
+DocMeasure.prototype.buildOrderedMarker = function (counter, styleStack, type, separator) {
+	function prepareAlpha(counter) {
+		function toAlpha(num) {
+			return (num >= 26 ? toAlpha((num / 26 >> 0) - 1) : '') + 'abcdefghijklmnopqrstuvwxyz'[num % 26 >> 0];
+		}
+
+		if (counter < 1) {
+			return counter.toString();
+		}
+
+		return toAlpha(counter - 1);
+	}
+
+	function prepareRoman(counter) {
+		if (counter < 1 || counter > 4999) {
+			return counter.toString();
+		}
+		var num = counter;
+		var lookup = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 }, roman = '', i;
+		for (i in lookup) {
+			while (num >= lookup[i]) {
+				roman += i;
+				num -= lookup[i];
+			}
+		}
+		return roman;
+	}
+
+	function prepareDecimal(counter) {
+		return counter.toString();
+	}
+
+	var counterText;
+	switch (type) {
+		case 'none':
+			counterText = null;
+			break;
+
+		case 'upper-alpha':
+			counterText = prepareAlpha(counter).toUpperCase();
+			break;
+
+		case 'lower-alpha':
+			counterText = prepareAlpha(counter);
+			break;
+
+		case 'upper-roman':
+			counterText = prepareRoman(counter);
+			break;
+
+		case 'lower-roman':
+			counterText = prepareRoman(counter).toLowerCase();
+			break;
+
+		case 'decimal':
+		default:
+			counterText = prepareDecimal(counter);
+			break;
+	}
+
+	if (counterText === null) {
+		return {};
+	}
+
+	if (separator) {
+		if (isArray(separator)) {
+			if (separator[0]) {
+				counterText = separator[0] + counterText;
+			}
+
+			if (separator[1]) {
+				counterText += separator[1];
+			}
+			counterText += ' ';
+		} else {
+			counterText += separator + ' ';
+		}
+	}
+
+	var textArray = { text: counterText };
+	var markerColor = styleStack.getProperty('markerColor');
+	if (markerColor) {
+		textArray.color = markerColor;
+	}
+
+	return { _inlines: this.textTools.buildInlines(textArray, styleStack).items };
+};
+
+DocMeasure.prototype.measureUnorderedList = function (node) {
+	var style = this.styleStack.clone();
+	var items = node.ul;
+	node.type = node.type || 'disc';
+	node._gapSize = this.gapSizeForList();
+	node._minWidth = 0;
+	node._maxWidth = 0;
+
+	for (var i = 0, l = items.length; i < l; i++) {
+		var item = items[i] = this.measureNode(items[i]);
+
+		if (!item.ol && !item.ul) {
+			item.listMarker = this.buildUnorderedMarker(style, node._gapSize, item.listType || node.type);
+		}
+
+		node._minWidth = Math.max(node._minWidth, items[i]._minWidth + node._gapSize.width);
+		node._maxWidth = Math.max(node._maxWidth, items[i]._maxWidth + node._gapSize.width);
+	}
+
+	return node;
+};
+
+DocMeasure.prototype.measureOrderedList = function (node) {
+	var style = this.styleStack.clone();
+	var items = node.ol;
+	node.type = node.type || 'decimal';
+	node.separator = node.separator || '.';
+	node.reversed = node.reversed || false;
+	if (!isNumber(node.start)) {
+		node.start = node.reversed ? items.length : 1;
+	}
+	node._gapSize = this.gapSizeForList();
+	node._minWidth = 0;
+	node._maxWidth = 0;
+
+	var counter = node.start;
+	for (var i = 0, l = items.length; i < l; i++) {
+		var item = items[i] = this.measureNode(items[i]);
+
+		if (!item.ol && !item.ul) {
+			var counterValue = isNumber(item.counter) ? item.counter : counter;
+			item.listMarker = this.buildOrderedMarker(counterValue, style, item.listType || node.type, node.separator);
+			if (item.listMarker._inlines) {
+				node._gapSize.width = Math.max(node._gapSize.width, item.listMarker._inlines[0].width);
+			}
+		}  // TODO: else - nested lists numbering
+
+		node._minWidth = Math.max(node._minWidth, items[i]._minWidth);
+		node._maxWidth = Math.max(node._maxWidth, items[i]._maxWidth);
+
+		if (node.reversed) {
+			counter--;
+		} else {
+			counter++;
+		}
+	}
+
+	node._minWidth += node._gapSize.width;
+	node._maxWidth += node._gapSize.width;
+
+	for (var i = 0, l = items.length; i < l; i++) {
+		var item = items[i];
+		if (!item.ol && !item.ul) {
+			item.listMarker._minWidth = item.listMarker._maxWidth = node._gapSize.width;
+		}
+	}
+
+	return node;
+};
+
+DocMeasure.prototype.measureColumns = function (node) {
+	var columns = node.columns;
+	node._gap = this.styleStack.getProperty('columnGap') || 0;
+
+	for (var i = 0, l = columns.length; i < l; i++) {
+		columns[i] = this.measureNode(columns[i]);
+	}
+
+	var measures = ColumnCalculator.measureMinMax(columns);
+
+	var numGaps = (columns.length > 0) ? (columns.length - 1) : 0;
+	node._minWidth = measures.min + node._gap * numGaps;
+	node._maxWidth = measures.max + node._gap * numGaps;
+
+	return node;
+};
+
+DocMeasure.prototype.measureTable = function (node) {
+	extendTableWidths(node);
+	node._layout = getLayout(this.tableLayouts);
+	node._offsets = getOffsets(node._layout);
+
+	var colSpans = [];
+	var col, row, cols, rows;
+
+	for (col = 0, cols = node.table.body[0].length; col < cols; col++) {
+		var c = node.table.widths[col];
+		c._minWidth = 0;
+		c._maxWidth = 0;
+
+		for (row = 0, rows = node.table.body.length; row < rows; row++) {
+			var rowData = node.table.body[row];
+			var data = rowData[col];
+			if (data === undefined) {
+				console.error('Malformed table row ', rowData, 'in node ', node);
+				throw 'Malformed table row, a cell is undefined.';
+			}
+			if (data === null) { // transform to object
+				data = '';
+			}
+
+			if (!data._span) {
+				data = rowData[col] = this.styleStack.auto(data, measureCb(this, data));
+
+				if (data.colSpan && data.colSpan > 1) {
+					markSpans(rowData, col, data.colSpan);
+					colSpans.push({ col: col, span: data.colSpan, minWidth: data._minWidth, maxWidth: data._maxWidth });
+				} else {
+					c._minWidth = Math.max(c._minWidth, data._minWidth);
+					c._maxWidth = Math.max(c._maxWidth, data._maxWidth);
+				}
+			}
+
+			if (data.rowSpan && data.rowSpan > 1) {
+				markVSpans(node.table, row, col, data.rowSpan);
+			}
+		}
+	}
+
+	extendWidthsForColSpans();
+
+	var measures = ColumnCalculator.measureMinMax(node.table.widths);
+
+	node._minWidth = measures.min + node._offsets.total;
+	node._maxWidth = measures.max + node._offsets.total;
+
+	return node;
+
+	function measureCb(_this, data) {
+		return function () {
+			if (isObject(data)) {
+				data.fillColor = _this.styleStack.getProperty('fillColor');
+				data.fillOpacity = _this.styleStack.getProperty('fillOpacity');
+			}
+			return _this.measureNode(data);
+		};
+	}
+
+	function getLayout(tableLayouts) {
+		var layout = node.layout;
+
+		if (isString(layout)) {
+			layout = tableLayouts[layout];
+		}
+
+		var defaultLayout = {
+			hLineWidth: function (i, node) {
+				return 1;
+			},
+			vLineWidth: function (i, node) {
+				return 1;
+			},
+			hLineColor: function (i, node) {
+				return 'black';
+			},
+			vLineColor: function (i, node) {
+				return 'black';
+			},
+			hLineStyle: function (i, node) {
+				return null;
+			},
+			vLineStyle: function (i, node) {
+				return null;
+			},
+			paddingLeft: function (i, node) {
+				return 4;
+			},
+			paddingRight: function (i, node) {
+				return 4;
+			},
+			paddingTop: function (i, node) {
+				return 2;
+			},
+			paddingBottom: function (i, node) {
+				return 2;
+			},
+			fillColor: function (i, node) {
+				return null;
+			},
+			fillOpacity: function (i, node) {
+				return 1;
+			},
+			defaultBorder: true
+		};
+
+		return pack(defaultLayout, layout);
+	}
+
+	function getOffsets(layout) {
+		var offsets = [];
+		var totalOffset = 0;
+		var prevRightPadding = 0;
+
+		for (var i = 0, l = node.table.widths.length; i < l; i++) {
+			var lOffset = prevRightPadding + layout.vLineWidth(i, node) + layout.paddingLeft(i, node);
+			offsets.push(lOffset);
+			totalOffset += lOffset;
+			prevRightPadding = layout.paddingRight(i, node);
+		}
+
+		totalOffset += prevRightPadding + layout.vLineWidth(node.table.widths.length, node);
+
+		return {
+			total: totalOffset,
+			offsets: offsets
+		};
+	}
+
+	function extendWidthsForColSpans() {
+		var q, j;
+
+		for (var i = 0, l = colSpans.length; i < l; i++) {
+			var span = colSpans[i];
+
+			var currentMinMax = getMinMax(span.col, span.span, node._offsets);
+			var minDifference = span.minWidth - currentMinMax.minWidth;
+			var maxDifference = span.maxWidth - currentMinMax.maxWidth;
+
+			if (minDifference > 0) {
+				q = minDifference / span.span;
+
+				for (j = 0; j < span.span; j++) {
+					node.table.widths[span.col + j]._minWidth += q;
+				}
+			}
+
+			if (maxDifference > 0) {
+				q = maxDifference / span.span;
+
+				for (j = 0; j < span.span; j++) {
+					node.table.widths[span.col + j]._maxWidth += q;
+				}
+			}
+		}
+	}
+
+	function getMinMax(col, span, offsets) {
+		var result = { minWidth: 0, maxWidth: 0 };
+
+		for (var i = 0; i < span; i++) {
+			result.minWidth += node.table.widths[col + i]._minWidth + (i ? offsets.offsets[col + i] : 0);
+			result.maxWidth += node.table.widths[col + i]._maxWidth + (i ? offsets.offsets[col + i] : 0);
+		}
+
+		return result;
+	}
+
+	function markSpans(rowData, col, span) {
+		for (var i = 1; i < span; i++) {
+			rowData[col + i] = {
+				_span: true,
+				_minWidth: 0,
+				_maxWidth: 0,
+				rowSpan: rowData[col].rowSpan
+			};
+		}
+	}
+
+	function markVSpans(table, row, col, span) {
+		for (var i = 1; i < span; i++) {
+			table.body[row + i][col] = {
+				_span: true,
+				_minWidth: 0,
+				_maxWidth: 0,
+				fillColor: table.body[row][col].fillColor,
+				fillOpacity: table.body[row][col].fillOpacity
+			};
+		}
+	}
+
+	function extendTableWidths(node) {
+		if (!node.table.widths) {
+			node.table.widths = 'auto';
+		}
+
+		if (isString(node.table.widths)) {
+			node.table.widths = [node.table.widths];
+
+			while (node.table.widths.length < node.table.body[0].length) {
+				node.table.widths.push(node.table.widths[node.table.widths.length - 1]);
+			}
+		}
+
+		for (var i = 0, l = node.table.widths.length; i < l; i++) {
+			var w = node.table.widths[i];
+			if (isNumber(w) || isString(w)) {
+				node.table.widths[i] = { width: w };
+			}
+		}
+	}
+};
+
+DocMeasure.prototype.measureCanvas = function (node) {
+	var w = 0, h = 0;
+
+	for (var i = 0, l = node.canvas.length; i < l; i++) {
+		var vector = node.canvas[i];
+
+		switch (vector.type) {
+			case 'ellipse':
+				w = Math.max(w, vector.x + vector.r1);
+				h = Math.max(h, vector.y + vector.r2);
+				break;
+			case 'rect':
+				w = Math.max(w, vector.x + vector.w);
+				h = Math.max(h, vector.y + vector.h);
+				break;
+			case 'line':
+				w = Math.max(w, vector.x1, vector.x2);
+				h = Math.max(h, vector.y1, vector.y2);
+				break;
+			case 'polyline':
+				for (var i2 = 0, l2 = vector.points.length; i2 < l2; i2++) {
+					w = Math.max(w, vector.points[i2].x);
+					h = Math.max(h, vector.points[i2].y);
+				}
+				break;
+		}
+	}
+
+	node._minWidth = node._maxWidth = w;
+	node._minHeight = node._maxHeight = h;
+	node._alignment = this.styleStack.getProperty('alignment');
+
+	return node;
+};
+
+DocMeasure.prototype.measureQr = function (node) {
+	node = qrEncoder.measure(node);
+	node._alignment = this.styleStack.getProperty('alignment');
+	return node;
+};
+
+module.exports = DocMeasure;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -67060,6 +70650,7 @@ module.exports = DocMeasure;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /*eslint no-unused-vars: ["error", {"args": "none"}]*/
 /*eslint no-redeclare: "off"*/
 
@@ -67848,6 +71439,796 @@ function measure(node) {
 
 module.exports = {
 	measure: measure
+=======
+/*eslint no-unused-vars: ["error", {"args": "none"}]*/
+/*eslint no-redeclare: "off"*/
+
+
+/* qr.js -- QR code generator in Javascript (revision 2011-01-19)
+ * Written by Kang Seonghoon <public+qrjs@mearie.org>.
+ *
+ * This source code is in the public domain; if your jurisdiction does not
+ * recognize the public domain the terms of Creative Commons CC0 license
+ * apply. In the other words, you can always do what you want.
+ */
+
+
+// per-version information (cf. JIS X 0510:2004 pp. 30--36, 71)
+//
+// [0]: the degree of generator polynomial by ECC levels
+// [1]: # of code blocks by ECC levels
+// [2]: left-top positions of alignment patterns
+//
+// the number in this table (in particular, [0]) does not exactly match with
+// the numbers in the specficiation. see augumenteccs below for the reason.
+var VERSIONS = [
+	null,
+	[[10, 7, 17, 13], [1, 1, 1, 1], []],
+	[[16, 10, 28, 22], [1, 1, 1, 1], [4, 16]],
+	[[26, 15, 22, 18], [1, 1, 2, 2], [4, 20]],
+	[[18, 20, 16, 26], [2, 1, 4, 2], [4, 24]],
+	[[24, 26, 22, 18], [2, 1, 4, 4], [4, 28]],
+	[[16, 18, 28, 24], [4, 2, 4, 4], [4, 32]],
+	[[18, 20, 26, 18], [4, 2, 5, 6], [4, 20, 36]],
+	[[22, 24, 26, 22], [4, 2, 6, 6], [4, 22, 40]],
+	[[22, 30, 24, 20], [5, 2, 8, 8], [4, 24, 44]],
+	[[26, 18, 28, 24], [5, 4, 8, 8], [4, 26, 48]],
+	[[30, 20, 24, 28], [5, 4, 11, 8], [4, 28, 52]],
+	[[22, 24, 28, 26], [8, 4, 11, 10], [4, 30, 56]],
+	[[22, 26, 22, 24], [9, 4, 16, 12], [4, 32, 60]],
+	[[24, 30, 24, 20], [9, 4, 16, 16], [4, 24, 44, 64]],
+	[[24, 22, 24, 30], [10, 6, 18, 12], [4, 24, 46, 68]],
+	[[28, 24, 30, 24], [10, 6, 16, 17], [4, 24, 48, 72]],
+	[[28, 28, 28, 28], [11, 6, 19, 16], [4, 28, 52, 76]],
+	[[26, 30, 28, 28], [13, 6, 21, 18], [4, 28, 54, 80]],
+	[[26, 28, 26, 26], [14, 7, 25, 21], [4, 28, 56, 84]],
+	[[26, 28, 28, 30], [16, 8, 25, 20], [4, 32, 60, 88]],
+	[[26, 28, 30, 28], [17, 8, 25, 23], [4, 26, 48, 70, 92]],
+	[[28, 28, 24, 30], [17, 9, 34, 23], [4, 24, 48, 72, 96]],
+	[[28, 30, 30, 30], [18, 9, 30, 25], [4, 28, 52, 76, 100]],
+	[[28, 30, 30, 30], [20, 10, 32, 27], [4, 26, 52, 78, 104]],
+	[[28, 26, 30, 30], [21, 12, 35, 29], [4, 30, 56, 82, 108]],
+	[[28, 28, 30, 28], [23, 12, 37, 34], [4, 28, 56, 84, 112]],
+	[[28, 30, 30, 30], [25, 12, 40, 34], [4, 32, 60, 88, 116]],
+	[[28, 30, 30, 30], [26, 13, 42, 35], [4, 24, 48, 72, 96, 120]],
+	[[28, 30, 30, 30], [28, 14, 45, 38], [4, 28, 52, 76, 100, 124]],
+	[[28, 30, 30, 30], [29, 15, 48, 40], [4, 24, 50, 76, 102, 128]],
+	[[28, 30, 30, 30], [31, 16, 51, 43], [4, 28, 54, 80, 106, 132]],
+	[[28, 30, 30, 30], [33, 17, 54, 45], [4, 32, 58, 84, 110, 136]],
+	[[28, 30, 30, 30], [35, 18, 57, 48], [4, 28, 56, 84, 112, 140]],
+	[[28, 30, 30, 30], [37, 19, 60, 51], [4, 32, 60, 88, 116, 144]],
+	[[28, 30, 30, 30], [38, 19, 63, 53], [4, 28, 52, 76, 100, 124, 148]],
+	[[28, 30, 30, 30], [40, 20, 66, 56], [4, 22, 48, 74, 100, 126, 152]],
+	[[28, 30, 30, 30], [43, 21, 70, 59], [4, 26, 52, 78, 104, 130, 156]],
+	[[28, 30, 30, 30], [45, 22, 74, 62], [4, 30, 56, 82, 108, 134, 160]],
+	[[28, 30, 30, 30], [47, 24, 77, 65], [4, 24, 52, 80, 108, 136, 164]],
+	[[28, 30, 30, 30], [49, 25, 81, 68], [4, 28, 56, 84, 112, 140, 168]]];
+
+// mode constants (cf. Table 2 in JIS X 0510:2004 p. 16)
+var MODE_TERMINATOR = 0;
+var MODE_NUMERIC = 1, MODE_ALPHANUMERIC = 2, MODE_OCTET = 4, MODE_KANJI = 8;
+
+// validation regexps
+var NUMERIC_REGEXP = /^\d*$/;
+var ALPHANUMERIC_REGEXP = /^[A-Za-z0-9 $%*+\-./:]*$/;
+var ALPHANUMERIC_OUT_REGEXP = /^[A-Z0-9 $%*+\-./:]*$/;
+
+// ECC levels (cf. Table 22 in JIS X 0510:2004 p. 45)
+var ECCLEVEL_L = 1, ECCLEVEL_M = 0, ECCLEVEL_Q = 3, ECCLEVEL_H = 2;
+
+// GF(2^8)-to-integer mapping with a reducing polynomial x^8+x^4+x^3+x^2+1
+// invariant: GF256_MAP[GF256_INVMAP[i]] == i for all i in [1,256)
+var GF256_MAP = [], GF256_INVMAP = [-1];
+for (var i = 0, v = 1; i < 255; ++i) {
+	GF256_MAP.push(v);
+	GF256_INVMAP[v] = i;
+	v = (v * 2) ^ (v >= 128 ? 0x11d : 0);
+}
+
+// generator polynomials up to degree 30
+// (should match with polynomials in JIS X 0510:2004 Appendix A)
+//
+// generator polynomial of degree K is product of (x-\alpha^0), (x-\alpha^1),
+// ..., (x-\alpha^(K-1)). by convention, we omit the K-th coefficient (always 1)
+// from the result; also other coefficients are written in terms of the exponent
+// to \alpha to avoid the redundant calculation. (see also calculateecc below.)
+var GF256_GENPOLY = [[]];
+for (var i = 0; i < 30; ++i) {
+	var prevpoly = GF256_GENPOLY[i], poly = [];
+	for (var j = 0; j <= i; ++j) {
+		var a = (j < i ? GF256_MAP[prevpoly[j]] : 0);
+		var b = GF256_MAP[(i + (prevpoly[j - 1] || 0)) % 255];
+		poly.push(GF256_INVMAP[a ^ b]);
+	}
+	GF256_GENPOLY.push(poly);
+}
+
+// alphanumeric character mapping (cf. Table 5 in JIS X 0510:2004 p. 19)
+var ALPHANUMERIC_MAP = {};
+for (var i = 0; i < 45; ++i) {
+	ALPHANUMERIC_MAP['0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:'.charAt(i)] = i;
+}
+
+// mask functions in terms of row # and column #
+// (cf. Table 20 in JIS X 0510:2004 p. 42)
+/*jshint unused: false */
+var MASKFUNCS = [
+	function (i, j) {
+		return (i + j) % 2 === 0;
+	},
+	function (i, j) {
+		return i % 2 === 0;
+	},
+	function (i, j) {
+		return j % 3 === 0;
+	},
+	function (i, j) {
+		return (i + j) % 3 === 0;
+	},
+	function (i, j) {
+		return (((i / 2) | 0) + ((j / 3) | 0)) % 2 === 0;
+	},
+	function (i, j) {
+		return (i * j) % 2 + (i * j) % 3 === 0;
+	},
+	function (i, j) {
+		return ((i * j) % 2 + (i * j) % 3) % 2 === 0;
+	},
+	function (i, j) {
+		return ((i + j) % 2 + (i * j) % 3) % 2 === 0;
+	}];
+
+// returns true when the version information has to be embeded.
+var needsverinfo = function (ver) {
+	return ver > 6;
+};
+
+// returns the size of entire QR code for given version.
+var getsizebyver = function (ver) {
+	return 4 * ver + 17;
+};
+
+// returns the number of bits available for code words in this version.
+var nfullbits = function (ver) {
+	/*
+	 * |<--------------- n --------------->|
+	 * |        |<----- n-17 ---->|        |
+	 * +-------+                ///+-------+ ----
+	 * |       |                ///|       |    ^
+	 * |  9x9  |       @@@@@    ///|  9x8  |    |
+	 * |       | # # # @5x5@ # # # |       |    |
+	 * +-------+       @@@@@       +-------+    |
+	 *       #                               ---|
+	 *                                        ^ |
+	 *       #                                |
+	 *     @@@@@       @@@@@       @@@@@      | n
+	 *     @5x5@       @5x5@       @5x5@   n-17
+	 *     @@@@@       @@@@@       @@@@@      | |
+	 *       #                                | |
+	 * //////                                 v |
+	 * //////#                               ---|
+	 * +-------+       @@@@@       @@@@@        |
+	 * |       |       @5x5@       @5x5@        |
+	 * |  8x9  |       @@@@@       @@@@@        |
+	 * |       |                                v
+	 * +-------+                             ----
+	 *
+	 * when the entire code has n^2 modules and there are m^2-3 alignment
+	 * patterns, we have:
+	 * - 225 (= 9x9 + 9x8 + 8x9) modules for finder patterns and
+	 *   format information;
+	 * - 2n-34 (= 2(n-17)) modules for timing patterns;
+	 * - 36 (= 3x6 + 6x3) modules for version information, if any;
+	 * - 25m^2-75 (= (m^2-3)(5x5)) modules for alignment patterns
+	 *   if any, but 10m-20 (= 2(m-2)x5) of them overlaps with
+	 *   timing patterns.
+	 */
+	var v = VERSIONS[ver];
+	var nbits = 16 * ver * ver + 128 * ver + 64; // finder, timing and format info.
+	if (needsverinfo(ver))
+		nbits -= 36; // version information
+	if (v[2].length) { // alignment patterns
+		nbits -= 25 * v[2].length * v[2].length - 10 * v[2].length - 55;
+	}
+	return nbits;
+};
+
+// returns the number of bits available for data portions (i.e. excludes ECC
+// bits but includes mode and length bits) in this version and ECC level.
+var ndatabits = function (ver, ecclevel) {
+	var nbits = nfullbits(ver) & ~7; // no sub-octet code words
+	var v = VERSIONS[ver];
+	nbits -= 8 * v[0][ecclevel] * v[1][ecclevel]; // ecc bits
+	return nbits;
+};
+
+// returns the number of bits required for the length of data.
+// (cf. Table 3 in JIS X 0510:2004 p. 16)
+var ndatalenbits = function (ver, mode) {
+	switch (mode) {
+		case MODE_NUMERIC:
+			return (ver < 10 ? 10 : ver < 27 ? 12 : 14);
+		case MODE_ALPHANUMERIC:
+			return (ver < 10 ? 9 : ver < 27 ? 11 : 13);
+		case MODE_OCTET:
+			return (ver < 10 ? 8 : 16);
+		case MODE_KANJI:
+			return (ver < 10 ? 8 : ver < 27 ? 10 : 12);
+	}
+};
+
+// returns the maximum length of data possible in given configuration.
+var getmaxdatalen = function (ver, mode, ecclevel) {
+	var nbits = ndatabits(ver, ecclevel) - 4 - ndatalenbits(ver, mode); // 4 for mode bits
+	switch (mode) {
+		case MODE_NUMERIC:
+			return ((nbits / 10) | 0) * 3 + (nbits % 10 < 4 ? 0 : nbits % 10 < 7 ? 1 : 2);
+		case MODE_ALPHANUMERIC:
+			return ((nbits / 11) | 0) * 2 + (nbits % 11 < 6 ? 0 : 1);
+		case MODE_OCTET:
+			return (nbits / 8) | 0;
+		case MODE_KANJI:
+			return (nbits / 13) | 0;
+	}
+};
+
+// checks if the given data can be encoded in given mode, and returns
+// the converted data for the further processing if possible. otherwise
+// returns null.
+//
+// this function does not check the length of data; it is a duty of
+// encode function below (as it depends on the version and ECC level too).
+var validatedata = function (mode, data) {
+	switch (mode) {
+		case MODE_NUMERIC:
+			if (!data.match(NUMERIC_REGEXP))
+				return null;
+			return data;
+
+		case MODE_ALPHANUMERIC:
+			if (!data.match(ALPHANUMERIC_REGEXP))
+				return null;
+			return data.toUpperCase();
+
+		case MODE_OCTET:
+			if (typeof data === 'string') { // encode as utf-8 string
+				var newdata = [];
+				for (var i = 0; i < data.length; ++i) {
+					var ch = data.charCodeAt(i);
+					if (ch < 0x80) {
+						newdata.push(ch);
+					} else if (ch < 0x800) {
+						newdata.push(0xc0 | (ch >> 6),
+							0x80 | (ch & 0x3f));
+					} else if (ch < 0x10000) {
+						newdata.push(0xe0 | (ch >> 12),
+							0x80 | ((ch >> 6) & 0x3f),
+							0x80 | (ch & 0x3f));
+					} else {
+						newdata.push(0xf0 | (ch >> 18),
+							0x80 | ((ch >> 12) & 0x3f),
+							0x80 | ((ch >> 6) & 0x3f),
+							0x80 | (ch & 0x3f));
+					}
+				}
+				return newdata;
+			} else {
+				return data;
+			}
+	}
+};
+
+// returns the code words (sans ECC bits) for given data and configurations.
+// requires data to be preprocessed by validatedata. no length check is
+// performed, and everything has to be checked before calling this function.
+var encode = function (ver, mode, data, maxbuflen) {
+	var buf = [];
+	var bits = 0, remaining = 8;
+	var datalen = data.length;
+
+	// this function is intentionally no-op when n=0.
+	var pack = function (x, n) {
+		if (n >= remaining) {
+			buf.push(bits | (x >> (n -= remaining)));
+			while (n >= 8)
+				buf.push((x >> (n -= 8)) & 255);
+			bits = 0;
+			remaining = 8;
+		}
+		if (n > 0)
+			bits |= (x & ((1 << n) - 1)) << (remaining -= n);
+	};
+
+	var nlenbits = ndatalenbits(ver, mode);
+	pack(mode, 4);
+	pack(datalen, nlenbits);
+
+	switch (mode) {
+		case MODE_NUMERIC:
+			for (var i = 2; i < datalen; i += 3) {
+				pack(parseInt(data.substring(i - 2, i + 1), 10), 10);
+			}
+			pack(parseInt(data.substring(i - 2), 10), [0, 4, 7][datalen % 3]);
+			break;
+
+		case MODE_ALPHANUMERIC:
+			for (var i = 1; i < datalen; i += 2) {
+				pack(ALPHANUMERIC_MAP[data.charAt(i - 1)] * 45 +
+					ALPHANUMERIC_MAP[data.charAt(i)], 11);
+			}
+			if (datalen % 2 == 1) {
+				pack(ALPHANUMERIC_MAP[data.charAt(i - 1)], 6);
+			}
+			break;
+
+		case MODE_OCTET:
+			for (var i = 0; i < datalen; ++i) {
+				pack(data[i], 8);
+			}
+			break;
+	}
+
+	// final bits. it is possible that adding terminator causes the buffer
+	// to overflow, but then the buffer truncated to the maximum size will
+	// be valid as the truncated terminator mode bits and padding is
+	// identical in appearance (cf. JIS X 0510:2004 sec 8.4.8).
+	pack(MODE_TERMINATOR, 4);
+	if (remaining < 8)
+		buf.push(bits);
+
+	// the padding to fill up the remaining space. we should not add any
+	// words when the overflow already occurred.
+	while (buf.length + 1 < maxbuflen)
+		buf.push(0xec, 0x11);
+	if (buf.length < maxbuflen)
+		buf.push(0xec);
+	return buf;
+};
+
+// calculates ECC code words for given code words and generator polynomial.
+//
+// this is quite similar to CRC calculation as both Reed-Solomon and CRC use
+// the certain kind of cyclic codes, which is effectively the division of
+// zero-augumented polynomial by the generator polynomial. the only difference
+// is that Reed-Solomon uses GF(2^8), instead of CRC's GF(2), and Reed-Solomon
+// uses the different generator polynomial than CRC's.
+var calculateecc = function (poly, genpoly) {
+	var modulus = poly.slice(0);
+	var polylen = poly.length, genpolylen = genpoly.length;
+	for (var i = 0; i < genpolylen; ++i)
+		modulus.push(0);
+	for (var i = 0; i < polylen; ) {
+		var quotient = GF256_INVMAP[modulus[i++]];
+		if (quotient >= 0) {
+			for (var j = 0; j < genpolylen; ++j) {
+				modulus[i + j] ^= GF256_MAP[(quotient + genpoly[j]) % 255];
+			}
+		}
+	}
+	return modulus.slice(polylen);
+};
+
+// auguments ECC code words to given code words. the resulting words are
+// ready to be encoded in the matrix.
+//
+// the much of actual augumenting procedure follows JIS X 0510:2004 sec 8.7.
+// the code is simplified using the fact that the size of each code & ECC
+// blocks is almost same; for example, when we have 4 blocks and 46 data words
+// the number of code words in those blocks are 11, 11, 12, 12 respectively.
+var augumenteccs = function (poly, nblocks, genpoly) {
+	var subsizes = [];
+	var subsize = (poly.length / nblocks) | 0, subsize0 = 0;
+	var pivot = nblocks - poly.length % nblocks;
+	for (var i = 0; i < pivot; ++i) {
+		subsizes.push(subsize0);
+		subsize0 += subsize;
+	}
+	for (var i = pivot; i < nblocks; ++i) {
+		subsizes.push(subsize0);
+		subsize0 += subsize + 1;
+	}
+	subsizes.push(subsize0);
+
+	var eccs = [];
+	for (var i = 0; i < nblocks; ++i) {
+		eccs.push(calculateecc(poly.slice(subsizes[i], subsizes[i + 1]), genpoly));
+	}
+
+	var result = [];
+	var nitemsperblock = (poly.length / nblocks) | 0;
+	for (var i = 0; i < nitemsperblock; ++i) {
+		for (var j = 0; j < nblocks; ++j) {
+			result.push(poly[subsizes[j] + i]);
+		}
+	}
+	for (var j = pivot; j < nblocks; ++j) {
+		result.push(poly[subsizes[j + 1] - 1]);
+	}
+	for (var i = 0; i < genpoly.length; ++i) {
+		for (var j = 0; j < nblocks; ++j) {
+			result.push(eccs[j][i]);
+		}
+	}
+	return result;
+};
+
+// auguments BCH(p+q,q) code to the polynomial over GF(2), given the proper
+// genpoly. the both input and output are in binary numbers, and unlike
+// calculateecc genpoly should include the 1 bit for the highest degree.
+//
+// actual polynomials used for this procedure are as follows:
+// - p=10, q=5, genpoly=x^10+x^8+x^5+x^4+x^2+x+1 (JIS X 0510:2004 Appendix C)
+// - p=18, q=6, genpoly=x^12+x^11+x^10+x^9+x^8+x^5+x^2+1 (ibid. Appendix D)
+var augumentbch = function (poly, p, genpoly, q) {
+	var modulus = poly << q;
+	for (var i = p - 1; i >= 0; --i) {
+		if ((modulus >> (q + i)) & 1)
+			modulus ^= genpoly << i;
+	}
+	return (poly << q) | modulus;
+};
+
+// creates the base matrix for given version. it returns two matrices, one of
+// them is the actual one and the another represents the "reserved" portion
+// (e.g. finder and timing patterns) of the matrix.
+//
+// some entries in the matrix may be undefined, rather than 0 or 1. this is
+// intentional (no initialization needed!), and putdata below will fill
+// the remaining ones.
+var makebasematrix = function (ver) {
+	var v = VERSIONS[ver], n = getsizebyver(ver);
+	var matrix = [], reserved = [];
+	for (var i = 0; i < n; ++i) {
+		matrix.push([]);
+		reserved.push([]);
+	}
+
+	var blit = function (y, x, h, w, bits) {
+		for (var i = 0; i < h; ++i) {
+			for (var j = 0; j < w; ++j) {
+				matrix[y + i][x + j] = (bits[i] >> j) & 1;
+				reserved[y + i][x + j] = 1;
+			}
+		}
+	};
+
+	// finder patterns and a part of timing patterns
+	// will also mark the format information area (not yet written) as reserved.
+	blit(0, 0, 9, 9, [0x7f, 0x41, 0x5d, 0x5d, 0x5d, 0x41, 0x17f, 0x00, 0x40]);
+	blit(n - 8, 0, 8, 9, [0x100, 0x7f, 0x41, 0x5d, 0x5d, 0x5d, 0x41, 0x7f]);
+	blit(0, n - 8, 9, 8, [0xfe, 0x82, 0xba, 0xba, 0xba, 0x82, 0xfe, 0x00, 0x00]);
+
+	// the rest of timing patterns
+	for (var i = 9; i < n - 8; ++i) {
+		matrix[6][i] = matrix[i][6] = ~i & 1;
+		reserved[6][i] = reserved[i][6] = 1;
+	}
+
+	// alignment patterns
+	var aligns = v[2], m = aligns.length;
+	for (var i = 0; i < m; ++i) {
+		var minj = (i === 0 || i === m - 1 ? 1 : 0), maxj = (i === 0 ? m - 1 : m);
+		for (var j = minj; j < maxj; ++j) {
+			blit(aligns[i], aligns[j], 5, 5, [0x1f, 0x11, 0x15, 0x11, 0x1f]);
+		}
+	}
+
+	// version information
+	if (needsverinfo(ver)) {
+		var code = augumentbch(ver, 6, 0x1f25, 12);
+		var k = 0;
+		for (var i = 0; i < 6; ++i) {
+			for (var j = 0; j < 3; ++j) {
+				matrix[i][(n - 11) + j] = matrix[(n - 11) + j][i] = (code >> k++) & 1;
+				reserved[i][(n - 11) + j] = reserved[(n - 11) + j][i] = 1;
+			}
+		}
+	}
+
+	return {matrix: matrix, reserved: reserved};
+};
+
+// fills the data portion (i.e. unmarked in reserved) of the matrix with given
+// code words. the size of code words should be no more than available bits,
+// and remaining bits are padded to 0 (cf. JIS X 0510:2004 sec 8.7.3).
+var putdata = function (matrix, reserved, buf) {
+	var n = matrix.length;
+	var k = 0, dir = -1;
+	for (var i = n - 1; i >= 0; i -= 2) {
+		if (i == 6)
+			--i; // skip the entire timing pattern column
+		var jj = (dir < 0 ? n - 1 : 0);
+		for (var j = 0; j < n; ++j) {
+			for (var ii = i; ii > i - 2; --ii) {
+				if (!reserved[jj][ii]) {
+					// may overflow, but (undefined >> x)
+					// is 0 so it will auto-pad to zero.
+					matrix[jj][ii] = (buf[k >> 3] >> (~k & 7)) & 1;
+					++k;
+				}
+			}
+			jj += dir;
+		}
+		dir = -dir;
+	}
+	return matrix;
+};
+
+// XOR-masks the data portion of the matrix. repeating the call with the same
+// arguments will revert the prior call (convenient in the matrix evaluation).
+var maskdata = function (matrix, reserved, mask) {
+	var maskf = MASKFUNCS[mask];
+	var n = matrix.length;
+	for (var i = 0; i < n; ++i) {
+		for (var j = 0; j < n; ++j) {
+			if (!reserved[i][j])
+				matrix[i][j] ^= maskf(i, j);
+		}
+	}
+	return matrix;
+};
+
+// puts the format information.
+var putformatinfo = function (matrix, reserved, ecclevel, mask) {
+	var n = matrix.length;
+	var code = augumentbch((ecclevel << 3) | mask, 5, 0x537, 10) ^ 0x5412;
+	for (var i = 0; i < 15; ++i) {
+		var r = [0, 1, 2, 3, 4, 5, 7, 8, n - 7, n - 6, n - 5, n - 4, n - 3, n - 2, n - 1][i];
+		var c = [n - 1, n - 2, n - 3, n - 4, n - 5, n - 6, n - 7, n - 8, 7, 5, 4, 3, 2, 1, 0][i];
+		matrix[r][8] = matrix[8][c] = (code >> i) & 1;
+		// we don't have to mark those bits reserved; always done
+		// in makebasematrix above.
+	}
+	return matrix;
+};
+
+// evaluates the resulting matrix and returns the score (lower is better).
+// (cf. JIS X 0510:2004 sec 8.8.2)
+//
+// the evaluation procedure tries to avoid the problematic patterns naturally
+// occuring from the original matrix. for example, it penaltizes the patterns
+// which just look like the finder pattern which will confuse the decoder.
+// we choose the mask which results in the lowest score among 8 possible ones.
+//
+// note: zxing seems to use the same procedure and in many cases its choice
+// agrees to ours, but sometimes it does not. practically it doesn't matter.
+var evaluatematrix = function (matrix) {
+	// N1+(k-5) points for each consecutive row of k same-colored modules,
+	// where k >= 5. no overlapping row counts.
+	var PENALTY_CONSECUTIVE = 3;
+	// N2 points for each 2x2 block of same-colored modules.
+	// overlapping block does count.
+	var PENALTY_TWOBYTWO = 3;
+	// N3 points for each pattern with >4W:1B:1W:3B:1W:1B or
+	// 1B:1W:3B:1W:1B:>4W, or their multiples (e.g. highly unlikely,
+	// but 13W:3B:3W:9B:3W:3B counts).
+	var PENALTY_FINDERLIKE = 40;
+	// N4*k points for every (5*k)% deviation from 50% black density.
+	// i.e. k=1 for 55~60% and 40~45%, k=2 for 60~65% and 35~40%, etc.
+	var PENALTY_DENSITY = 10;
+
+	var evaluategroup = function (groups) { // assumes [W,B,W,B,W,...,B,W]
+		var score = 0;
+		for (var i = 0; i < groups.length; ++i) {
+			if (groups[i] >= 5)
+				score += PENALTY_CONSECUTIVE + (groups[i] - 5);
+		}
+		for (var i = 5; i < groups.length; i += 2) {
+			var p = groups[i];
+			if (groups[i - 1] == p && groups[i - 2] == 3 * p && groups[i - 3] == p &&
+				groups[i - 4] == p && (groups[i - 5] >= 4 * p || groups[i + 1] >= 4 * p)) {
+				// this part differs from zxing...
+				score += PENALTY_FINDERLIKE;
+			}
+		}
+		return score;
+	};
+
+	var n = matrix.length;
+	var score = 0, nblacks = 0;
+	for (var i = 0; i < n; ++i) {
+		var row = matrix[i];
+		var groups;
+
+		// evaluate the current row
+		groups = [0]; // the first empty group of white
+		for (var j = 0; j < n; ) {
+			var k;
+			for (k = 0; j < n && row[j]; ++k)
+				++j;
+			groups.push(k);
+			for (k = 0; j < n && !row[j]; ++k)
+				++j;
+			groups.push(k);
+		}
+		score += evaluategroup(groups);
+
+		// evaluate the current column
+		groups = [0];
+		for (var j = 0; j < n; ) {
+			var k;
+			for (k = 0; j < n && matrix[j][i]; ++k)
+				++j;
+			groups.push(k);
+			for (k = 0; j < n && !matrix[j][i]; ++k)
+				++j;
+			groups.push(k);
+		}
+		score += evaluategroup(groups);
+
+		// check the 2x2 box and calculate the density
+		var nextrow = matrix[i + 1] || [];
+		nblacks += row[0];
+		for (var j = 1; j < n; ++j) {
+			var p = row[j];
+			nblacks += p;
+			// at least comparison with next row should be strict...
+			if (row[j - 1] == p && nextrow[j] === p && nextrow[j - 1] === p) {
+				score += PENALTY_TWOBYTWO;
+			}
+		}
+	}
+
+	score += PENALTY_DENSITY * ((Math.abs(nblacks / n / n - 0.5) / 0.05) | 0);
+	return score;
+};
+
+// returns the fully encoded QR code matrix which contains given data.
+// it also chooses the best mask automatically when mask is -1.
+var generate = function (data, ver, mode, ecclevel, mask) {
+	var v = VERSIONS[ver];
+	var buf = encode(ver, mode, data, ndatabits(ver, ecclevel) >> 3);
+	buf = augumenteccs(buf, v[1][ecclevel], GF256_GENPOLY[v[0][ecclevel]]);
+
+	var result = makebasematrix(ver);
+	var matrix = result.matrix, reserved = result.reserved;
+	putdata(matrix, reserved, buf);
+
+	if (mask < 0) {
+		// find the best mask
+		maskdata(matrix, reserved, 0);
+		putformatinfo(matrix, reserved, ecclevel, 0);
+		var bestmask = 0, bestscore = evaluatematrix(matrix);
+		maskdata(matrix, reserved, 0);
+		for (mask = 1; mask < 8; ++mask) {
+			maskdata(matrix, reserved, mask);
+			putformatinfo(matrix, reserved, ecclevel, mask);
+			var score = evaluatematrix(matrix);
+			if (bestscore > score) {
+				bestscore = score;
+				bestmask = mask;
+			}
+			maskdata(matrix, reserved, mask);
+		}
+		mask = bestmask;
+	}
+
+	maskdata(matrix, reserved, mask);
+	putformatinfo(matrix, reserved, ecclevel, mask);
+	return matrix;
+};
+
+// the public interface is trivial; the options available are as follows:
+//
+// - version: an integer in [1,40]. when omitted (or -1) the smallest possible
+//   version is chosen.
+// - mode: one of 'numeric', 'alphanumeric', 'octet'. when omitted the smallest
+//   possible mode is chosen.
+// - eccLevel: one of 'L', 'M', 'Q', 'H'. defaults to 'L'.
+// - mask: an integer in [0,7]. when omitted (or -1) the best mask is chosen.
+//
+
+function generateFrame(data, options) {
+	var MODES = {'numeric': MODE_NUMERIC, 'alphanumeric': MODE_ALPHANUMERIC,
+		'octet': MODE_OCTET};
+	var ECCLEVELS = {'L': ECCLEVEL_L, 'M': ECCLEVEL_M, 'Q': ECCLEVEL_Q,
+		'H': ECCLEVEL_H};
+
+	options = options || {};
+	var ver = options.version || -1;
+	var ecclevel = ECCLEVELS[(options.eccLevel || 'L').toUpperCase()];
+	var mode = options.mode ? MODES[options.mode.toLowerCase()] : -1;
+	var mask = 'mask' in options ? options.mask : -1;
+
+	if (mode < 0) {
+		if (typeof data === 'string') {
+			if (data.match(NUMERIC_REGEXP)) {
+				mode = MODE_NUMERIC;
+			} else if (data.match(ALPHANUMERIC_OUT_REGEXP)) {
+				// while encode supports case-insensitive encoding, we restrict the data to be uppercased when auto-selecting the mode.
+				mode = MODE_ALPHANUMERIC;
+			} else {
+				mode = MODE_OCTET;
+			}
+		} else {
+			mode = MODE_OCTET;
+		}
+	} else if (!(mode == MODE_NUMERIC || mode == MODE_ALPHANUMERIC ||
+		mode == MODE_OCTET)) {
+		throw 'invalid or unsupported mode';
+	}
+
+	data = validatedata(mode, data);
+	if (data === null)
+		throw 'invalid data format';
+
+	if (ecclevel < 0 || ecclevel > 3)
+		throw 'invalid ECC level';
+
+	if (ver < 0) {
+		for (ver = 1; ver <= 40; ++ver) {
+			if (data.length <= getmaxdatalen(ver, mode, ecclevel))
+				break;
+		}
+		if (ver > 40)
+			throw 'too large data for the Qr format';
+	} else if (ver < 1 || ver > 40) {
+		throw 'invalid Qr version! should be between 1 and 40';
+	}
+
+	if (mask != -1 && (mask < 0 || mask > 8))
+		throw 'invalid mask';
+	//console.log('version:', ver, 'mode:', mode, 'ECC:', ecclevel, 'mask:', mask )
+	return generate(data, ver, mode, ecclevel, mask);
+}
+
+
+// options
+// - modulesize: a number. this is a size of each modules in pixels, and
+//   defaults to 5px.
+// - margin: a number. this is a size of margin in *modules*, and defaults to
+//   4 (white modules). the specficiation mandates the margin no less than 4
+//   modules, so it is better not to alter this value unless you know what
+//   you're doing.
+function buildCanvas(data, options) {
+
+	var canvas = [];
+	var background = options.background || '#fff';
+	var foreground = options.foreground || '#000';
+	//var margin = options.margin || 4;
+	var matrix = generateFrame(data, options);
+	var n = matrix.length;
+	var modSize = Math.floor(options.fit ? options.fit / n : 5);
+	var size = n * modSize;
+
+	canvas.push({
+		type: 'rect',
+		x: 0, y: 0, w: size, h: size, lineWidth: 0, color: background
+	});
+
+	for (var i = 0; i < n; ++i) {
+		for (var j = 0; j < n; ++j) {
+			if (matrix[i][j]) {
+				canvas.push({
+					type: 'rect',
+					x: modSize * j,
+					y: modSize * i,
+					w: modSize,
+					h: modSize,
+					lineWidth: 0,
+					color: foreground
+				});
+			}
+		}
+	}
+
+	return {
+		canvas: canvas,
+		size: size
+	};
+
+}
+
+function measure(node) {
+	var cd = buildCanvas(node.qr, node);
+	node._canvas = cd.canvas;
+	node._width = node._height = node._minWidth = node._maxWidth = node._minHeight = node._maxHeight = cd.size;
+	return node;
+}
+
+module.exports = {
+	measure: measure
+>>>>>>> ams-final
 };
 
 /***/ }),
@@ -67855,6 +72236,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var isUndefined = __webpack_require__(0).isUndefined;
@@ -68029,6 +72411,182 @@ PageElementWriter.prototype.context = function () {
 };
 
 module.exports = PageElementWriter;
+=======
+
+
+var isUndefined = __webpack_require__(0).isUndefined;
+var ElementWriter = __webpack_require__(545);
+
+/**
+ * Creates an instance of PageElementWriter - an extended ElementWriter
+ * which can handle:
+ * - page-breaks (it adds new pages when there's not enough space left),
+ * - repeatable fragments (like table-headers, which are repeated everytime
+ *                         a page-break occurs)
+ * - transactions (used for unbreakable-blocks when we want to make sure
+ *                 whole block will be rendered on the same page)
+ */
+function PageElementWriter(context, tracker) {
+	this.transactionLevel = 0;
+	this.repeatables = [];
+	this.tracker = tracker;
+	this.writer = new ElementWriter(context, tracker);
+}
+
+function fitOnPage(self, addFct) {
+	var position = addFct(self);
+	if (!position) {
+		self.moveToNextPage();
+		position = addFct(self);
+	}
+	return position;
+}
+
+PageElementWriter.prototype.addLine = function (line, dontUpdateContextPosition, index) {
+	return fitOnPage(this, function (self) {
+		return self.writer.addLine(line, dontUpdateContextPosition, index);
+	});
+};
+
+PageElementWriter.prototype.addImage = function (image, index) {
+	return fitOnPage(this, function (self) {
+		return self.writer.addImage(image, index);
+	});
+};
+
+PageElementWriter.prototype.addSVG = function (image, index) {
+	return fitOnPage(this, function (self) {
+		return self.writer.addSVG(image, index);
+	});
+};
+
+PageElementWriter.prototype.addQr = function (qr, index) {
+	return fitOnPage(this, function (self) {
+		return self.writer.addQr(qr, index);
+	});
+};
+
+PageElementWriter.prototype.addVector = function (vector, ignoreContextX, ignoreContextY, index) {
+	return this.writer.addVector(vector, ignoreContextX, ignoreContextY, index);
+};
+
+PageElementWriter.prototype.beginClip = function (width, height) {
+	return this.writer.beginClip(width, height);
+};
+
+PageElementWriter.prototype.endClip = function () {
+	return this.writer.endClip();
+};
+
+PageElementWriter.prototype.alignCanvas = function (node) {
+	this.writer.alignCanvas(node);
+};
+
+PageElementWriter.prototype.addFragment = function (fragment, useBlockXOffset, useBlockYOffset, dontUpdateContextPosition) {
+	if (!this.writer.addFragment(fragment, useBlockXOffset, useBlockYOffset, dontUpdateContextPosition)) {
+		this.moveToNextPage();
+		this.writer.addFragment(fragment, useBlockXOffset, useBlockYOffset, dontUpdateContextPosition);
+	}
+};
+
+PageElementWriter.prototype.moveToNextPage = function (pageOrientation) {
+
+	var nextPage = this.writer.context.moveToNextPage(pageOrientation);
+
+	// moveToNextPage is called multiple times for table, because is called for each column
+	// and repeatables are inserted only in the first time. If columns are used, is needed
+	// call for table in first column and then for table in the second column (is other repeatables).
+	this.repeatables.forEach(function (rep) {
+		if (isUndefined(rep.insertedOnPages[this.writer.context.page])) {
+			rep.insertedOnPages[this.writer.context.page] = true;
+			this.writer.addFragment(rep, true);
+		} else {
+			this.writer.context.moveDown(rep.height);
+		}
+	}, this);
+
+	this.writer.tracker.emit('pageChanged', {
+		prevPage: nextPage.prevPage,
+		prevY: nextPage.prevY,
+		y: this.writer.context.y
+	});
+};
+
+PageElementWriter.prototype.beginUnbreakableBlock = function (width, height) {
+	if (this.transactionLevel++ === 0) {
+		this.originalX = this.writer.context.x;
+		this.writer.pushContext(width, height);
+	}
+};
+
+PageElementWriter.prototype.commitUnbreakableBlock = function (forcedX, forcedY) {
+	if (--this.transactionLevel === 0) {
+		var unbreakableContext = this.writer.context;
+		this.writer.popContext();
+
+		var nbPages = unbreakableContext.pages.length;
+		if (nbPages > 0) {
+			// no support for multi-page unbreakableBlocks
+			var fragment = unbreakableContext.pages[0];
+			fragment.xOffset = forcedX;
+			fragment.yOffset = forcedY;
+
+			//TODO: vectors can influence height in some situations
+			if (nbPages > 1) {
+				// on out-of-context blocs (headers, footers, background) height should be the whole DocumentContext height
+				if (forcedX !== undefined || forcedY !== undefined) {
+					fragment.height = unbreakableContext.getCurrentPage().pageSize.height - unbreakableContext.pageMargins.top - unbreakableContext.pageMargins.bottom;
+				} else {
+					fragment.height = this.writer.context.getCurrentPage().pageSize.height - this.writer.context.pageMargins.top - this.writer.context.pageMargins.bottom;
+					for (var i = 0, l = this.repeatables.length; i < l; i++) {
+						fragment.height -= this.repeatables[i].height;
+					}
+				}
+			} else {
+				fragment.height = unbreakableContext.y;
+			}
+
+			if (forcedX !== undefined || forcedY !== undefined) {
+				this.writer.addFragment(fragment, true, true, true);
+			} else {
+				this.addFragment(fragment);
+			}
+		}
+	}
+};
+
+PageElementWriter.prototype.currentBlockToRepeatable = function () {
+	var unbreakableContext = this.writer.context;
+	var rep = { items: [] };
+
+	unbreakableContext.pages[0].items.forEach(function (item) {
+		rep.items.push(item);
+	});
+
+	rep.xOffset = this.originalX;
+
+	//TODO: vectors can influence height in some situations
+	rep.height = unbreakableContext.y;
+
+	rep.insertedOnPages = [];
+
+	return rep;
+};
+
+PageElementWriter.prototype.pushToRepeatables = function (rep) {
+	this.repeatables.push(rep);
+};
+
+PageElementWriter.prototype.popFromRepeatables = function () {
+	this.repeatables.pop();
+};
+
+PageElementWriter.prototype.context = function () {
+	return this.writer.context;
+};
+
+module.exports = PageElementWriter;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -68036,6 +72594,7 @@ module.exports = PageElementWriter;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var Line = __webpack_require__(294);
@@ -68358,6 +72917,330 @@ ElementWriter.prototype.getCurrentPositionOnPage = function () {
 
 
 module.exports = ElementWriter;
+=======
+
+
+var Line = __webpack_require__(294);
+var isNumber = __webpack_require__(0).isNumber;
+var pack = __webpack_require__(0).pack;
+var offsetVector = __webpack_require__(0).offsetVector;
+var DocumentContext = __webpack_require__(293);
+
+/**
+ * Creates an instance of ElementWriter - a line/vector writer, which adds
+ * elements to current page and sets their positions based on the context
+ */
+function ElementWriter(context, tracker) {
+	this.context = context;
+	this.contextStack = [];
+	this.tracker = tracker;
+}
+
+function addPageItem(page, item, index) {
+	if (index === null || index === undefined || index < 0 || index > page.items.length) {
+		page.items.push(item);
+	} else {
+		page.items.splice(index, 0, item);
+	}
+}
+
+ElementWriter.prototype.addLine = function (line, dontUpdateContextPosition, index) {
+	var height = line.getHeight();
+	var context = this.context;
+	var page = context.getCurrentPage(),
+		position = this.getCurrentPositionOnPage();
+
+	if (context.availableHeight < height || !page) {
+		return false;
+	}
+
+	line.x = context.x + (line.x || 0);
+	line.y = context.y + (line.y || 0);
+
+	this.alignLine(line);
+
+	addPageItem(page, {
+		type: 'line',
+		item: line
+	}, index);
+	this.tracker.emit('lineAdded', line);
+
+	if (!dontUpdateContextPosition) {
+		context.moveDown(height);
+	}
+
+	return position;
+};
+
+ElementWriter.prototype.alignLine = function (line) {
+	var width = this.context.availableWidth;
+	var lineWidth = line.getWidth();
+
+	var alignment = line.inlines && line.inlines.length > 0 && line.inlines[0].alignment;
+
+	var offset = 0;
+	switch (alignment) {
+		case 'right':
+			offset = width - lineWidth;
+			break;
+		case 'center':
+			offset = (width - lineWidth) / 2;
+			break;
+	}
+
+	if (offset) {
+		line.x = (line.x || 0) + offset;
+	}
+
+	if (alignment === 'justify' &&
+		!line.newLineForced &&
+		!line.lastLineInParagraph &&
+		line.inlines.length > 1) {
+		var additionalSpacing = (width - lineWidth) / (line.inlines.length - 1);
+
+		for (var i = 1, l = line.inlines.length; i < l; i++) {
+			offset = i * additionalSpacing;
+
+			line.inlines[i].x += offset;
+			line.inlines[i].justifyShift = additionalSpacing;
+		}
+	}
+};
+
+ElementWriter.prototype.addImage = function (image, index, type) {
+	var context = this.context;
+	var page = context.getCurrentPage(),
+		position = this.getCurrentPositionOnPage();
+
+	if (!page || (image.absolutePosition === undefined && context.availableHeight < image._height && page.items.length > 0)) {
+		return false;
+	}
+
+	if (image._x === undefined) {
+		image._x = image.x || 0;
+	}
+
+	image.x = context.x + image._x;
+	image.y = context.y;
+
+	this.alignImage(image);
+
+	addPageItem(page, {
+		type: type || 'image',
+		item: image
+	}, index);
+
+	context.moveDown(image._height);
+
+	return position;
+};
+
+ElementWriter.prototype.addSVG = function (image, index) {
+	return this.addImage(image, index, 'svg')
+};
+
+ElementWriter.prototype.addQr = function (qr, index) {
+	var context = this.context;
+	var page = context.getCurrentPage(),
+		position = this.getCurrentPositionOnPage();
+
+	if (!page || (qr.absolutePosition === undefined && context.availableHeight < qr._height)) {
+		return false;
+	}
+
+	if (qr._x === undefined) {
+		qr._x = qr.x || 0;
+	}
+
+	qr.x = context.x + qr._x;
+	qr.y = context.y;
+
+	this.alignImage(qr);
+
+	for (var i = 0, l = qr._canvas.length; i < l; i++) {
+		var vector = qr._canvas[i];
+		vector.x += qr.x;
+		vector.y += qr.y;
+		this.addVector(vector, true, true, index);
+	}
+
+	context.moveDown(qr._height);
+
+	return position;
+};
+
+ElementWriter.prototype.alignImage = function (image) {
+	var width = this.context.availableWidth;
+	var imageWidth = image._minWidth;
+	var offset = 0;
+	switch (image._alignment) {
+		case 'right':
+			offset = width - imageWidth;
+			break;
+		case 'center':
+			offset = (width - imageWidth) / 2;
+			break;
+	}
+
+	if (offset) {
+		image.x = (image.x || 0) + offset;
+	}
+};
+
+ElementWriter.prototype.alignCanvas = function (node) {
+	var width = this.context.availableWidth;
+	var canvasWidth = node._minWidth;
+	var offset = 0;
+	switch (node._alignment) {
+		case 'right':
+			offset = width - canvasWidth;
+			break;
+		case 'center':
+			offset = (width - canvasWidth) / 2;
+			break;
+	}
+	if (offset) {
+		node.canvas.forEach(function (vector) {
+			offsetVector(vector, offset, 0);
+		});
+	}
+};
+
+ElementWriter.prototype.addVector = function (vector, ignoreContextX, ignoreContextY, index) {
+	var context = this.context;
+	var page = context.getCurrentPage(),
+		position = this.getCurrentPositionOnPage();
+
+	if (page) {
+		offsetVector(vector, ignoreContextX ? 0 : context.x, ignoreContextY ? 0 : context.y);
+		addPageItem(page, {
+			type: 'vector',
+			item: vector
+		}, index);
+		return position;
+	}
+};
+
+ElementWriter.prototype.beginClip = function (width, height) {
+	var ctx = this.context;
+	var page = ctx.getCurrentPage();
+	page.items.push({
+		type: 'beginClip',
+		item: { x: ctx.x, y: ctx.y, width: width, height: height }
+	});
+	return true;
+};
+
+ElementWriter.prototype.endClip = function () {
+	var ctx = this.context;
+	var page = ctx.getCurrentPage();
+	page.items.push({
+		type: 'endClip'
+	});
+	return true;
+};
+
+function cloneLine(line) {
+	var result = new Line(line.maxWidth);
+
+	for (var key in line) {
+		if (line.hasOwnProperty(key)) {
+			result[key] = line[key];
+		}
+	}
+
+	return result;
+}
+
+ElementWriter.prototype.addFragment = function (block, useBlockXOffset, useBlockYOffset, dontUpdateContextPosition) {
+	var ctx = this.context;
+	var page = ctx.getCurrentPage();
+
+	if (!useBlockXOffset && block.height > ctx.availableHeight) {
+		return false;
+	}
+
+	block.items.forEach(function (item) {
+		switch (item.type) {
+			case 'line':
+				var l = cloneLine(item.item);
+
+				if (l._node) {
+					l._node.positions[0].pageNumber = ctx.page + 1;
+				}
+				l.x = (l.x || 0) + (useBlockXOffset ? (block.xOffset || 0) : ctx.x);
+				l.y = (l.y || 0) + (useBlockYOffset ? (block.yOffset || 0) : ctx.y);
+
+				page.items.push({
+					type: 'line',
+					item: l
+				});
+				break;
+
+			case 'vector':
+				var v = pack(item.item);
+
+				offsetVector(v, useBlockXOffset ? (block.xOffset || 0) : ctx.x, useBlockYOffset ? (block.yOffset || 0) : ctx.y);
+				page.items.push({
+					type: 'vector',
+					item: v
+				});
+				break;
+
+			case 'image':
+			case 'svg':
+				var img = pack(item.item);
+
+				img.x = (img.x || 0) + (useBlockXOffset ? (block.xOffset || 0) : ctx.x);
+				img.y = (img.y || 0) + (useBlockYOffset ? (block.yOffset || 0) : ctx.y);
+
+				page.items.push({
+					type: item.type,
+					item: img
+				});
+				break;
+		}
+	});
+
+	if (!dontUpdateContextPosition) {
+		ctx.moveDown(block.height);
+	}
+
+	return true;
+};
+
+/**
+ * Pushes the provided context onto the stack or creates a new one
+ *
+ * pushContext(context) - pushes the provided context and makes it current
+ * pushContext(width, height) - creates and pushes a new context with the specified width and height
+ * pushContext() - creates a new context for unbreakable blocks (with current availableWidth and full-page-height)
+ */
+ElementWriter.prototype.pushContext = function (contextOrWidth, height) {
+	if (contextOrWidth === undefined) {
+		height = this.context.getCurrentPage().height - this.context.pageMargins.top - this.context.pageMargins.bottom;
+		contextOrWidth = this.context.availableWidth;
+	}
+
+	if (isNumber(contextOrWidth)) {
+		contextOrWidth = new DocumentContext({ width: contextOrWidth, height: height }, { left: 0, right: 0, top: 0, bottom: 0 });
+	}
+
+	this.contextStack.push(this.context);
+	this.context = contextOrWidth;
+};
+
+ElementWriter.prototype.popContext = function () {
+	this.context = this.contextStack.pop();
+};
+
+ElementWriter.prototype.getCurrentPositionOnPage = function () {
+	return (this.contextStack[0] || this.context).getCurrentPosition();
+};
+
+
+module.exports = ElementWriter;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -68365,6 +73248,7 @@ module.exports = ElementWriter;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var ColumnCalculator = __webpack_require__(198);
@@ -68907,6 +73791,550 @@ TableProcessor.prototype.endRow = function (rowIndex, writer, pageBreaks) {
 };
 
 module.exports = TableProcessor;
+=======
+
+
+var ColumnCalculator = __webpack_require__(198);
+var isFunction = __webpack_require__(0).isFunction;
+var isNumber = __webpack_require__(0).isNumber;
+
+function TableProcessor(tableNode) {
+	this.tableNode = tableNode;
+}
+
+TableProcessor.prototype.beginTable = function (writer) {
+	var tableNode;
+	var availableWidth;
+	var self = this;
+
+	tableNode = this.tableNode;
+	this.offsets = tableNode._offsets;
+	this.layout = tableNode._layout;
+
+	availableWidth = writer.context().availableWidth - this.offsets.total;
+	ColumnCalculator.buildColumnWidths(tableNode.table.widths, availableWidth);
+
+	this.tableWidth = tableNode._offsets.total + getTableInnerContentWidth();
+	this.rowSpanData = prepareRowSpanData();
+	this.cleanUpRepeatables = false;
+
+	this.headerRows = tableNode.table.headerRows || 0;
+	this.rowsWithoutPageBreak = this.headerRows + (tableNode.table.keepWithHeaderRows || 0);
+	this.dontBreakRows = tableNode.table.dontBreakRows || false;
+
+	if (this.rowsWithoutPageBreak) {
+		writer.beginUnbreakableBlock();
+	}
+
+	// update the border properties of all cells before drawing any lines
+	prepareCellBorders(this.tableNode.table.body);
+
+	this.drawHorizontalLine(0, writer);
+
+	function getTableInnerContentWidth() {
+		var width = 0;
+
+		tableNode.table.widths.forEach(function (w) {
+			width += w._calcWidth;
+		});
+
+		return width;
+	}
+
+	function prepareRowSpanData() {
+		var rsd = [];
+		var x = 0;
+		var lastWidth = 0;
+
+		rsd.push({ left: 0, rowSpan: 0 });
+
+		for (var i = 0, l = self.tableNode.table.body[0].length; i < l; i++) {
+			var paddings = self.layout.paddingLeft(i, self.tableNode) + self.layout.paddingRight(i, self.tableNode);
+			var lBorder = self.layout.vLineWidth(i, self.tableNode);
+			lastWidth = paddings + lBorder + self.tableNode.table.widths[i]._calcWidth;
+			rsd[rsd.length - 1].width = lastWidth;
+			x += lastWidth;
+			rsd.push({ left: x, rowSpan: 0, width: 0 });
+		}
+
+		return rsd;
+	}
+
+	// Iterate through all cells. If the current cell is the start of a
+	// rowSpan/colSpan, update the border property of the cells on its
+	// bottom/right accordingly. This is needed since each iteration of the
+	// line-drawing loops draws lines for a single cell, not for an entire
+	// rowSpan/colSpan.
+	function prepareCellBorders(body) {
+		for (var rowIndex = 0; rowIndex < body.length; rowIndex++) {
+			var row = body[rowIndex];
+
+			for (var colIndex = 0; colIndex < row.length; colIndex++) {
+				var cell = row[colIndex];
+
+				if (cell.border) {
+					var rowSpan = cell.rowSpan || 1;
+					var colSpan = cell.colSpan || 1;
+
+					for (var rowOffset = 0; rowOffset < rowSpan; rowOffset++) {
+						// set left border
+						if (cell.border[0] !== undefined && rowOffset > 0) {
+							setBorder(rowIndex + rowOffset, colIndex, 0, cell.border[0]);
+						}
+
+						// set right border
+						if (cell.border[2] !== undefined) {
+							setBorder(rowIndex + rowOffset, colIndex + colSpan - 1, 2, cell.border[2]);
+						}
+					}
+
+					for (var colOffset = 0; colOffset < colSpan; colOffset++) {
+						// set top border
+						if (cell.border[1] !== undefined && colOffset > 0) {
+							setBorder(rowIndex, colIndex + colOffset, 1, cell.border[1]);
+						}
+
+						// set bottom border
+						if (cell.border[3] !== undefined) {
+							setBorder(rowIndex + rowSpan - 1, colIndex + colOffset, 3, cell.border[3]);
+						}
+					}
+				}
+			}
+		}
+
+		// helper function to set the border for a given cell
+		function setBorder(rowIndex, colIndex, borderIndex, borderValue) {
+			var cell = body[rowIndex][colIndex];
+			cell.border = cell.border || {};
+			cell.border[borderIndex] = borderValue;
+		}
+	}
+};
+
+TableProcessor.prototype.onRowBreak = function (rowIndex, writer) {
+	var self = this;
+	return function () {
+		var offset = self.rowPaddingTop + (!self.headerRows ? self.topLineWidth : 0);
+		writer.context().availableHeight -= self.reservedAtBottom;
+		writer.context().moveDown(offset);
+	};
+};
+
+TableProcessor.prototype.beginRow = function (rowIndex, writer) {
+	this.topLineWidth = this.layout.hLineWidth(rowIndex, this.tableNode);
+	this.rowPaddingTop = this.layout.paddingTop(rowIndex, this.tableNode);
+	this.bottomLineWidth = this.layout.hLineWidth(rowIndex + 1, this.tableNode);
+	this.rowPaddingBottom = this.layout.paddingBottom(rowIndex, this.tableNode);
+
+	this.rowCallback = this.onRowBreak(rowIndex, writer);
+	writer.tracker.startTracking('pageChanged', this.rowCallback);
+	if (this.dontBreakRows) {
+		writer.beginUnbreakableBlock();
+	}
+	this.rowTopY = writer.context().y;
+	this.reservedAtBottom = this.bottomLineWidth + this.rowPaddingBottom;
+
+	writer.context().availableHeight -= this.reservedAtBottom;
+
+	writer.context().moveDown(this.rowPaddingTop);
+};
+
+TableProcessor.prototype.drawHorizontalLine = function (lineIndex, writer, overrideY) {
+	var lineWidth = this.layout.hLineWidth(lineIndex, this.tableNode);
+	if (lineWidth) {
+		var style = this.layout.hLineStyle(lineIndex, this.tableNode);
+		var dash;
+		if (style && style.dash) {
+			dash = style.dash;
+		}
+
+		var offset = lineWidth / 2;
+		var currentLine = null;
+		var body = this.tableNode.table.body;
+		var cellAbove;
+		var currentCell;
+		var rowCellAbove;
+
+		for (var i = 0, l = this.rowSpanData.length; i < l; i++) {
+			var data = this.rowSpanData[i];
+			var shouldDrawLine = !data.rowSpan;
+			var borderColor = null;
+
+			// draw only if the current cell requires a top border or the cell in the
+			// row above requires a bottom border
+			if (shouldDrawLine && i < l - 1) {
+				var topBorder = false, bottomBorder = false, rowBottomBorder = false;
+
+				// the cell in the row above
+				if (lineIndex > 0) {
+					cellAbove = body[lineIndex - 1][i];
+					bottomBorder = cellAbove.border ? cellAbove.border[3] : this.layout.defaultBorder;
+					if (bottomBorder && cellAbove.borderColor) {
+						borderColor = cellAbove.borderColor[3];
+					}
+				}
+
+				// the current cell
+				if (lineIndex < body.length) {
+					currentCell = body[lineIndex][i];
+					topBorder = currentCell.border ? currentCell.border[1] : this.layout.defaultBorder;
+					if (topBorder && borderColor == null && currentCell.borderColor) {
+						borderColor = currentCell.borderColor[1];
+					}
+				}
+
+				shouldDrawLine = topBorder || bottomBorder;
+			}
+
+			if (cellAbove && cellAbove._rowSpanCurrentOffset) {
+				rowCellAbove = body[lineIndex - 1 - cellAbove._rowSpanCurrentOffset][i];
+				rowBottomBorder = rowCellAbove && rowCellAbove.border ? rowCellAbove.border[3] : this.layout.defaultBorder;
+				if (rowBottomBorder && rowCellAbove && rowCellAbove.borderColor) {
+					borderColor = rowCellAbove.borderColor[3];
+				}
+			}
+
+			if (borderColor == null) {
+				borderColor = isFunction(this.layout.hLineColor) ? this.layout.hLineColor(lineIndex, this.tableNode, i) : this.layout.hLineColor;
+			}
+
+			if (!currentLine && shouldDrawLine) {
+				currentLine = { left: data.left, width: 0 };
+			}
+
+			if (shouldDrawLine) {
+				var colSpanIndex = 0;
+				if (rowCellAbove && rowCellAbove.colSpan && rowBottomBorder) {
+					while (rowCellAbove.colSpan > colSpanIndex) {
+						currentLine.width += (this.rowSpanData[i + colSpanIndex++].width || 0);
+					}
+					i += colSpanIndex - 1;
+				} else if (cellAbove && cellAbove.colSpan && bottomBorder) {
+					while (cellAbove.colSpan > colSpanIndex) {
+						currentLine.width += (this.rowSpanData[i + colSpanIndex++].width || 0);
+					}
+					i += colSpanIndex - 1;
+				} else if (currentCell && currentCell.colSpan && topBorder) {
+					while (currentCell.colSpan > colSpanIndex) {
+						currentLine.width += (this.rowSpanData[i + colSpanIndex++].width || 0);
+					}
+					i += colSpanIndex - 1;
+				} else {
+					currentLine.width += (this.rowSpanData[i].width || 0);
+				}
+			}
+
+			var y = (overrideY || 0) + offset;
+
+
+			if (shouldDrawLine) {
+				if (currentLine && currentLine.width) {
+					writer.addVector({
+						type: 'line',
+						x1: currentLine.left,
+						x2: currentLine.left + currentLine.width,
+						y1: y,
+						y2: y,
+						lineWidth: lineWidth,
+						dash: dash,
+						lineColor: borderColor
+					}, false, overrideY);
+					currentLine = null;
+					borderColor = null;
+					cellAbove = null;
+					currentCell = null;
+					rowCellAbove = null;
+				}
+			}
+		}
+
+		writer.context().moveDown(lineWidth);
+	}
+};
+
+TableProcessor.prototype.drawVerticalLine = function (x, y0, y1, vLineColIndex, writer, vLineRowIndex, beforeVLineColIndex) {
+	var width = this.layout.vLineWidth(vLineColIndex, this.tableNode);
+	if (width === 0) {
+		return;
+	}
+	var style = this.layout.vLineStyle(vLineColIndex, this.tableNode);
+	var dash;
+	if (style && style.dash) {
+		dash = style.dash;
+	}
+
+	var body = this.tableNode.table.body;
+	var cellBefore;
+	var currentCell;
+	var borderColor;
+
+	// the cell in the col before
+	if (vLineColIndex > 0) {
+		cellBefore = body[vLineRowIndex][beforeVLineColIndex];
+		if (cellBefore && cellBefore.borderColor) {
+			if (cellBefore.border ? cellBefore.border[2] : this.layout.defaultBorder) {
+				borderColor = cellBefore.borderColor[2];
+			}
+		}
+	}
+
+	// the current cell
+	if (borderColor == null && vLineColIndex < body.length) {
+		currentCell = body[vLineRowIndex][vLineColIndex];
+		if (currentCell && currentCell.borderColor) {
+			if (currentCell.border ? currentCell.border[0] : this.layout.defaultBorder) {
+				borderColor = currentCell.borderColor[0];
+			}
+		}
+	}
+
+	if (borderColor == null && cellBefore && cellBefore._rowSpanCurrentOffset) {
+		var rowCellBeforeAbove = body[vLineRowIndex - cellBefore._rowSpanCurrentOffset][beforeVLineColIndex];
+		if (rowCellBeforeAbove.borderColor) {
+			if (rowCellBeforeAbove.border ? rowCellBeforeAbove.border[2] : this.layout.defaultBorder) {
+				borderColor = rowCellBeforeAbove.borderColor[2];
+			}
+		}
+	}
+
+	if (borderColor == null && currentCell && currentCell._rowSpanCurrentOffset) {
+		var rowCurrentCellAbove = body[vLineRowIndex - currentCell._rowSpanCurrentOffset][vLineColIndex];
+		if (rowCurrentCellAbove.borderColor) {
+			if (rowCurrentCellAbove.border ? rowCurrentCellAbove.border[2] : this.layout.defaultBorder) {
+				borderColor = rowCurrentCellAbove.borderColor[2];
+			}
+		}
+	}
+
+	if (borderColor == null) {
+		borderColor = isFunction(this.layout.vLineColor) ? this.layout.vLineColor(vLineColIndex, this.tableNode, vLineRowIndex) : this.layout.vLineColor;
+	}
+	writer.addVector({
+		type: 'line',
+		x1: x + width / 2,
+		x2: x + width / 2,
+		y1: y0,
+		y2: y1,
+		lineWidth: width,
+		dash: dash,
+		lineColor: borderColor
+	}, false, true);
+	cellBefore = null;
+	currentCell = null;
+	borderColor = null;
+};
+
+TableProcessor.prototype.endTable = function (writer) {
+	if (this.cleanUpRepeatables) {
+		writer.popFromRepeatables();
+	}
+};
+
+TableProcessor.prototype.endRow = function (rowIndex, writer, pageBreaks) {
+	var l, i;
+	var self = this;
+	writer.tracker.stopTracking('pageChanged', this.rowCallback);
+	writer.context().moveDown(this.layout.paddingBottom(rowIndex, this.tableNode));
+	writer.context().availableHeight += this.reservedAtBottom;
+
+	var endingPage = writer.context().page;
+	var endingY = writer.context().y;
+
+	var xs = getLineXs();
+
+	var ys = [];
+
+	var hasBreaks = pageBreaks && pageBreaks.length > 0;
+	var body = this.tableNode.table.body;
+
+	ys.push({
+		y0: this.rowTopY,
+		page: hasBreaks ? pageBreaks[0].prevPage : endingPage
+	});
+
+	if (hasBreaks) {
+		for (i = 0, l = pageBreaks.length; i < l; i++) {
+			var pageBreak = pageBreaks[i];
+			ys[ys.length - 1].y1 = pageBreak.prevY;
+
+			ys.push({ y0: pageBreak.y, page: pageBreak.prevPage + 1 });
+		}
+	}
+
+	ys[ys.length - 1].y1 = endingY;
+
+	var skipOrphanePadding = (ys[0].y1 - ys[0].y0 === this.rowPaddingTop);
+	for (var yi = (skipOrphanePadding ? 1 : 0), yl = ys.length; yi < yl; yi++) {
+		var willBreak = yi < ys.length - 1;
+		var rowBreakWithoutHeader = (yi > 0 && !this.headerRows);
+		var hzLineOffset = rowBreakWithoutHeader ? 0 : this.topLineWidth;
+		var y1 = ys[yi].y0;
+		var y2 = ys[yi].y1;
+
+		if (willBreak) {
+			y2 = y2 + this.rowPaddingBottom;
+		}
+
+		if (writer.context().page != ys[yi].page) {
+			writer.context().page = ys[yi].page;
+
+			//TODO: buggy, availableHeight should be updated on every pageChanged event
+			// TableProcessor should be pageChanged listener, instead of processRow
+			this.reservedAtBottom = 0;
+		}
+
+		for (i = 0, l = xs.length; i < l; i++) {
+			var leftCellBorder = false;
+			var rightCellBorder = false;
+			var colIndex = xs[i].index;
+
+			// current cell
+			if (colIndex < body[rowIndex].length) {
+				var cell = body[rowIndex][colIndex];
+				leftCellBorder = cell.border ? cell.border[0] : this.layout.defaultBorder;
+				rightCellBorder = cell.border ? cell.border[2] : this.layout.defaultBorder;
+			}
+
+			// before cell
+			if (colIndex > 0 && !leftCellBorder) {
+				var cell = body[rowIndex][colIndex - 1];
+				leftCellBorder = cell.border ? cell.border[2] : this.layout.defaultBorder;
+			}
+
+			// after cell
+			if (colIndex + 1 < body[rowIndex].length && !rightCellBorder) {
+				var cell = body[rowIndex][colIndex + 1];
+				rightCellBorder = cell.border ? cell.border[0] : this.layout.defaultBorder;
+			}
+
+			if (leftCellBorder) {
+				this.drawVerticalLine(xs[i].x, y1 - hzLineOffset, y2 + this.bottomLineWidth, xs[i].index, writer, rowIndex, xs[i - 1] ? xs[i - 1].index : null);
+			}
+
+			if (i < l - 1) {
+				var fillColor = body[rowIndex][colIndex].fillColor;
+				var fillOpacity = body[rowIndex][colIndex].fillOpacity;
+				if (!fillColor) {
+					fillColor = isFunction(this.layout.fillColor) ? this.layout.fillColor(rowIndex, this.tableNode, colIndex) : this.layout.fillColor;
+				}
+				if (!isNumber(fillOpacity)) {
+					fillOpacity = isFunction(this.layout.fillOpacity) ? this.layout.fillOpacity(rowIndex, this.tableNode, colIndex) : this.layout.fillOpacity;
+                                }
+				if (fillColor) {
+					var widthLeftBorder = leftCellBorder ? this.layout.vLineWidth(colIndex, this.tableNode) : 0;
+					var widthRightBorder;
+					if ((colIndex === 0 || colIndex + 1 == body[rowIndex].length) && !rightCellBorder) {
+						widthRightBorder = this.layout.vLineWidth(colIndex + 1, this.tableNode);
+					} else if (rightCellBorder) {
+						widthRightBorder = this.layout.vLineWidth(colIndex + 1, this.tableNode) / 2;
+					} else {
+						widthRightBorder = 0;
+					}
+
+					var x1f = this.dontBreakRows ? xs[i].x + widthLeftBorder : xs[i].x + (widthLeftBorder / 2);
+					var y1f = this.dontBreakRows ? y1 : y1 - (hzLineOffset / 2);
+					var x2f = xs[i + 1].x + widthRightBorder;
+					var y2f = this.dontBreakRows ? y2 + this.bottomLineWidth : y2 + (this.bottomLineWidth / 2);
+					writer.addVector({
+						type: 'rect',
+						x: x1f,
+						y: y1f,
+						w: x2f - x1f,
+						h: y2f - y1f,
+						lineWidth: 0,
+						color: fillColor,
+						fillOpacity: fillOpacity
+					}, false, true, writer.context().backgroundLength[writer.context().page]);
+				}
+			}
+		}
+
+		if (willBreak && this.layout.hLineWhenBroken !== false) {
+			this.drawHorizontalLine(rowIndex + 1, writer, y2);
+		}
+		if (rowBreakWithoutHeader && this.layout.hLineWhenBroken !== false) {
+			this.drawHorizontalLine(rowIndex, writer, y1);
+		}
+	}
+
+	writer.context().page = endingPage;
+	writer.context().y = endingY;
+
+	var row = this.tableNode.table.body[rowIndex];
+	for (i = 0, l = row.length; i < l; i++) {
+		if (row[i].rowSpan) {
+			this.rowSpanData[i].rowSpan = row[i].rowSpan;
+
+			// fix colSpans
+			if (row[i].colSpan && row[i].colSpan > 1) {
+				for (var j = 1; j < row[i].rowSpan; j++) {
+					this.tableNode.table.body[rowIndex + j][i]._colSpan = row[i].colSpan;
+				}
+			}
+			// fix rowSpans
+			if (row[i].rowSpan && row[i].rowSpan > 1) {
+				for (var j = 1; j < row[i].rowSpan; j++) {
+					this.tableNode.table.body[rowIndex + j][i]._rowSpanCurrentOffset = j;
+				}
+			}
+		}
+
+		if (this.rowSpanData[i].rowSpan > 0) {
+			this.rowSpanData[i].rowSpan--;
+		}
+	}
+
+	this.drawHorizontalLine(rowIndex + 1, writer);
+
+	if (this.headerRows && rowIndex === this.headerRows - 1) {
+		this.headerRepeatable = writer.currentBlockToRepeatable();
+	}
+
+	if (this.dontBreakRows) {
+		writer.tracker.auto('pageChanged',
+			function () {
+				if (!self.headerRows && self.layout.hLineWhenBroken !== false) {
+					self.drawHorizontalLine(rowIndex, writer);
+				}
+			},
+			function () {
+				writer.commitUnbreakableBlock();
+			}
+		);
+	}
+
+	if (this.headerRepeatable && (rowIndex === (this.rowsWithoutPageBreak - 1) || rowIndex === this.tableNode.table.body.length - 1)) {
+		writer.commitUnbreakableBlock();
+		writer.pushToRepeatables(this.headerRepeatable);
+		this.cleanUpRepeatables = true;
+		this.headerRepeatable = null;
+	}
+
+	function getLineXs() {
+		var result = [];
+		var cols = 0;
+
+		for (var i = 0, l = self.tableNode.table.body[rowIndex].length; i < l; i++) {
+			if (!cols) {
+				result.push({ x: self.rowSpanData[i].left, index: i });
+
+				var item = self.tableNode.table.body[rowIndex][i];
+				cols = (item._colSpan || item.colSpan || 0);
+			}
+			if (cols > 0) {
+				cols--;
+			}
+		}
+
+		result.push({ x: self.rowSpanData[self.rowSpanData.length - 1].left, index: self.rowSpanData.length - 1 });
+
+		return result;
+	}
+};
+
+module.exports = TableProcessor;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -68914,6 +74342,7 @@ module.exports = TableProcessor;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 module.exports = {
@@ -68968,6 +74397,62 @@ module.exports = {
 	LETTER: [612.00, 792.00],
 	TABLOID: [792.00, 1224.00]
 };
+=======
+
+
+module.exports = {
+	'4A0': [4767.87, 6740.79],
+	'2A0': [3370.39, 4767.87],
+	A0: [2383.94, 3370.39],
+	A1: [1683.78, 2383.94],
+	A2: [1190.55, 1683.78],
+	A3: [841.89, 1190.55],
+	A4: [595.28, 841.89],
+	A5: [419.53, 595.28],
+	A6: [297.64, 419.53],
+	A7: [209.76, 297.64],
+	A8: [147.40, 209.76],
+	A9: [104.88, 147.40],
+	A10: [73.70, 104.88],
+	B0: [2834.65, 4008.19],
+	B1: [2004.09, 2834.65],
+	B2: [1417.32, 2004.09],
+	B3: [1000.63, 1417.32],
+	B4: [708.66, 1000.63],
+	B5: [498.90, 708.66],
+	B6: [354.33, 498.90],
+	B7: [249.45, 354.33],
+	B8: [175.75, 249.45],
+	B9: [124.72, 175.75],
+	B10: [87.87, 124.72],
+	C0: [2599.37, 3676.54],
+	C1: [1836.85, 2599.37],
+	C2: [1298.27, 1836.85],
+	C3: [918.43, 1298.27],
+	C4: [649.13, 918.43],
+	C5: [459.21, 649.13],
+	C6: [323.15, 459.21],
+	C7: [229.61, 323.15],
+	C8: [161.57, 229.61],
+	C9: [113.39, 161.57],
+	C10: [79.37, 113.39],
+	RA0: [2437.80, 3458.27],
+	RA1: [1729.13, 2437.80],
+	RA2: [1218.90, 1729.13],
+	RA3: [864.57, 1218.90],
+	RA4: [609.45, 864.57],
+	SRA0: [2551.18, 3628.35],
+	SRA1: [1814.17, 2551.18],
+	SRA2: [1275.59, 1814.17],
+	SRA3: [907.09, 1275.59],
+	SRA4: [637.80, 907.09],
+	EXECUTIVE: [521.86, 756.00],
+	FOLIO: [612.00, 936.00],
+	LEGAL: [612.00, 1008.00],
+	LETTER: [612.00, 792.00],
+	TABLOID: [792.00, 1224.00]
+};
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -68975,6 +74460,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 
 var fs = __webpack_require__(53);
@@ -69026,6 +74512,59 @@ ImageMeasure.prototype.measureImage = function (src) {
 };
 
 module.exports = ImageMeasure;
+=======
+/* WEBPACK VAR INJECTION */(function(Buffer) {
+
+var fs = __webpack_require__(53);
+
+function ImageMeasure(pdfKitDoc, imageDictionary) {
+	this.pdfKitDoc = pdfKitDoc;
+	this.imageDictionary = imageDictionary || {};
+}
+
+ImageMeasure.prototype.measureImage = function (src) {
+	var image;
+	var that = this;
+
+	if (!this.pdfKitDoc._imageRegistry[src]) {
+		try {
+			image = this.pdfKitDoc.openImage(realImageSrc(src));
+			if (!image) {
+				throw 'No image';
+			}
+		} catch (error) {
+			throw 'Invalid image: ' + error.toString() + '\nImages dictionary should contain dataURL entries (or local file paths in node.js)';
+		}
+		image.embed(this.pdfKitDoc);
+		this.pdfKitDoc._imageRegistry[src] = image;
+	} else {
+		image = this.pdfKitDoc._imageRegistry[src];
+	}
+
+	return { width: image.width, height: image.height };
+
+	function realImageSrc(src) {
+		var img = that.imageDictionary[src];
+
+		if (!img) {
+			return src;
+		}
+
+		if (fs.existsSync(img)) {
+			return fs.readFileSync(img);
+		}
+
+		var index = img.indexOf('base64,');
+		if (index < 0) {
+			return that.imageDictionary[src];
+		}
+
+		return Buffer.from(img.substring(index + 7), 'base64');
+	}
+};
+
+module.exports = ImageMeasure;
+>>>>>>> ams-final
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(10).Buffer))
 
@@ -69034,6 +74573,7 @@ module.exports = ImageMeasure;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var xmldoc = __webpack_require__(550);
@@ -69104,6 +74644,78 @@ SVGMeasure.prototype.writeDimensions = function (svgString, dimensions) {
 };
 
 module.exports = SVGMeasure;
+=======
+
+
+var xmldoc = __webpack_require__(550);
+
+/** Strip unit postfix, parse number, but return undefined instead of NaN for bad input */
+function stripUnits(textVal) {
+	var n = parseFloat(textVal);
+	if (typeof n !== 'number' || isNaN(n)) {
+		return undefined;
+	}
+	return n;
+}
+
+/** Make sure it's valid XML and the root tage is <svg/>, returns xmldoc DOM */
+function parseSVG(svgString) {
+	var doc;
+	
+	try {
+		doc = new xmldoc.XmlDocument(svgString);
+	} catch (err) {
+		throw new Error('SVGMeasure: ' + err);
+	}
+
+	if (doc.name !== "svg") {
+		throw new Error('SVGMeasure: expected <svg> document');
+	}
+
+	return doc;
+}
+
+function SVGMeasure() {
+}
+
+SVGMeasure.prototype.measureSVG = function (svgString) {
+
+	var doc = parseSVG(svgString);
+
+	var docWidth = stripUnits(doc.attr.width);
+	var docHeight = stripUnits(doc.attr.height);
+
+	if ((docWidth == undefined || docHeight == undefined) && typeof doc.attr.viewBox == 'string') {
+		var viewBoxParts = doc.attr.viewBox.split(/[,\s]+/);
+		if (viewBoxParts.length !== 4) {
+			throw new Error("Unexpected svg viewbox format, should have 4 entries but found: '" + doc.attr.viewBox + "'");
+		}
+		if (docWidth == undefined) {
+			docWidth = stripUnits(viewBoxParts[2]);
+		}
+		if (docHeight == undefined) {
+			docHeight = stripUnits(viewBoxParts[3]);
+		}
+	}
+
+	return {
+		width: docWidth,
+		height: docHeight
+	};
+};
+
+SVGMeasure.prototype.writeDimensions = function (svgString, dimensions) {
+
+	var doc = parseSVG(svgString);
+
+	doc.attr.width = "" + dimensions.width;
+	doc.attr.height = "" + dimensions.height;
+
+	return doc.toString();
+};
+
+module.exports = SVGMeasure;
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -71038,6 +76650,7 @@ else
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 var isArray = __webpack_require__(0).isArray;
@@ -71189,6 +76802,159 @@ module.exports = {
 	drawBackground: drawBackground,
 	drawDecorations: drawDecorations
 };
+=======
+
+
+var isArray = __webpack_require__(0).isArray;
+
+function groupDecorations(line) {
+	var groups = [], currentGroup = null;
+	for (var i = 0, l = line.inlines.length; i < l; i++) {
+		var inline = line.inlines[i];
+		var decoration = inline.decoration;
+		if (!decoration) {
+			currentGroup = null;
+			continue;
+		}
+		if (!isArray(decoration)) {
+			decoration = [decoration];
+		}
+		var color = inline.decorationColor || inline.color || 'black';
+		var style = inline.decorationStyle || 'solid';
+		for (var ii = 0, ll = decoration.length; ii < ll; ii++) {
+			var decorationItem = decoration[ii];
+			if (!currentGroup || decorationItem !== currentGroup.decoration ||
+				style !== currentGroup.decorationStyle || color !== currentGroup.decorationColor) {
+
+				currentGroup = {
+					line: line,
+					decoration: decorationItem,
+					decorationColor: color,
+					decorationStyle: style,
+					inlines: [inline]
+				};
+				groups.push(currentGroup);
+			} else {
+				currentGroup.inlines.push(inline);
+			}
+		}
+	}
+
+	return groups;
+}
+
+function drawDecoration(group, x, y, pdfKitDoc) {
+	function maxInline() {
+		var max = 0;
+		for (var i = 0, l = group.inlines.length; i < l; i++) {
+			var inline = group.inlines[i];
+			max = inline.fontSize > max ? i : max;
+		}
+		return group.inlines[max];
+	}
+	function width() {
+		var sum = 0;
+		for (var i = 0, l = group.inlines.length; i < l; i++) {
+			var justifyShift = (group.inlines[i].justifyShift || 0);
+			sum += group.inlines[i].width + justifyShift;
+		}
+		return sum;
+	}
+	var firstInline = group.inlines[0],
+		biggerInline = maxInline(),
+		totalWidth = width(),
+		lineAscent = group.line.getAscenderHeight(),
+		ascent = biggerInline.font.ascender / 1000 * biggerInline.fontSize,
+		height = biggerInline.height,
+		descent = height - ascent;
+
+	var lw = 0.5 + Math.floor(Math.max(biggerInline.fontSize - 8, 0) / 2) * 0.12;
+
+	switch (group.decoration) {
+		case 'underline':
+			y += lineAscent + descent * 0.45;
+			break;
+		case 'overline':
+			y += lineAscent - (ascent * 0.85);
+			break;
+		case 'lineThrough':
+			y += lineAscent - (ascent * 0.25);
+			break;
+		default:
+			throw 'Unkown decoration : ' + group.decoration;
+	}
+	pdfKitDoc.save();
+
+	if (group.decorationStyle === 'double') {
+		var gap = Math.max(0.5, lw * 2);
+		pdfKitDoc.fillColor(group.decorationColor)
+			.rect(x + firstInline.x, y - lw / 2, totalWidth, lw / 2).fill()
+			.rect(x + firstInline.x, y + gap - lw / 2, totalWidth, lw / 2).fill();
+	} else if (group.decorationStyle === 'dashed') {
+		var nbDashes = Math.ceil(totalWidth / (3.96 + 2.84));
+		var rdx = x + firstInline.x;
+		pdfKitDoc.rect(rdx, y, totalWidth, lw).clip();
+		pdfKitDoc.fillColor(group.decorationColor);
+		for (var i = 0; i < nbDashes; i++) {
+			pdfKitDoc.rect(rdx, y - lw / 2, 3.96, lw).fill();
+			rdx += 3.96 + 2.84;
+		}
+	} else if (group.decorationStyle === 'dotted') {
+		var nbDots = Math.ceil(totalWidth / (lw * 3));
+		var rx = x + firstInline.x;
+		pdfKitDoc.rect(rx, y, totalWidth, lw).clip();
+		pdfKitDoc.fillColor(group.decorationColor);
+		for (var ii = 0; ii < nbDots; ii++) {
+			pdfKitDoc.rect(rx, y - lw / 2, lw, lw).fill();
+			rx += (lw * 3);
+		}
+	} else if (group.decorationStyle === 'wavy') {
+		var sh = 0.7, sv = 1;
+		var nbWaves = Math.ceil(totalWidth / (sh * 2)) + 1;
+		var rwx = x + firstInline.x - 1;
+		pdfKitDoc.rect(x + firstInline.x, y - sv, totalWidth, y + sv).clip();
+		pdfKitDoc.lineWidth(0.24);
+		pdfKitDoc.moveTo(rwx, y);
+		for (var iii = 0; iii < nbWaves; iii++) {
+			pdfKitDoc.bezierCurveTo(rwx + sh, y - sv, rwx + sh * 2, y - sv, rwx + sh * 3, y)
+				.bezierCurveTo(rwx + sh * 4, y + sv, rwx + sh * 5, y + sv, rwx + sh * 6, y);
+			rwx += sh * 6;
+		}
+		pdfKitDoc.stroke(group.decorationColor);
+	} else {
+		pdfKitDoc.fillColor(group.decorationColor)
+			.rect(x + firstInline.x, y - lw / 2, totalWidth, lw)
+			.fill();
+	}
+	pdfKitDoc.restore();
+}
+
+function drawDecorations(line, x, y, pdfKitDoc) {
+	var groups = groupDecorations(line);
+	for (var i = 0, l = groups.length; i < l; i++) {
+		drawDecoration(groups[i], x, y, pdfKitDoc);
+	}
+}
+
+function drawBackground(line, x, y, pdfKitDoc) {
+	var height = line.getHeight();
+	for (var i = 0, l = line.inlines.length; i < l; i++) {
+		var inline = line.inlines[i];
+		if (!inline.background) {
+			continue;
+		}
+		var justifyShift = (inline.justifyShift || 0);
+		pdfKitDoc.fillColor(inline.background)
+			.rect(x + inline.x - justifyShift, y, inline.width + justifyShift, height)
+			.fill();
+	}
+}
+
+module.exports = {
+	drawBackground: drawBackground,
+	drawDecorations: drawDecorations
+};
+>>>>>>> ams-final
 
 
 /***/ }),
@@ -75572,6 +81338,7 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 
 
 // Internet Explorer polyfills
@@ -75660,6 +81427,96 @@ URLBrowserResolver.prototype.resolved = function () {
 }
 
 module.exports = URLBrowserResolver;
+=======
+
+
+// Internet Explorer polyfills
+if (typeof window !== 'undefined' && !window.Promise) {
+	__webpack_require__(557);
+}
+__webpack_require__(568);
+
+var fetchUrl = function (url) {
+	return new Promise(function (resolve, reject) {
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', url, true);
+		xhr.responseType = 'arraybuffer';
+
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState !== 4) {
+				return;
+			}
+
+			var ok = xhr.status >= 200 && xhr.status < 300;
+			if (!ok) {
+				setTimeout(function () {
+					reject(new TypeError('Failed to fetch (url: "' + url + '")'));
+				}, 0);
+			}
+		};
+
+		xhr.onload = function () {
+			var ok = xhr.status >= 200 && xhr.status < 300;
+			if (ok) {
+				resolve(xhr.response);
+			}
+		};
+
+		xhr.onerror = function () {
+			setTimeout(function () {
+				reject(new TypeError('Network request failed (url: "' + url + '")'));
+			}, 0);
+		};
+
+		xhr.ontimeout = function () {
+			setTimeout(function () {
+				reject(new TypeError('Network request failed (url: "' + url + '")'));
+			}, 0);
+		};
+
+		xhr.send();
+	});
+};
+
+function URLBrowserResolver(fs) {
+	this.fs = fs;
+	this.resolving = {};
+}
+
+URLBrowserResolver.prototype.resolve = function (url) {
+	if (!this.resolving[url]) {
+		var _this = this;
+		this.resolving[url] = new Promise(function (resolve, reject) {
+			if (url.toLowerCase().indexOf('https://') === 0 || url.toLowerCase().indexOf('http://') === 0) {
+				fetchUrl(url).then(function (buffer) {
+					_this.fs.writeFileSync(url, buffer);
+					resolve();
+				}, function (result) {
+					reject(result);
+				});
+			} else {
+				// cannot be resolved
+				resolve();
+			}
+		});
+	}
+
+	return this.resolving[url];
+}
+
+URLBrowserResolver.prototype.resolved = function () {
+	var _this = this;
+	return new Promise(function (resolve, reject) {
+		Promise.all(Object.values(_this.resolving)).then(function () {
+			resolve();
+		}, function (result) {
+			reject(result);
+		});
+	});
+}
+
+module.exports = URLBrowserResolver;
+>>>>>>> ams-final
 
 
 /***/ }),

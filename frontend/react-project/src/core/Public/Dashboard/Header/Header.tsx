@@ -1,5 +1,5 @@
 import { ADToBS } from "components/React/Datepicker/Datepickerutils";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getNumberByLanguage, i18nLanguages } from "../../../../i18n/i18n";
 import { switchI18nLanguage } from "../../../../store/modules/i18n/i18n";
@@ -8,6 +8,8 @@ import NEP from "assets/images/USAFLAG.png";
 import ENG from "assets/images/NPFLAG.png";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from "reactstrap";
 import useAuthentication from "services/authentication/AuthenticationService";
+import { getWaterSchemeDetailsAction } from "store/modules/waterScheme/waterSchemeDetails";
+import { Link } from "react-router-dom";
 
 interface Props {
   sidebarToggle: boolean;
@@ -21,6 +23,14 @@ const Header = (props: Props) => {
   const languageFormat = useSelector(
     (state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.system_date_format
   );
+  const help = useSelector(
+    (state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.help_url
+  );
+
+  // const web_dashboard = useSelector(
+  //   (state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.web_dashboard_link
+  //   );
+
   const dispatch = useDispatch();
 
   const userDetails = useSelector((state: RootState) => state.userDetails);
@@ -30,17 +40,51 @@ const Header = (props: Props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
+  const [isDashboard, setIsDashboard] = useState<any>();
+
   const togglesidebar = () => setsidebarToggle(!sidebarToggle);
 
   console.log(languageFormat, "languageFormat");
+
+  React.useEffect(() => {
+    if (userDetails?.slug) {
+      dispatch(getWaterSchemeDetailsAction(userDetails?.slug));
+    }
+  }, [userDetails]);
+
+  const web_dashboard = useSelector(
+    (state: RootState) => state.waterSchemeData.waterSchemeDetailsData.data?.web_dashboard_link
+  );
+
+  const dashboard_link = () => {
+    var path = window.location.href;
+    const arr = path.split('/')
+
+    for (let i = 0; i <= arr.length; i++) {
+      const element = arr[i];
+      if (element === 'auth') {
+        
+        var ele = (<a href={web_dashboard} >Web Dashboard</a>)
+        return ele
+      }
+    }
+  }
+
   return (
     <header className="header">
       <div className="d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center">
           <a className="ic-menu text-white toggler" onClick={togglesidebar}></a>
         </div>
-
         <div className="list list__inline list-separator">
+          <div className="list-help_info">
+            <a href={help} target="_blank" >Help ?</a>
+          </div>
+          <div className="list-dashboard_info">
+            {/* <a href={web_dashboard} >Web Dashboard</a> */}
+            {dashboard_link()}
+          </div>
+
           <div className="d-flex align-items-center">
             <i className="ic-calendar  mr-1"> </i>
 
@@ -59,7 +103,7 @@ const Header = (props: Props) => {
                 <i className="ic-dropdown"></i>
               </DropdownToggle>
               <DropdownMenu right>
-                 
+
                 <DropdownItem onClick={initLogout} className="dropdown-item text-danger">
                   <i className="ic-logout"> </i>
                   Logout

@@ -14,21 +14,38 @@ const ManageComponentLists = (props: Props) => {
   const [editData, setEditData] = React.useState<any>();
   const [open, setOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("1");
+<<<<<<< HEAD
+=======
+  const [logType, setLogType] = React.useState(true);
+
+>>>>>>> ams-final
 
   const toggle = () => setOpen(!open);
 
   const toggleTab = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
+<<<<<<< HEAD
+=======
+
+>>>>>>> ams-final
 
   return (
     <div>
       <GeneralModal
+<<<<<<< HEAD
         title={t("home:addEdit") + " " + t("maintainance:componentLogs")}
         open={open}
         toggle={toggle}
       >
         <Form editData={editData} setEditData={setEditData} toggle={toggle} />
+=======
+        title={logType ? t("maintainance:addcomponentIssueLogs") : t("maintainance:addcomponentMaintLogs")}
+        open={open}
+        toggle={toggle}
+      >
+        <Form editData={editData} setEditData={setEditData} toggle={toggle} logType={logType}/>
+>>>>>>> ams-final
       </GeneralModal>
 
       <div className="cash-content">
@@ -64,6 +81,7 @@ const ManageComponentLists = (props: Props) => {
                 <div className="text-right">
                   <Button
                     className="btn custom-btn mt-2"
+<<<<<<< HEAD
                     text={t("home:add") + " " + t("maintainance:componentLogs")}
                     type="submit"
                     onClick={toggle}
@@ -71,6 +89,19 @@ const ManageComponentLists = (props: Props) => {
                 </div>
 
                 <List setEditData={setEditData} toggle={toggle} issueType={true} />
+=======
+                    text={ t("maintainance:componentIssueLogs")}
+                    type="submit"
+                    onClick={() => {
+                      toggle();
+                      setLogType(true)
+                      setEditData('')
+                    }} 
+                  />
+                </div>
+
+                <List editData={editData} setEditData={setEditData} toggle={toggle} setLogType={setLogType} issueType={true} />
+>>>>>>> ams-final
               </Col>
             </Row>
           </TabPane>
@@ -80,6 +111,7 @@ const ManageComponentLists = (props: Props) => {
                 <div className="text-right">
                   <Button
                     className="btn custom-btn mt-2"
+<<<<<<< HEAD
                     text={t("home:add") + " " + t("maintainance:componentLogs")}
                     type="submit"
                     onClick={toggle}
@@ -87,6 +119,20 @@ const ManageComponentLists = (props: Props) => {
                 </div>
 
                 <List setEditData={setEditData} toggle={toggle} />
+=======
+                    text={t("maintainance:componentMaintLogs")}
+                    type="submit"
+                    onClick={()=> {
+                      toggle();
+                      setLogType(false)
+                      setEditData('')
+                    }}
+
+                  />
+                </div>
+
+                <List editData={editData} setEditData={setEditData} toggle={toggle} setLogType={setLogType}/>
+>>>>>>> ams-final
               </Col>
             </Row>
           </TabPane>

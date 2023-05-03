@@ -28,6 +28,7 @@ const validationSchema = Yup.object({
 
 interface Props extends PropsFromRedux {
   editData: any;
+  setEditData: any;
 }
 
 const OtherExpenseForm = (props: Props) => {
@@ -38,7 +39,7 @@ const OtherExpenseForm = (props: Props) => {
     title: "",
     yearly_expense: "",
     apply_for_specific_date: true,
-    one_time_cost: true,
+    one_time_cost: false,
   });
 
   const {
@@ -47,9 +48,9 @@ const OtherExpenseForm = (props: Props) => {
     touched,
     handleChange,
     handleBlur,
+    handleReset,
     handleSubmit,
     setFieldValue,
-    setFieldTouched,
   } = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
@@ -77,9 +78,15 @@ const OtherExpenseForm = (props: Props) => {
             apply_for_specific_date: true,
             one_time_cost: true,
           });
+          props.setEditData(null)
           props.getOtherExpensesAction(props.language);
           toast.success(t("home:updateSuccess"));
         }
+      }
+      if (response.status === 400){
+        const errors = Object.values(response.data)?.map((item: any) => {
+          toast.error(item[0]);
+        });
       }
     },
   });
@@ -92,19 +99,32 @@ const OtherExpenseForm = (props: Props) => {
     }
   }, [props.editData]);
 
+  // const handleReset = () => {
+  //   // var enDatePicker = document.getElementById("enDate") as HTMLInputElement | null;
+
+  //   if(values.apply_date != ""){
+  //     setInitialData()
+  //   }
+  // }
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
         handleSubmit(e);
       }}
+      id="otherexpenses"
     >
       <div className="row rate_form align-items-center">
         <div className="col-md-3">
           <div className="form-group ">
             <label htmlFor="" className="mr-1">
               {t("finance:applyDate")}{" "}
+<<<<<<< HEAD
               <TooltipLabel id={"apd"} text={`The date from which this record  should be applied to the system.`} />:
+=======
+              <TooltipLabel id={"apd"} text={t("home:appdate")} />:
+>>>>>>> ams-final
             </label>
 
             {props.scheme?.system_date_format === "nep" ? (
@@ -112,6 +132,7 @@ const OtherExpenseForm = (props: Props) => {
                 <NepaliDatePicker
                   value={values.apply_date}
                   name="apply_date"
+                  id="neDate"
                   onChange={(e) => {
                     setFieldValue("apply_date", e);
                   }}
@@ -122,6 +143,7 @@ const OtherExpenseForm = (props: Props) => {
                 <EnglishDatePicker
                   name="apply_date"
                   value={values.apply_date}
+                  id= "enDate"
                   handleChange={(e) => {
                     setFieldValue("apply_date", formatDate(e));
                   }}
@@ -150,7 +172,7 @@ const OtherExpenseForm = (props: Props) => {
         <div className="col-md-3">
           <div className="form-group">
             <label htmlFor="" className="mr-1">
-              {t("finance:yearlyExpnd")} :
+              {t("finance:yearlyExpnd")} ({props.currency}):
             </label>
 
             <input
@@ -196,7 +218,11 @@ const OtherExpenseForm = (props: Props) => {
                   value={1}
                   checked={values.apply_for_specific_date === true}
                   onChange={(e) => setFieldValue("apply_for_specific_date", true)}
+<<<<<<< HEAD
                   tooltipData = "If yes, the transaction will not be distributed for months"
+=======
+                  tooltipData={t("home:ifyes")}
+>>>>>>> ams-final
                 />
               </div>
               <div className="ml-2">
@@ -207,7 +233,11 @@ const OtherExpenseForm = (props: Props) => {
                   value={2}
                   checked={values.apply_for_specific_date === false}
                   onChange={(e) => setFieldValue("apply_for_specific_date", false)}
+<<<<<<< HEAD
                   tooltipData= "If no, the transaction will be distributed every months"
+=======
+                  tooltipData={t("home:ifno")}
+>>>>>>> ams-final
                 />
               </div>
             </div>
@@ -225,22 +255,21 @@ const OtherExpenseForm = (props: Props) => {
               <div className="mr-2">
                 <CustomRadio
                   label={"Yes"}
-                  id="yesOTC"
-                  name="one_time_cost"
-                  value={1}
-                  checked={values.one_time_cost === true}
-                  onChange={(e) => setFieldValue("one_time_cost", true)}
-                />
-              </div>
-              <div className="ml-2">
-                <CustomRadio
-                  label={"No"}
                   id="noOTC"
                   name="one_time_cost"
                   value={2}
                   checked={values.one_time_cost === false}
                   onChange={(e) => setFieldValue("one_time_cost", false)}
                 />
+              </div>
+              <div className="ml-2">
+                <CustomRadio
+                  label={"No (One Time)"}
+                  id="yesOTC"
+                  name="one_time_cost"
+                  value={1}
+                  checked={values.one_time_cost === true}
+                  onChange={(e) => setFieldValue("one_time_cost", true)} />
               </div>
             </div>
 
@@ -249,11 +278,27 @@ const OtherExpenseForm = (props: Props) => {
         </div>
         <div className="col-md-12 mt-2 text-right">
           <Button
-            className="btn custom-btn"
+            className="btn custom-btn mr-2"
             text={t("home:save")}
             type="submit"
             disabled={props.postLoading || props.updateLoading}
             loading={props.postLoading || props.updateLoading}
+          />
+          <Button
+            className="btn custom-btn-outlined mr-3"
+            text={t("home:cancel")}
+            type='reset'
+            onClick={() => {
+              const resetKeys: any = Object.keys(initialData).reduce((acc, curr) => {
+                acc[curr] = '';
+                return acc;
+              }, {});
+              setInitialData(resetKeys)
+              props.setEditData(null);
+              handleReset({
+                initialData
+              })
+            }}
           />
         </div>
       </div>
@@ -266,6 +311,7 @@ const mapStateToProps = (state: RootState) => ({
   scheme: state.waterSchemeData.waterSchemeDetailsData.data,
   postLoading: state.otherExpensesData.postTestParameters.isFetching,
   updateLoading: state.otherExpensesData.updateTestParameters.isFetching,
+  currency: state.waterSchemeData.waterSchemeDetailsData.data?.currency
 });
 
 const mapDispatchToProps = {

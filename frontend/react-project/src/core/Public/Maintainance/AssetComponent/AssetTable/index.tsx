@@ -76,7 +76,11 @@ const AssetTable = (props: IProps) => {
               {t("maintainance:dopf")}
             </th>
             <th scope="col" className="bg-header">
+<<<<<<< HEAD
               {t("maintainance:lifespan")}
+=======
+              {t("maintainance:interval")}
+>>>>>>> ams-final
             </th>
             <th scope="col" className="bg-header">
               {t("maintainance:responsible")}

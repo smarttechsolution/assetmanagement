@@ -20,6 +20,7 @@ urlpatterns = [
 
     path('water-tariff/list/<str:lang>/<str:water_scheme_slug>/', WaterTariffListView.as_view()),
     path('water-tariff/<str:lang>/create/', WaterTariffCreateView.as_view()),
+    path('water-tariff/<str:lang>/update/<int:id>/', WaterTariffUpdateView.as_view()),
     path('water-tariff/use-based-data/create/<str:lang>/',UseBasedUnitRangeView.as_view()),
     path('water-tariff/use-based-data/<int:pk>/<str:lang>/',UseBasedUnitRangeUpdateView.as_view()),
     path('water-tariff/use-based-data/delete/<int:pk>/', WaterTariffUseBasedDeleteView.as_view()),
@@ -71,6 +72,10 @@ urlpatterns = [
     path('config/water-test-results/<str:lang>/create/', ConfigGetWaterResultsCreate.as_view()),
     path('config/water-test-results/<str:lang>/<int:pk>/', ConfigGetWaterResultsUpdate.as_view()),
     path('config/water-test-results/<int:pk>/delete/', ConfigGetWaterResultsDelete.as_view()),
+<<<<<<< HEAD
+=======
+    path('test-parameter/bulk-delete/', BulkDeleteQualityTestParameter.as_view())
+>>>>>>> ams-final
 
 ]
 urlpatterns += router.urls

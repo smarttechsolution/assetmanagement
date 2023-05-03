@@ -26,7 +26,6 @@ urlpatterns = [
 
     path('report/maintenance-cost/<str:water_scheme_slug>/',MaintenanceCostReport.as_view()),
     path('report/maintenance-cost-by-cost/<str:water_scheme_slug>/',MaintenanceCostReportByCost.as_view()),
-
     path('config-component-log/list/<str:lang>/', ConfigComponentLogList.as_view()),
     path('config-component-log/create/<str:lang>/', ConfigComponentLogCreate.as_view()),
     path('config-component-log/update/<int:pk>/<str:lang>/', ConfigComponentLogUpdate.as_view()),

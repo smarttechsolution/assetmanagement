@@ -49,7 +49,10 @@ class IncomeCategorySerializer(serializers.ModelSerializer):
 			data['e_name'] = data['name']
 			data['name'] = category
 		else:
+<<<<<<< HEAD
 			print('fdasfaf')
+=======
+>>>>>>> ams-final
 			data['e_name']=data['name']
 		return data
 
@@ -126,6 +129,17 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError('Language should be either en or nep')
 		
 		self.user = get_object_or_404(Users, id=self.context['request'].user.id)
+
+		income_amount = str(attrs['income_amount'])
+		try:
+			water_supplied = str(attrs['water_supplied'])
+		except:
+			water_supplied = 0.0
+		if len(income_amount.split('.')[-1])>2 or len(str(water_supplied).split('.')[-1])>2:
+			raise serializers.ValidationError("Only Accept 2 digits after decimal point")
+
+		if attrs['income_amount']<0 or float(water_supplied)<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
 
 		if self.user.water_scheme.system_date_format == 'nep':
 			date_en = convert_nep_date_to_english(str(attrs.get('date')))
@@ -207,7 +221,6 @@ class ExpenseCreateSerializer(serializers.ModelSerializer):
 	date_np = serializers.ReadOnlyField()
 	date = serializers.CharField()
 	user=None
-
 	class Meta:
 		model = Expenditure
 		fields = ['id','category','date','title','income_amount','labour_cost','consumables_cost','replacement_cost','remarks','date_np']
@@ -216,6 +229,21 @@ class ExpenseCreateSerializer(serializers.ModelSerializer):
 		lang = self.context.get('request').parser_context.get('kwargs').get('lang')
 		if not lang in ('en', 'nep'):
 			raise serializers.ValidationError('Language suhould be either en or nep')
+		try:
+			income_amount = attrs['income_amount']
+			labour_cost = attrs['labour_cost']
+			consumables_cost = attrs['consumables_cost']
+			replacement_cost = attrs['replacement_cost']
+		except:
+			income_amount = attrs['income_amount']
+			labour_cost = 0
+			consumables_cost = 0
+			replacement_cost = 0
+		if len(str(income_amount).split('.')[-1])>2 or len(str(labour_cost).split('.')[-1])>2 or len(str(consumables_cost).split('.')[-1])>2 or len(str(replacement_cost).split('.')[-1])>2:
+			raise serializers.ValidationError("Only Accept 2 digits after decimal point")
+
+		if income_amount<0 or labour_cost<0 or consumables_cost<0 or replacement_cost<0:
+			raise serializers.ValidationError("Negative value can't be entered.")
 
 		self.user= get_object_or_404(Users, id= self.context['request'].user.id)
 		if self.user.water_scheme.system_date_format == 'nep':
@@ -276,13 +304,15 @@ class ExpenseCreateSerializer(serializers.ModelSerializer):
 			data['labour_cost'] = english_to_nepali_converter(str(data.get('labour_cost')))
 			data['consumables_cost'] = english_to_nepali_converter(str(data.get('consumables_cost')))
 			data['material_cost'] = english_to_nepali_converter(str(data.get('material_cost')))
+<<<<<<< HEAD
 			
+=======
+>>>>>>> ams-final
 		return data
 
 class CloseIncomeExpenseSerializer(serializers.ModelSerializer):
 	image = serializers.ImageField(required=False)
 	date = serializers.CharField()
-
 	class Meta:
 		model = CashBookClosingMonth
 		fields = ['date','image']

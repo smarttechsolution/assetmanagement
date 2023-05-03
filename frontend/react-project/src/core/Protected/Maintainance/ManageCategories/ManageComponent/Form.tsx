@@ -20,7 +20,7 @@ const validationSchema = Yup.object({
 
 interface Props extends PropsFromRedux {
   editData: any;
-  setEditData: any
+  setEditData: any;
 }
 
 const ComponentForm = (props: Props) => {
@@ -78,9 +78,13 @@ const ComponentForm = (props: Props) => {
             category: null,
           });
           props.getComponentAction();
-           toast.success(t("home:updateSuccess"));
+          toast.success(t("home:updateSuccess"));
         }
-        props.setEditData(null)
+        props.setEditData(null);
+      } else {
+        Object.values(response.data)?.map((item: any) => {
+          toast.error(item[0]);
+        });
       }
     },
   });
@@ -89,12 +93,12 @@ const ComponentForm = (props: Props) => {
     if (props.editData) {
       setInitialData({
         ...props.editData,
-        category: {label: props.editData?.category?.name, value: props.editData?.category?.id }
+        category: { label: props.editData?.category?.name, value: props.editData?.category?.id },
       });
     }
   }, [props.editData]);
 
-  console.log(props.editData, "props.editData")
+  console.log(props.editData, "props.editData");
 
   return (
     <form
@@ -106,52 +110,61 @@ const ComponentForm = (props: Props) => {
       <div className="row rate_form align-items-center">
         <div className="col-md-12">
           <div className="form-group">
-           
-                <label htmlFor="" className="mr-1">
-                  {t("maintainance:category")}:
-                </label>
-             
-                <StyledSelect
-                  name="category"
-                  options={options}
-                  value={values.category}
-                  onChange={({ name, value }) => {
-                    setFieldValue(name, value);
-                  }}
-                  onBlur={() => {
-                    setFieldTouched("category", true);
-                  }}
-                />
-                <FormikValidationError name="category" errors={errors} touched={touched} />
-              
+            <label htmlFor="" className="mr-1">
+              {t("maintainance:category")}:
+            </label>
+
+            <StyledSelect
+              name="category"
+              options={options}
+              value={values.category}
+              onChange={({ name, value }) => {
+                setFieldValue(name, value);
+              }}
+              onBlur={() => {
+                setFieldTouched("category", true);
+              }}
+            />
+            <FormikValidationError name="category" errors={errors} touched={touched} />
           </div>
         </div>
         <div className="col-md-12">
           <div className="form-group ">
-           
-                <label htmlFor="" className="mr-1">
-                  {t("home:name")} :
-                </label>
-             
-                <textarea
-                  className="form-control"
-                  name="name"
-                  value={values.name}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                <FormikValidationError name="name" errors={errors} touched={touched} />
-              
+            <label htmlFor="" className="mr-1">
+              {t("home:name")} :
+            </label>
+
+            <textarea
+              className="form-control"
+              name="name"
+              value={values.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <FormikValidationError name="name" errors={errors} touched={touched} />
           </div>
         </div>
 
         <div className="col-md-12 mt-2 text-right">
           <Button
-            className="btn custom-btn"
+            className="btn custom-btn mr-3"
             text={t("home:save")}
             type="submit"
             disabled={props.postLoading || props.updateLoading}
             loading={props.postLoading || props.updateLoading}
+          />
+          <Button 
+            className="btn custom-btn-outlined mr-2"
+            text={t("home:cancel")}
+            type="reset"
+            onClick={() => {
+              const resetKeys: any = Object.keys(initialData).reduce((acc, curr) => {
+                acc[curr] = '';
+                return acc;
+              }, {});
+              setInitialData(resetKeys)
+              props.setEditData(null)
+            }}
           />
         </div>
       </div>

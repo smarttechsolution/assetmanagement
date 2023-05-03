@@ -47,10 +47,17 @@ const List = (props: Props) => {
             <tr>
               <th>{t("home:sn")}</th>
               <th> {t("home:applyDate")}</th>
+<<<<<<< HEAD
               <th>{t("home:instConn")}</th>
               <th>{t("home:commercialConn")}</th>
               <th>{t("home:houseConn")}</th>
               <th>{t("home:publicConn")}</th>
+=======
+              <th>{t("home:houseConn")}</th>
+              <th>{t("home:instConn")}</th>
+              <th>{t("home:publicConn")}</th>
+              <th>{t("home:commercialConn")}</th>
+>>>>>>> ams-final
               <th>{t("home:action")}</th>
             </tr>
           </thead>
@@ -59,10 +66,17 @@ const List = (props: Props) => {
               <tr key={item.id}>
                 <td>{getNumberByLanguage(index + 1)}</td>
                 <td> {getNumberByLanguage(item.apply_date)}</td>
+<<<<<<< HEAD
                 <td> {getNumberByLanguage(item.institutional_connection) || "-"}</td>
                 <td> {getNumberByLanguage(item.commercial_connection) || "-"}</td>
                 <td> {getNumberByLanguage(item.household_connection) || "-"}</td>
                 <td> {getNumberByLanguage(item.public_connection) || "-"}</td>
+=======
+                <td> {getNumberByLanguage(item.household_connection) || "-"}</td>
+                <td> {getNumberByLanguage(item.institutional_connection) || "-"}</td>
+                <td> {getNumberByLanguage(item.public_connection) || "-"}</td>
+                <td> {getNumberByLanguage(item.commercial_connection) || "-"}</td>
+>>>>>>> ams-final
 
                 <td className="action">
                   <div role="button" onClick={() => props.setEditData(item)}>

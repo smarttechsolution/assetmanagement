@@ -127,7 +127,12 @@ const ManageOtherParamaters = (props: Props) => {
         <div className="col-md-12">
           <div className="form-group">
             <label htmlFor="" className="mr-1">
+<<<<<<< HEAD
               {t("finance:daeams")} <TooltipLabel id={"twatm1"} text={`This will affect  the Mobile App's Cashbook month Closing`} />:
+=======
+              {t("finance:daeams")} 
+              <TooltipLabel id={"twatm1"} text={t("home:allowCheckbook")} />:
+>>>>>>> ams-final
             </label>
 
             <StyledSelect

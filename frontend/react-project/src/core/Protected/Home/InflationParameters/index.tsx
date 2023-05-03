@@ -114,7 +114,11 @@ const InflationParameters = (props: Props) => {
               {t("finance:daeams")}{" "}
               <TooltipLabel
                 id={"twatm"}
+<<<<<<< HEAD
                 text={`This will affect  the Mobile App's Cashbook month Closing`}
+=======
+                text={t("home:allowCheckbook")}
+>>>>>>> ams-final
               />
               :
             </label>

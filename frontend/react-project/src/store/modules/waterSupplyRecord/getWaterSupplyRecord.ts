@@ -10,6 +10,10 @@ import initialState from "../../helper/default-state";
 export type WaterSupplyRecordType = {
     id: number;
     supply_date: string;
+<<<<<<< HEAD
+=======
+    supply_end_date: string;
+>>>>>>> ams-final
     total_supply: number;
 
 }[]
@@ -23,6 +27,13 @@ export default function getWaterSupplyRecordReducer(state = initialState, action
     return initDefaultReducer(actionName, action, stateCopy);
 }
 
+<<<<<<< HEAD
 export const getWaterSupplyRecordAction = (lang): AppThunk<APIResponseDetail<WaterSupplyRecordType>> => async (dispatch: Dispatch) => {
     return await initDefaultAction(apiDetails, dispatch, { disableSuccessToast: true, pathVariables: { lang } });
 };
+=======
+export const getWaterSupplyRecordAction = (lang, date_from?: any, date_to?: any): AppThunk<APIResponseDetail<WaterSupplyRecordType>> => async (dispatch: Dispatch) => {
+    return await initDefaultAction(apiDetails, dispatch, { disableSuccessToast: true, pathVariables: { lang }, params: { date_from, date_to } });
+};
+// ?date_from=2022-03-27&date_to=2022-04-12
+>>>>>>> ams-final

@@ -11,7 +11,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Link, NavLink, useHistory } from "react-router-dom";
-import { UncontrolledCollapse } from "reactstrap";
+import { NavItem, UncontrolledCollapse } from "reactstrap";
 import useAuthentication from "services/authentication/AuthenticationService";
 import { RootState } from "store/root-reducer";
 
@@ -292,9 +292,8 @@ const Sidebar = (props: Props) => {
                     {item.children.map((subitem) => (
                       <Link
                         to={subitem.link}
-                        className={`${
-                          window.location.href?.includes(subitem.link) ? "active" : ""
-                        }`}
+                        className={`${window.location.href?.includes(subitem.link) ? "active" : ""
+                          }`}
                       >
                         <img src={subitem.icon} alt="" className="menu_icon" /> {subitem.title}
                       </Link>
@@ -317,6 +316,19 @@ const Sidebar = (props: Props) => {
           }
         })}
       </ul>
+      <div className="side-footer">
+        {/* <p> Design & Develop by smarttech </p> */}
+        <div className="footer-link">
+          <NavItem>
+            <div>
+              Developed by :<a href="http://smarttech.com.np/" target="_blank" style={{fontSize:"0.77rem"}}> Smart Tech</a>
+            </div>
+            <div>
+              Contact: <a href="mailto:info@smarttech.com.np" style={{fontSize: "0.77rem"}}>info@smarttech.com.np</a>
+            </div>
+          </NavItem>
+        </div>
+      </div>
     </aside>
   );
 };

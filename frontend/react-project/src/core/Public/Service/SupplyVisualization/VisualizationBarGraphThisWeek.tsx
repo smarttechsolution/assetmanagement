@@ -3,12 +3,13 @@ import CustomCheckBox from "components/UI/CustomCheckbox";
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "store/root-reducer";
+import DataTable from "./DataTable";
 
 const config = {
   name: "",
-  type: "bar",
+  type: "line",
   smooth: true,
-  yAxisIndex: 0,
+  // yAxisIndex: 0,
   data: [],
 };
 
@@ -24,13 +25,15 @@ type ChartDataType = {
   total_supply_avg?: (string | number)[];
   total_supply?: (string | number)[];
   non_revenue_water?: (string | number)[];
+  revenue_water?: (string | number)[];
 };
 
 interface Props extends PropsFromRedux {
   type?: string;
-  options: any[]; 
+  options: any[];
   compareKey: string;
   defaultSelected: string[];
+  key: string;
 }
 
 const VisualizationBarGraph = (props: Props) => {
@@ -38,7 +41,7 @@ const VisualizationBarGraph = (props: Props) => {
 
   const [seriesData, setSeriesData] = useState<SeriesConfig[]>();
 
-  //   const [tableData, setTableData] = useState<any>();
+  const [tableData, setTableData] = useState<any>();
 
   const [selected, setSelected] = useState<string[]>(props.defaultSelected);
 
@@ -46,11 +49,22 @@ const VisualizationBarGraph = (props: Props) => {
     const newData: ChartDataType = {
       xAxis: props.waterSupplyData?.supply?.map((item) => `${item[props.compareKey]}`),
       total_supply: props.waterSupplyData?.supply?.map((item) => item.total_supply),
+<<<<<<< HEAD
       total_supply_avg: props.waterSupplyData?.supply?.map((item) => item.daily_avg),
       non_revenue_water: props.waterSupplyData?.supply?.map((item) => item.non_revenue_water),
     };
 
     console.log(props.waterSupplyData?.supply, "<<<<<<<<<<")
+=======
+      total_supply_avg: props.waterSupplyData?.supply?.map((item) => item.total_supply_average),
+      non_revenue_water: props.waterSupplyData?.supply?.map((item) =>
+        Number(item.non_revenue_water) || 0
+      ),
+      revenue_water: props.waterSupplyData?.supply?.map((item) => Number(item.revenue_water) || 0)
+    };    
+
+    // console.log(props.waterSupplyData?.supply, "<<<<<<<<<<")
+>>>>>>> ams-final
     setChartData(newData);
   }, [props.waterSupplyData]);
 
@@ -67,17 +81,27 @@ const VisualizationBarGraph = (props: Props) => {
     const selectedData = selected.map((item, index) => ({
       ...config,
       name: props.options.find((opt) => opt.id === item)?.name || "",
-      type: "bar",
+      // type: "line",
       data: chartData && chartData[item],
-      yAxisIndex: index,
+      // yAxisIndex: index,
       itemStyle: {
         color: props.options.find((opt) => opt.id === item)?.color || "",
       },
     }));
 
+<<<<<<< HEAD
     console.log(selectedData, "----------")
+=======
+    const tableData = selected?.map((item) => ({
+      name: props.options.find((opt) => opt.id === item)?.name || "",
+      color: props.options.find((opt) => opt.id === item)?.color || "",
+      data: chartData && chartData[item],
+    }));
+
+    console.log(tableData, "----------")
+>>>>>>> ams-final
     setSeriesData(selectedData);
-    // setTableData(tableData);
+    setTableData(tableData);
   }, [chartData, selected]);
 
   const optionData = {
@@ -86,6 +110,9 @@ const VisualizationBarGraph = (props: Props) => {
       axisPointer: {
         type: "shadow",
       },
+    },
+    legend: {
+      show: true,
     },
 
     xAxis: [
@@ -99,9 +126,9 @@ const VisualizationBarGraph = (props: Props) => {
       {
         type: "value",
         name: "",
-        // axisLabel: {
-        //   formatter: "{value} ml",
-        // },
+        axisLabel: {
+          formatter: "{value}",
+        },
       },
       {
         type: "value",
@@ -120,13 +147,9 @@ const VisualizationBarGraph = (props: Props) => {
     <div className="row">
       <div className="col-md-9">
         <GeneralChart minHeight={400} options={optionData} />
-        {/* {tableData?.length > 0 && props.type && (
-          <DataTable
-            years={chartData?.xAxis}
-            tableData={tableData}
-            type={props.type}
-          />
-        )} */}
+        {tableData?.length > 0 && props.compareKey && (
+          <DataTable years={chartData?.xAxis} tableData={tableData} key={props.key} type={props.compareKey} />
+        )}
       </div>
       <div className="col-md-3 chartOptions">
         <h6>Select</h6>

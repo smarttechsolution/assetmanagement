@@ -16,6 +16,9 @@ import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import formatDate, { getDefaultDate } from "utils/utilsFunction/date-converter";
 import { getPreviousIncomeTotalAction } from "store/modules/income/getPreviousIncomeTotal";
+import { geAllIncomeAction } from "store/modules/income/getAllIncome";
+import { getIncomeTotalAction } from "store/modules/income/getIncomeTotal";
+
 
 const validationScheme = Yup.object({
   category: Yup.mixed().required("This field is required"),
@@ -63,9 +66,15 @@ const IncomeForm = (props: Props) => {
 
   React.useEffect(() => {
     if (props.editData) {
+
+      console.log(props.editData, "editDataeditData")
       setInitialData({
         ...props.editData,
+<<<<<<< HEAD
         category: { label: props.editData?.category?.name, value: props.editData?.category?.id },
+=======
+        category: { label: props.editData?.category?.name, value: props.editData?.category?.id, e_name: props.editData?.category?.e_name },
+>>>>>>> ams-final
       });
     } else if (props.activeDate) {
       setInitialData({
@@ -118,7 +127,13 @@ const IncomeForm = (props: Props) => {
         }
         props.toggle(false);
         props.setEditData(null);
+<<<<<<< HEAD
         props.getIncomeAction(props.language, props.schemeSlug);
+=======
+        props.geAllIncomeAction(props.language, props.schemeSlug)
+        props.getIncomeAction(props.language, props.schemeSlug);
+        props.getIncomeTotalAction(props.language, props.schemeSlug)
+>>>>>>> ams-final
 
         props.getIncomeCategoryAction(props.schemeSlug);
         props.getPreviousIncomeTotalAction(
@@ -137,7 +152,11 @@ const IncomeForm = (props: Props) => {
     },
   });
 
+<<<<<<< HEAD
   console.log(errors, "errors")
+=======
+  console.log(values, "errors")
+>>>>>>> ams-final
 
   return (
     <form
@@ -215,23 +234,6 @@ const IncomeForm = (props: Props) => {
               <FormikValidationError name="title" errors={errors} touched={touched} />
             </div>
           </div>
-          <div className="form-group ">
-            <div className="form-group">
-              <label htmlFor="" className="mr-1">
-                {t("finance:amount")}:
-              </label>
-
-              <input
-                type="number"
-                className="form-control"
-                name="income_amount"
-                value={values.income_amount}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <FormikValidationError name="income_amount" errors={errors} touched={touched} />
-            </div>
-          </div>
           {values?.category?.e_name === "Water Sales" && (
             <div className="form-group ">
               <div className="form-group">
@@ -255,6 +257,46 @@ const IncomeForm = (props: Props) => {
           <div className="form-group ">
             <div className="form-group">
               <label htmlFor="" className="mr-1">
+                {t("finance:amount")} ({props.currency}):
+              </label>
+
+              <input
+                type="number"
+                className="form-control"
+                name="income_amount"
+                value={values.income_amount}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FormikValidationError name="income_amount" errors={errors} touched={touched} />
+            </div>
+          </div>
+<<<<<<< HEAD
+          {values?.category?.e_name === "Water Sales" && (
+            <div className="form-group ">
+              <div className="form-group">
+                <label htmlFor="" className="mr-1">
+                  {t("finance:waterSupplied")} :
+                </label>
+
+                <input
+                  type="number"
+                  className="form-control"
+                  name="water_supplied"
+                  value={values.water_supplied}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <FormikValidationError name="water_supplied" errors={errors} touched={touched} />
+              </div>
+            </div>
+          )}
+=======
+>>>>>>> ams-final
+
+          <div className="form-group ">
+            <div className="form-group">
+              <label htmlFor="" className="mr-1">
                 {t("home:remarks")}:
               </label>
 
@@ -272,8 +314,8 @@ const IncomeForm = (props: Props) => {
 
         <div className="col-md-12 text-right">
           <Button
-            className="btn custom-btn  mr-3"
-            text={"Save"}
+            className="btn custom-btn mt-2"
+            text={t("home:save")}
             type="submit"
             disabled={props.postLoading || props.updateLoading}
             loading={props.postLoading || props.updateLoading}
@@ -286,6 +328,7 @@ const IncomeForm = (props: Props) => {
 
 const mapStateToProps = (state: RootState) => ({
   language: state.i18nextData.languageType,
+  currency: state.waterSchemeData.waterSchemeDetailsData.data?.currency,
   schemeSlug: state.waterSchemeData.waterSchemeDetailsData.data?.slug,
   scheme: state.waterSchemeData.waterSchemeDetailsData.data,
   incomeCategories: state.incomeData.getIncomeCategory.data,
@@ -299,6 +342,9 @@ const mapDispatchToProps = {
   postIncomeAction,
   getIncomeCategoryAction,
   getPreviousIncomeTotalAction,
+  geAllIncomeAction,
+  getIncomeTotalAction,
+
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

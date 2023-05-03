@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 import { EditIcon, PrintIcon } from "assets/images/xd";
+=======
+>>>>>>> ams-final
 import React from "react";
 import "./GeneralCard.scss";
 import ReactToPrint from "react-to-print";
 import { UncontrolledTooltip } from "reactstrap";
+<<<<<<< HEAD
+=======
+import { EditIcon, PrintIcon } from "assets/images/xd";
+>>>>>>> ams-final
 
 interface Props {
   title: any;

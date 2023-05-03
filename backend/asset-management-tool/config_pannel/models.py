@@ -187,6 +187,10 @@ class WaterSupplySchedule(m.Model):
 	day = m.CharField(max_length=40)
 	time_from = m.TimeField()
 	time_to = m.TimeField()
+<<<<<<< HEAD
+=======
+	comment = m.CharField(max_length=300, null=True, blank=True)
+>>>>>>> ams-final
 	
 	def __str__(self):
 		return f"{str(self.day)}-{self.water_scheme.scheme_name}"
@@ -208,7 +212,10 @@ class WaterTeriff(m.Model):
 	estimated_paying_connection_institution = m.FloatField(null=True, blank=True)
 	estimated_paying_connection_public = m.FloatField(null=True, blank=True)
 	estimated_paying_connection_commercial = m.FloatField(null=True, blank=True)
+<<<<<<< HEAD
 
+=======
+>>>>>>> ams-final
 	is_active = m.BooleanField(default=False)
 
 	class Meta:
@@ -242,11 +249,12 @@ class WaterSupplyRecord(m.Model):
 class QualityTestParameter(m.Model):
 	class Types(m.TextChoices):
 		CHEMICAL = 'Chemical','CHEMICAL'
-		OTHER = 'Other','OTHER'
+		OTHER = 'Others','OTHERS'
+		PHYSICAL ='Physical', 'PHYSICAL'
 	water_scheme = m.ForeignKey(WaterScheme, on_delete = m.CASCADE, related_name='quality_test_parameter')
 	parameter_name = m.CharField(max_length=50)
 	unit = m.CharField(max_length=50)
-	types = m.CharField(max_length=50, choices=Types.choices, default='Other')
+	types = m.CharField(max_length=50, choices=Types.choices, default='Others')
 	NDWQS_standard = m.CharField(max_length=50, null=True, blank=True)
 
 	def __str__(self):
@@ -260,8 +268,8 @@ class WaterTestResults(m.Model):
 
 class WaterTestResultParamters(m.Model):
 	test_result = m .ForeignKey(WaterTestResults, on_delete = m.CASCADE, related_name='test_result_parameter')
-	parameter = m.ForeignKey(QualityTestParameter, on_delete = m.PROTECT, related_name='test_parameters')
-	value = m.FloatField()
+	parameter = m.ForeignKey(QualityTestParameter, on_delete = m.CASCADE, related_name='test_parameters')
+	value = m.FloatField(null=True, blank=True)
 
 
 class OtherExpense(m.Model):

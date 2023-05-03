@@ -58,7 +58,7 @@ class Expenditure(m.Model):
 
 @receiver(post_save, sender=ComponentInfoLog)
 def create_expense(sender, instance, **kwargs):
-    expense_cat = ExpenseCategory.objects.get_or_create(water_scheme = instance.component.component.category.water_scheme, name = 'Maintenance')
+    expense_cat = ExpenseCategory.objects.get_or_create(water_scheme = instance.component1.category.water_scheme, name = 'Maintenance')
     if Expenditure.objects.filter(maintenance_expense_id=instance.id).exists():
     	labour_cost = instance.labour_cost
     	if not labour_cost:

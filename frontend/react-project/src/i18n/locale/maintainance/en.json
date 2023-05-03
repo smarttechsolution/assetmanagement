@@ -39,10 +39,27 @@
     "categories": "Categories",
     "title": "Title",
     "category": "Category",
+<<<<<<< HEAD
     "aci": "Add Comoponent Information",
     "addEditaci": "Add/Edit Component Info",
     "componentLogs": "Component Logs",
     "logType": "Log Type",
     "lifespan": "Interval",
     "issueLog": "Issue Log"
+=======
+    "aci": "Add Component Information",
+    "addEditaci": "Add/Edit Component Info",
+    "componentLogs": "Component Logs",
+    "logType": "Log Type",
+    "lifespan": "Life Span",
+    "issueLog": "Issue Log",
+    "componentIssueLogs" : "Add Issue Log",
+    "componentMaintLogs": "Add Maintenance Log",
+    "addcomponentIssueLogs" : "Add / Edit Issue Log",
+    "addcomponentMaintLogs": "Add / Edit Maintenance Log",
+    "categoriof":"Category",
+    "compone": "Component",
+    "nofcomponents": "Number of Components",
+    "complog": "Issue Log: To record an issue (e.g. failure of an asset) that arose. Maintenance Log: To record  executed maintenance of a system asset (or assets)."
+>>>>>>> ams-final
 }

@@ -11,9 +11,16 @@ export const supplyBeltInitialValues = {
 };
 
 export const supplyBeltValidationSchema = yup.object({  
+<<<<<<< HEAD
     institutional_connection: yup.string(),
     commercial_connection: yup.string(),
     public_connection: yup.string(),
     household_connection: yup.string(),
+=======
+    institutional_connection: yup.string().required("This field is required"),
+    commercial_connection: yup.string().required("This field is required"),
+    public_connection: yup.string().required("This field is required"),
+    household_connection: yup.string().required("This field is required"),
+>>>>>>> ams-final
     apply_date: yup.string(),
 })

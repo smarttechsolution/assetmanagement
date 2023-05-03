@@ -39,7 +39,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_care_taker(self, username, name, password, phone_number,water_scheme, email=None):
+    def create_care_taker(self, username, name, password, phone_number,water_scheme, Other, is_care_taker,is_administrative_staff, general_manager, email=None):
         if not username:
             raise ValueError(_('User must have an username.'))
 
@@ -60,9 +60,17 @@ class UserManager(BaseUserManager):
         )
         if email:
             user.email=email
+        if Other == True:
+            user.Other = True
+        if is_administrative_staff == True:
+            user.is_administrative_staff = True
+        if general_manager == True:
+            user.general_manager =True
+        if is_care_taker == True:
+            user.is_care_taker = True
+
         user.is_verified = True
         user.is_active = True
-        user.is_care_taker = True
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -123,6 +131,8 @@ class Users(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=10,null = True, blank = True)
     is_care_taker = models.BooleanField(default = False)
     is_administrative_staff = models.BooleanField(default = False)
+    general_manager = models.BooleanField(default=False)
+    Other = models.BooleanField(default=False)
     is_verified     = models.BooleanField(_('Is Verified'), default=False)
     is_active       = models.BooleanField(_('is Active'), default=True)
     is_staff        = models.BooleanField(_('is Staff'), default=False)

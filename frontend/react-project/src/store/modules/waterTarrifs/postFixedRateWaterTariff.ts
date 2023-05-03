@@ -6,8 +6,8 @@ import initDefaultAction, { APIResponseDetail } from "../../helper/default-actio
 import initDefaultReducer from "../../helper/default-reducer";
 import initialState from "../../helper/default-state";
 
- 
-export type WaterTarrifsType =  any
+
+export type WaterTarrifsType = any
 
 const apiDetails = Object.freeze(apiList.waterTarrif.postFixedRateBasedTarrifsRate);
 
@@ -18,7 +18,7 @@ export default function postFixedRateWaterTariffReducer(state = initialState, ac
     return initDefaultReducer(actionName, action, stateCopy);
 }
 
-export const postFixedRateWaterTariffAction = (lang, requestData): AppThunk<APIResponseDetail<WaterTarrifsType>> => async (dispatch: Dispatch) => {
-    const updatedDetails = { disableSuccessToast: true, pathVariables: { lang }, requestData }
+export const postFixedRateWaterTariffAction = (lang, requestData, params): AppThunk<APIResponseDetail<WaterTarrifsType>> => async (dispatch: Dispatch) => {
+    const updatedDetails = { disableSuccessToast: true, pathVariables: { lang }, requestData, params }
     return await initDefaultAction(apiDetails, dispatch, updatedDetails);
 };

@@ -13,7 +13,7 @@ function FormikValidationError(props: Props): ReactElement {
   const { name, touched, errors } = props;
   const { t } = useTranslation();
 
-  return touched[name] && !!errors[name] ? (
+  return touched[name] && errors[name] ? (
     <div className="text-left">
       <span className="error font-weight-bold" >
         {" "}

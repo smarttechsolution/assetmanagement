@@ -17,6 +17,7 @@ export type WaterTarrifsType = {
     time_to: string
     supply_belts:string
     to_day: string
+    comment: string
 
 }[]
 

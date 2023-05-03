@@ -28,7 +28,7 @@ const OtherExpenseList = (props: Props) => {
     const response: any = await props.deleteOtherExpensesAction(props.language, editId);
 
     if (response.status === 204) {
-      // toast.success(t('home:deleteSuccess'));
+      toast.success(t('home:deleteSuccess'));
       props.getOtherExpensesAction(props.language);
       resetDeleteData();
     } else {

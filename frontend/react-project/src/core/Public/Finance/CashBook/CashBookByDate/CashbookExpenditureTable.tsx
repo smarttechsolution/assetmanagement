@@ -10,7 +10,12 @@ import { geAllExpenditureAction } from "store/modules/expenditure/getAllExpendit
 import { getExpenditureCategoryAction } from "store/modules/expenditure/getExpenditureCategory";
 import { getPreviousExpenditureTotalAction } from "store/modules/expenditure/getPreviousExpenditureTotal";
 import { RootState } from "store/root-reducer";
+<<<<<<< HEAD
 import { getDefaultDate } from "utils/utilsFunction/date-converter";
+=======
+import { getExpenditureTotalAction } from 'store/modules/expenditure/getExpenditureTotal';
+// import { getDefaultDate } from "utils/utilsFunction/date-converter";
+>>>>>>> ams-final
 import { sortAplabetically } from "utils/utilsFunction/sorting";
 
 interface Props extends PropsFromRedux {
@@ -26,12 +31,25 @@ const CashbookExpenditureTable = (props: Props) => {
     language,
     schemeSlug,
     schemeDetails,
+<<<<<<< HEAD
     previousExpenditureTotal,
     getExpenditureAction,
     getExpenditureCategoryAction,
     getPreviousExpenditureTotalAction,
   } = props;
 
+=======
+    expenditureTotal,
+    // expenseType,
+    getExpenditureAction,
+    getExpenditureCategoryAction,
+    // getPreviousExpenditureTotalAction,
+    getExpenditureTotalAction
+  } = props;
+
+
+
+>>>>>>> ams-final
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
 
@@ -40,13 +58,26 @@ const CashbookExpenditureTable = (props: Props) => {
       if (props.activeTab === "2") {
         getExpenditureAction(language, schemeSlug, props.activeDate, props.endDate);
         getExpenditureCategoryAction(schemeSlug);
+<<<<<<< HEAD
+=======
+        // getPreviousExpenditureTotalAction(language, schemeSlug, props.activeDate, props.endDate)
+        getExpenditureTotalAction(language, schemeSlug, props.activeDate, props.endDate)
+
+
+
+>>>>>>> ams-final
       }
     }
   }, [language, props.activeDate, props.endDate, schemeSlug, schemeDetails, props.activeTab]);
 
   const { t } = useTranslation(["cashbook"]);
 
+<<<<<<< HEAD
   console.log(schemeDetails, "schemeDetails");
+=======
+  console.log(expenditureTotal, "expensi");
+
+>>>>>>> ams-final
 
   return (
     <>
@@ -63,7 +94,11 @@ const CashbookExpenditureTable = (props: Props) => {
           </thead>
           <tbody>
             {expenditureData?.map((income, index) => (
+<<<<<<< HEAD
               <tr onClick={toggle} key={index}>
+=======
+              <tr key={index}>
+>>>>>>> ams-final
                 <td>{language === "en" ? income.date : income.date_np}</td>
                 <td>{income.title}</td>
                 {sortAplabetically(expenditureCategories, "name")?.map((incomeCategory, index) => {
@@ -80,24 +115,67 @@ const CashbookExpenditureTable = (props: Props) => {
               </tr>
             ))}
 
+<<<<<<< HEAD
             <tr>
               <td></td>
               <td>{t("cashbook:total")}</td>
               {sortAplabetically(expenditureCategories, "name")?.map((incomeCategory, index) => {
                 const findData = previousExpenditureTotal?.present_month_data?.find(
                   (prev) => prev.expense_category_name === incomeCategory.name
+=======
+            {/* <tr>
+              <td></td>
+              <td>{t("cashbook:total")}</td>
+              {sortAplabetically(expenditureCategories, "name")?.map((incomeCategory, index) => {
+                const findData = expenseType?.total_data?.find(
+                  // (prev) => prev.expense_category_name === incomeCategory.name
+                  (prev) => prev.total_expense
+>>>>>>> ams-final
                 );
                 if (findData) {
                   return (
                     <td key={index}>
+<<<<<<< HEAD
                       {props.schemeDetails?.currency} {findData.total_expense_amount}
+=======
+                      {props.schemeDetails?.currency} {findData.total_expense}
+>>>>>>> ams-final
                     </td>
                   );
                 } else {
                   return <td key={index}>-</td>;
                 }
               })}
+<<<<<<< HEAD
             </tr>
+=======
+            </tr> */}
+
+            {expenditureTotal && Array.isArray(expenditureTotal) && expenditureTotal?.map((income, index) => (
+                <tr key={index}> 
+                  <td></td>
+                  <td>{t("cashbook:total")}</td>
+                  <td>{income.total_expense}</td>
+                </tr>
+              ))}
+
+            {/* <tr>
+              <td></td>
+              <td>{t("cashbook:total")}</td>
+              {expenditureTotal && Array.isArray(expenditureTotal) && expenditureTotal?.map((income, index) => {
+                if (income.total_expense != null) {
+                  return (
+                    <td key={index}>
+                      {props.schemeDetails?.currency} {income.total_expense}
+                    </td>
+                  );
+                } else {
+                  return <td key={index}>-</td>;
+                }
+                // <td>{income.total_expense}</td>
+              })}
+            </tr> */}
+>>>>>>> ams-final
 
             {props.sliderImages &&
               props.sliderImages instanceof Array &&
@@ -132,13 +210,25 @@ const mapStateToProps = (state: RootState) => ({
   schemeSlug: state.waterSchemeData.waterSchemeDetailsData.data?.slug,
   expenditureData: state.expenditureData.getAllExpenditureData.data,
   expenditureCategories: state.expenditureData.getExpenditureCategory.data,
+<<<<<<< HEAD
   previousExpenditureTotal: state.expenditureData.getPreviousExpenditureTotal.data,
 });
 
+=======
+  expenditureTotal: state.expenditureData.getExpenditureTotal.data,
+  // expenseType: state.expenditureData.getExpenditureTotalAction.data
+});
+
+
+>>>>>>> ams-final
 const mapDispatchToProps = {
   getExpenditureAction: geAllExpenditureAction,
   getExpenditureCategoryAction: getExpenditureCategoryAction,
   getPreviousExpenditureTotalAction: getPreviousExpenditureTotalAction,
+<<<<<<< HEAD
+=======
+  getExpenditureTotalAction: getExpenditureTotalAction
+>>>>>>> ams-final
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
